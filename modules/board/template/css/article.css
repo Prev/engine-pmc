@@ -1,0 +1,43 @@
+@charset "utf-8";
+
+.article{
+	width:900px;
+	margin:20px 0;
+}
+.article .article-header{
+	font-size:13px;
+}
+.article .ah-top{
+	padding:10px 10px 5px 10px;
+	border-bottom:1px dashed #AAA;
+}
+.article .ah-top .title{
+	font-weight:bold;
+	float:left;
+}
+.article .ah-top .current-board{
+	padding:0 10px;
+	margin:0 10px;
+	border-left:1px solid #CCC;
+	float:left;
+}
+.article .ah-top .upload-time{
+	font-size:11px;
+	color:#888;
+	padding-top:4px;
+}
+.article .ah-bottom{
+	padding:5px 10px 10px 10px;
+}
+.article .ah-bottom .url{
+	font-size:11px;
+	color:#888;
+}
+.article .ah-bottom .url a:link,
+.article .ah-bottom .url a:active,
+.article .ah-bottom .url a:visited{ color:#888; text-decoration:none }
+.article .ah-bottom .url a:hover{ color:#888; text-decoration:underline }
+
+.article .article-content {
+	padding:20px 10px 7px 10px;
+}

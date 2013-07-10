@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+#welcome #welcome-text{
+	width:400px;
+	margin-top:80px;
+}
+#welcome #welcome-text #welcome-title{
+	padding-bottom:3px;
+	font-size:20px;
+}
+#welcome #welcome-text #welcome-description{
+	padding-left:3px;
+	font-size:14px;
+	color:#666;
+}

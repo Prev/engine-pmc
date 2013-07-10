@@ -1,0 +1,15 @@
+{	
+	"name":"board module",
+	"version":"1.0.0",
+	"author":"prevdev@gmail.com",
+	"actions":[
+		{
+			"name":"dispList",
+			"type":"view"
+		},
+		{
+			"name":"dispArticle",
+			"type":"view"
+		}
+	]
+}

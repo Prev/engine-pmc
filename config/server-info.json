@@ -1,0 +1,16 @@
+[
+	{
+		"type":"test",
+		"protocol":"http",
+		"host":"127.0.0.1",
+		"session_domain":"127.0.0.1",
+		"uri":"/pmc"
+	},
+	{
+		"type":"running",
+		"protocol":"http",
+		"host":"parameter.kr",
+		"session_domain":"parameter.kr",
+		"uri":"/projects/pmc"
+	}
+]

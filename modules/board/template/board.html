@@ -1,0 +1,72 @@
+<import path="css/board.css">
+
+<div class="board">
+	<div class="board-article">
+		<ul class="first-line">
+			<li class="select-tag">
+				<span>{# 'en'=>'Category', 'kr'=>'말머리 선택'}</span>
+				<button class="select-tag-btn"></button>
+			</li>
+			<li class="title">{# 'en'=>'Title', 'kr'=>'제목'}</li>
+			<li class="writer">{# 'en'=>'Writer', 'kr'=>'작성자'}</li>
+			<li class="date">{# 'en'=>'Uploaded time', 'kr'=>'작성일'}</li>
+			<li class="hits">{# 'en'=>'Hits', 'kr'=>'조회수'}</li>
+		</ul>
+		{@ foreach ($articleData as $key => $data): }
+			<ul class="{@ echo $data->top_notice ? 'notice' : 'article' }">
+				<condition do="$data->top_notice">
+					<li class="notice-icon">{# 'en'=>'Notice', 'kr'=>'공지'}</li>
+				</condition>
+			
+				<li class="title">
+					<condition do="!$data->top_notice">
+						{printArticlePrefix($data->order_key, $data->category)}
+					</condition>
+					<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>
+				</li>
+				<li class="writer">{$data->user_name}</li>
+				<li class="date">{$data->upload_time2}</li>
+				<li class="hits">{$data->hits}</li>
+			</ul>
+		{@ endforeach; }
+		<condition do="!$articleData">
+			<div class="no-article">
+				{#
+					'en'=>'There is no article',
+					'kr'=>'게시글이 없습니다'
+				}
+			</div>
+		</condition>
+	</div>
+	<div class="page-numbers">
+		<condition do="$pageNumbers->prevBtn !== NULL">
+			<div class="prev-btn">
+				<a href="?page={$pageNumbers->prevBtn}&{$QS}">
+					&#9664;
+				</a>
+			</div>
+		</condition>
+		
+		{@ foreach ($pageNumbers->pages as $key => $n): }
+			<condition do="$n != $nowPage">
+				<div class="page-btn">
+					<a href="?page={$n}&{$QS}">{$n}</a>
+				</div>
+			</condition>
+			
+			<condition do="$n == $nowPage">
+				<div class="page-btn current-page">
+					{$n}
+				</div>
+			</condition>
+		{@ endforeach; }
+		
+		<condition do="$pageNumbers->nextBtn !== NULL">
+			<div class="next-btn">
+				<a href="?page={$pageNumbers->nextBtn}&{$QS}">
+					&#9654;
+				</a>
+			</div>
+		</condition>
+	</div>
+</div>

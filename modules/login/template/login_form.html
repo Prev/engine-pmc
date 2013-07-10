@@ -1,0 +1,53 @@
+<import path="/static/js/encryption/rsa.js">
+<import path="/static/js/encryption/md5.js">
+<import path="js/login.js">
+
+<style type="text/css">
+	#login-wrap{ width:220px; margin:5px auto 30px auto }
+	#login-wrap h2{ text-align:center; margin-bottom:5px; }
+	#login-wrap #input-wrap{ margin:3px 0; }
+	#login-wrap #input-wrap label{ display:inline-block; width:55px; font-size:13px; text-align:right; margin-right:5px; *zoom:1; }
+	
+	#login-wrap #submit-wrap #sl-wrap{ padding:3px 0 0 60px }
+	#login-wrap #submit-wrap #submit-btn-wrap{ margin-top:3px }
+	
+	#error-message{ width:420px; margin:0px auto 20px auto; padding:11px; border:1px solid #ffbee5; background-color:#ffe0f2; }
+</style>
+
+
+<div id="login-wrap">
+	<form name="login_form" method="post" action="/?module=login&action=procSecureLogin" onsubmit="return procLogin()">
+		<input type="hidden" name="enc_id">
+		<input type="hidden" name="enc_pw">
+		<input type="hidden" name="check_sum">
+		<input type="hidden" name="next" value="{$next}">
+		<h2>로그인</h2>
+		<div id="input-wrap">
+			<div>
+				<label for="id">아이디</label>
+				<input name="id" type="text">
+			</div>
+			<div>
+				<label for="pw">비밀번호</label>
+				<input name="pw" type="password">
+			</div>
+		</div>
+		<div id="submit-wrap" class="clearfix">
+			<div id="sl-wrap" class="fl">
+				<input type="checkbox" name="auto_login" checked="checked">
+				<label for="auto_login">자동 로그인</label>
+				
+				<input type="checkbox" name="secure_login" checked="checked" onclick="toggleSecureLogin(this)">
+				<label for="secure_login">보안 로그인</label>
+			</div>
+			<div id="submit-btn-wrap" class="fr">
+				<input type="submit" value="로그인" onclick="return procLogin()">
+			</div>
+		</div>
+	</form>
+</div>
+<condition do="$errorMessage">
+	<div id="error-message">
+		{$errorMessage}
+	</div>
+</condition>

@@ -1,0 +1,43 @@
+<import path="stylesheet.css">
+<import path="favicon.ico">
+
+<div id="wrap">
+	<div id="header" class="clearfix">
+		<div id="logo" class="fl">
+			<a href="/">
+				<img src="./img/logo_150x60.png" width="150" height="60" alt="engine pmc">
+			</a>
+		</div>
+		<ul id="gnb" class="fl clearfix">
+			{@ foreach(Context::getMenu(1, true) as $key => $menu): }
+			<li class="{$menu->className}">
+				<a href="/{@ if (!USE_SHORT_URL) echo '?menu='; }{$menu->title}" class="no-deco">{$menu->title_locale}</a>
+			</li>
+			{@ endforeach; }
+		</ul>
+	</div>
+	
+	<div id="content">
+		{content()}
+	</div>
+</div>
+<div id="footer">
+	<div id="footer-content" class="clearfix">
+		<div class="fl">&copy; Powered by engine pmc.</div>
+		<div id="footer-locale" class="fr">
+			<condition do="getLocale('en')">
+				<span class="selected-locale">English</span> 
+			</condition>
+			<condition do="!getLocale('en')">
+				<span><a href="{getUrlA('locale=en', REAL_URI)}">English</a></span> 
+			</condition>
+			
+			<condition do="getLocale('kr')">
+				<span class="selected-locale">Korean</span> 
+			</condition>
+			<condition do="!getLocale('kr')">
+				<span><a href="{getUrlA('locale=kr', REAL_URI)}">Korean</a></span> 
+			</condition>
+		</div>
+	</div>
+</div>

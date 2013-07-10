@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+.clearfix{ *zoom:1 }
+.clearfix:after{ display:block; clear:both; content:"" }
+
+#box{
+	width:500px;
+	margin:40px auto;
+	border:1px solid #CCC;
+	border-radius:7px;
+	box-shadow: 0 3px 7px #CCC;
+	
+	font-size:12px;
+	font-family:나눔고딕,NanumGothic,돋움,Dotum,Arial,Helvetica,sans-serif;
+}
+#container{
+	padding:25px;
+}
+#container h1{
+	margin:0;
+	padding:0;
+	margin-bottom:7px;
+	font-size:18px;
+}
+#container #content{ margin-top:7px; }
+
+#bottom{
+	padding:8px 25px;
+	background-color:#F9F9F9;
+	border-top:1px solid #EEE;
+	border-radius:0 0 7px 7px;
+	color:#999;
+}
+
+#bottom #left{ float:left }
+#bottom #right{ float:right }

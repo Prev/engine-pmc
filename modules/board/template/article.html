@@ -1,0 +1,43 @@
+<import path="css/article.css">
+
+<div class="article">
+	<div class="article-header clearfix">
+		<div class="ah-top clearfix">
+			<div class="title">
+				{$title}
+			</div>
+			<div class="current-board">
+				{$board}
+			</div>
+			<div class="upload-time fr">
+				{$upload_time}
+			</div>
+		</div>
+		<div class="ah-bottom">
+			<div class="writer fl">
+				{$writer}
+			</div>
+			<div class="url fr">
+				<a href="{$url}">
+					{$url}
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="article-content">
+		{$content}
+	</div>
+	<div class="article-footer">
+		<condition do="$prevArticle">
+			<div class="fl">이전 게시글</div>
+		</condition>
+		
+		<condition do="$goList">
+			<div class="fl">목록으로</div>
+		</condition>
+		
+		<condition do="$nextArticle">
+			<div class="fr">다음 게시글</div>
+		</condition>
+	</div>
+</div>

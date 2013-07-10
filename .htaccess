@@ -1,0 +1,5 @@
+RewriteEngine On
+
+RewriteRule ^login(\/?)$ ./index.php?module=login&action=dispLoginPage&%{QUERY_STRING} [L,QSA]
+RewriteRule ^([0-9]+)$ ./index.php?module=board&action=dispArticle&article_no=$1&%{QUERY_STRING} [L,QSA]
+RewriteRule ^([a-zA-Z0-9]+)$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]

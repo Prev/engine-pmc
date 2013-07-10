@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+.not-found{
+	border-bottom:1px solid #DDD;
+	padding:50px 0;
+	text-align:center
+}
+.not-found .title{
+	margin-top:10px;
+	font-size:16px;
+}
+.not-found .go-back{
+	margin-top:5px;
+}
+.not-found .go-back a:link,
+.not-found .go-back a:active,
+.not-found .go-back a:visited{ color:#06C; text-decoration:none }
+.not-found .go-back a:hover{ color:#06C; text-decoration:underline }

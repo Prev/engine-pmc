@@ -1,0 +1,51 @@
+@charset "utf-8";
+
+.board{ width: 900px; margin:20px 0; }
+.board .pink{ color: #ec137f; font-weight: bold; }
+
+.board .board-article ul{ border-bottom: 1px solid #e0e0e0; margin: 0; padding-left: 10px; padding-top: 8px; }
+.board .board-article ul li{ list-style: none; float: left; text-align: center; font-size: 11px;  }
+.board .board-article .first-line{ height: 22px; background-color: #eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; }
+.board .board-article .first-line li{ font-weight: bold; font-size: 12px; }
+.board .board-article .first-line .select-tag{ width: 95px; }
+.board .board-article .first-line .select-tag .select-tag-btn{ width: 12px; height: 12px; background: transparent url('../img/board_sprite.png') no-repeat -43px 0px; border: 0; padding: 0; margin: 0px 0px 0px 5px; vertical-align: middle; cursor: pointer; }
+.board .board-article .first-line .title{ width: 485px; text-align: center; }
+.board .board-article .notice{ height:20px; background-color: #f6f6f6; }
+.board .board-article .notice .title{ width: 545px; color: #ec137f; font-weight: bold; }
+.board .board-article .notice-icon{ width: 30px; height: 18px; float: left; margin: -3px 5px 0px 0px; background: transparent url('../img/board_sprite.png') no-repeat -55px 0px; color:transparent; font-size:0px }
+.board .board-article .article{ height: 20px; }
+.board .board-article .article .tag-type{ font-size: 10px; color: #b0b0b0; }
+.board .board-article .article .dot-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
+.board .board-article .article .reply-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
+.board .board-article .article .reply-icon{ width: 11px; height: 9px; background: transparent url('../img/board_sprite.png') no-repeat -32px 0px; display: inline-block; *zoom:1; *display:inline }
+.board .board-article .article .attachment{ width: 16px; height: 16px; background: transparent url('../img/board_sprite.png') no-repeat 0px 0px; vertical-align: middle; display: inline-block; *zoom:1; *display:inline }
+.board .board-article .article .attach-image{ width: 16px; height: 16px; background: transparent url('../img/board_sprite.png') no-repeat -16px 0px; vertical-align: middle; display: inline-block; *zoom:1; *display:inline }
+.board .board-article .title{ width: 580px; text-align: left; }
+.board .board-article .title a:link,
+.board .board-article .title a:visited,
+.board .board-article .title a:active,
+.board .board-article .title a:hover{ text-decoration:none; color:#333; }
+.board .board-article .no-article{ padding:30px 0; text-align:center; border-bottom:1px solid #e0e0e0; }
+
+
+.board .board-article .writer{ width: 150px; }
+.board .board-article .date{ width: 100px; }
+.board .board-article .hits{ width: 60px; }
+
+.board .page-numbers{ width: 300px; text-align: center; display: inline-block; *zoom:1; *display:inline; font-size: 11px; margin: 18px 0px 15px 310px; }
+.board .page-numbers div{ display: inline-block; *zoom:1; *display:inline }
+.board .page-numbers .prev-btn{ cursor: pointer; margin-right: 10px; color: #3a3a3a; }
+.board .page-numbers .next-btn{ cursor: pointer; margin-left: 10px; color: #3a3a3a; }
+.board .page-numbers .page-btn{ color: #868686; margin: 0px 3px; cursor: pointer; }
+.board .page-numbers .page-btn a:link,
+.board .page-numbers .page-btn a:visited,
+.board .page-numbers .page-btn a:active	{ text-decoration:none; color:#868686; }
+.board .page-numbers .page-btn a:hover		{ text-decoration:underline; color:#868686; }
+.board .page-numbers .current-page{ color: #ec137f; font-weight: bold; cursor:default }
+
+.board .page-numbers .prev-btn a:link,		.board .page-numbers .next-btn a:link	{ text-decoration:none; color:#3a3a3a; }
+.board .page-numbers .prev-btn a:visited,	.board .page-numbers .next-btn a:visited{ text-decoration:none; color:#3a3a3a; }
+.board .page-numbers .prev-btn a:hover,		.board .page-numbers .next-btn a:hover	{ text-decoration:none; color:#3a3a3a; }
+.board .page-numbers #prev-btn a:active,	.board .page-numbers .next-btn a:active	{ text-decoration:none; color:#3a3a3a; }
+
+.board .write-btn{ width: 71px; height: 25px; float: right; margin-top: 10px; background: transparent url('../img/board_sprite.png') no-repeat 0px -18px; border: 0; padding: 0; cursor: pointer; }
