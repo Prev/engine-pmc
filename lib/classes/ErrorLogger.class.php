@@ -18,8 +18,7 @@
 			
 			$output = $str . '  - ' . date('Y-m-d H:i:s') . '  - ' . $_SERVER['REMOTE_ADDR'];
 			for ($i=0; $i<count($backtrace); $i++) {
-				$path = str_replace(ROOT_DIR, '', $backtrace[$i]['file']);
-				$path = str_replace("\\", '/', $path);
+				$path = getFilePathClear($backtrace[$i]['file']);
 				
 				$output .= "\r\n\t in \"" . $path . '" on line '. $backtrace[$i]['line'];
 			}

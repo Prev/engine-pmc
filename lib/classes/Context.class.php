@@ -84,10 +84,12 @@
 			DBHandler::init($db_info);
 			self::initMenu($_GET);
 			
-			
 			self::addHeaderFile('/static/css/global.css');
 			self::addHeaderFile('/static/js/lie.js');
 			self::addMetaTag( array('charset'=>TEXT_ENCODING) );
+			
+			if (DEBUG_MODE)
+				self::addHeaderFile('/static/js/vdump.js');
 			
 			if (X_UA_Compatible) {
 				self::addMetaTag(
@@ -113,7 +115,7 @@
 				if ($data) $getVars['menu'] = $data->title;
 			}
 			
-			$data = DBHandler::execQueryOne("SELECT * FROM (#)menu WHERE title='".$getVars['menu']."' LIMIT 1");
+			$data = DBHandler::execQueryOne("SELECT * FROM (#)menu WHERE title='" . escape($getVars['menu']) . "' LIMIT 1");
 			if (!$data && !$moduleID) {
 				self::printErrorPage(array(
 					'en' => 'Cannot find requested menu',
@@ -145,7 +147,7 @@
 		 * Add cached CSS
 		 */
 		public function getMenu($level, $printBlankInIndex=false) {
-			$arr = DBHandler::execQuery("SELECT * FROM (#)menu WHERE level='${level}'");
+			$arr = DBHandler::execQuery("SELECT * FROM (#)menu WHERE level='" . escape($level) . "'");
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i]->className = 'pmc-menu' . $level . '-' . $arr[$i]->title;
 				if ($arr[$i]->title == self::$selectedMenu) {
@@ -423,7 +425,7 @@
 			$message = fetchLocale($message);
 			
 			$backtrace = debug_backtrace();
-			$backtrace_path = str_replace("\\", '/', str_replace(ROOT_DIR, '', $backtrace[0]['file']));
+			$backtrace_path = getFilePathClear($backtrace[0]['file']);
 			$backtrace_message = '&nbsp;&nbsp;- in "' . $backtrace_path . '" on line ' . $backtrace[0]['line'];
 			
 			

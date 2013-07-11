@@ -13,6 +13,23 @@ input,label{ vertical-align:middle }
 .warning{ margin:1px; font-size:13px }
 .warning-c{ display:inline-block; padding:1px 3px; background-color:rgba(255,51,102,0.15); *zoom:1 }
 
+pre.vdump{
+	background-color:#f8f8f8;
+	border:1px solid #ddd;
+	font-size:13px;
+	line-height:19px;
+	overflow:auto;
+	padding:6px 10px;
+	border-radius:4px;
+	font-family: Consolas, "Liberation Mono", Courier, monospace;
+	color:#333;
+}
+pre.vdump .vdump-first-line{ color:#999 }
+pre.vdump .vdump-string{ color:#d14 }
+pre.vdump .vdump-keyword{ color:#008080 }
+pre.vdump .vdump-light{ color:#39C }
+
+
 .no-uline:link,
 .no-deco:link{ color:#333; text-decoration:none }
 .no-uline:hover{ color:#333; text-decoration:underline }

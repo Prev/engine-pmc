@@ -1,58 +1,17 @@
 <?php
 	
-	/*function printObj($data) {
-		switch(gettype($data)) {
-			case 'boolean': $output = '(boolean) ' . ($data ? 'true' : 'false'); break;
-			case 'integer': $output = '(int) ' . $data; break;
-			case 'double':  $output = '(double) ' . $data; break;
-			case 'string':  $output = '(string) "' . strtr($data, array('\\' => '\\\\', '"' => '\\"')) . '"'; break;
-			
-			case 'object': $data = get_object_vars($data);
-			case 'array':
-				$rel = FALSE; // relative array?
-				$key = array_keys($data);
-				foreach($key as $v) if(!is_int($v)) { $rel = TRUE; break; }
-	
-				$arr = array();
-				foreach($data as $k => $v)
-					$arr[] = "\t" . printObj_getvars(($rel ? '"' . strtr($k, array('\\' => '\\\\', '"' => '\\"')) . '": ' : ''), $v);
-	
-				$output = $rel ?
-					gettype($data) . " {\n" . join(",\n", $arr) . "}\n" :
-					'array('.count($arr).") [\n" . join(",\n", $arr) . "]\n";
-				break;
-			default:
-				$output ='""';
-				break;
-		}
+	function var_dump2($obj) {
+		$bt = debug_backtrace();
 		
-		echo $output . "\n";
+		echo '<pre class="vdump">';
+		echo '<span class="vdump-first-line">var dumped in "' . getFilePathClear($bt[0]['file']) . '" on line ' . $bt[0]['line'] . "</span>\n";
+		var_dump($obj);
+		echo '</pre>';
 	}
 	
-	function printObj_getvars($name, $data) {
-		switch(gettype($data)) {
-			case 'boolean': return '(boolean) ' . $name . ($data ? 'true' : 'false');
-			case 'integer': return '(int) ' .$name . $data;
-			case 'double':  return '(double) ' .$name . $data;
-			case 'string':  return '(string) "' .$name . strtr($data, array('\\' => '\\\\', '"' => '\\"')) . '"';
-			
-			case 'object': $data = get_object_vars($data);
-			case 'array':
-				$rel = FALSE; // relative array?
-				$key = array_keys($data);
-				foreach($key as $v) if(!is_int($v)) { $rel = TRUE; break; }
-	
-				$arr = array();
-				foreach($data as $k => $v)
-					$arr[] = "\t" . printObj_getvars(($rel ? '"' . strtr($k, array('\\' => '\\\\', '"' => '\\"')) . '": ' : ''), $v );
-	
-				return $rel ?
-					'(' . gettype($data) . ") $name{\n" . join(",\n", $arr) . "}\n" :
-					"(array) ${name}[\n" . join(",\n", $arr) . "]\n";
-			default:
-				return '""';
-		}
-	}*/
+	function getFilePathClear($path) {
+		return str_replace("\\", '/', str_replace(ROOT_DIR, '', $path));
+	}
 	
 	function set0($str, $length=2) {
 		for ($i=0; $i<$length-strlen($str); $i++)
@@ -87,7 +46,6 @@
 	
 	
 	function fetchLocale($object) {
-		
 		$locale = getLocale();
 		switch (gettype($object)) {
 			case 'object' :
@@ -129,8 +87,7 @@
 	}
 	
 	function json_encode2($data) {
-		switch(gettype($data))
-		{
+		switch(gettype($data)) {
 			case 'boolean':
 				return $data ? 'true' : 'false';
 			case 'integer':
@@ -143,10 +100,8 @@
 			case 'array':
 				$rel = FALSE; // relative array?
 				$key = array_keys($data);
-				foreach($key as $v)
-				{
-					if(!is_int($v))
-					{
+				foreach($key as $v) {
+					if(!is_int($v)) {
 						$rel = TRUE;
 						break;
 					}
@@ -154,9 +109,7 @@
 	
 				$arr = array();
 				foreach($data as $k => $v)
-				{
 					$arr[] = ($rel ? '"' . strtr($k, array('\\' => '\\\\', '"' => '\\"')) . '":' : '') . json_encode2($v);
-				}
 	
 				return $rel ? '{' . join(',', $arr) . '}' : '[' . join(',', $arr) . ']';
 			default:

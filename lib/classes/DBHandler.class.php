@@ -59,8 +59,7 @@
 			$query = join(DBHandler::$prefix, explode('(#)', $query));
 			$backtrace = debug_backtrace();
 			
-			$backtrace_path = str_replace(ROOT_DIR, '', $backtrace[0]['file']);
-			$backtrace_path = str_replace("\\", '/', $backtrace_path);
+			$backtrace_path = getFilePathClear($backtrace[0]['file']);
 			
 			switch (self::$type) {
 				case 'mysqli':

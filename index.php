@@ -21,5 +21,3 @@
 	if ($GLOBALS['__Module__']) {
 		$oContext->prints();
 	}
-	
-?>
