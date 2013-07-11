@@ -13,17 +13,15 @@
 		</div>
 		<div id="welcome-description">
 			{#
-				'en'=>'"engine pmc" is the MVC core that make easy the development of the website, maintenance, joint work',
+				'en'=>'"engine pmc" is the MVC core that make easy developing of the website, maintenance, joint work',
 				'kr'=>'"engine pmc" 는 웹사이트의 개발속도, 유지보수, 공동 작업등을 쉽게 해 주는 모듈 기반의 MVC 코어입니다.'
 			}
 		</div>
 	</div>
 </div>
-<ul>
-	{@ foreach($lists as $key => $value): }
-	<li>{$key}:{$value}</li>
-	{@ endforeach; }
-</ul>
+<div>
+	{@ var_dump2($userData); }
+</div>
 <div>
 	<condition do="$loggedin">
 		<a href="{getUrl('login', 'procLogout')}">{# 'en'=>'Sign out', 'kr'=>'로그아웃'}</a>

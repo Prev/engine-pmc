@@ -1,4 +1,4 @@
-window.addEventListener('load', function () {
+(function () {
 	var vdumps = document.getElementsByClassName("vdump");
 	for (var i=0; i<vdumps.length; i++) {
 		var str = vdumps[i].innerHTML;
@@ -12,4 +12,4 @@ window.addEventListener('load', function () {
 		
 		vdumps[i].innerHTML = str;
 	}
-});
+})();

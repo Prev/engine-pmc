@@ -17,8 +17,8 @@
 			Context::set('message', $message);
 			Context::set('loggedin', $this->ssoData ? true : false);
 			
-			if ($this->ssoData) Context::set('lists', $this->ssoData->user_data);
-			else Context::set('lists', (object) array('info'=>'NULL'));
+			if ($this->ssoData)
+				Context::set('userData', $this->ssoData->user_data);
 			
 			$this->execTemplate('welcome');
 		}

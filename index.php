@@ -15,9 +15,9 @@
 	$oContext = &Context::getInstance();
 	$oContext->init(getDBInfo());
 	
-	$oModuleHandler = new ModuleHandler();
+	$oModuleHandler = new ModuleHandler($oContext->moduleID);
 	$oModuleHandler->procModule();
 	
 	if ($GLOBALS['__Module__']) {
-		$oContext->prints();
+		$oContext->printContext();
 	}

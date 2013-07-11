@@ -197,7 +197,32 @@
 	
 	function getUrlA($args, $url=NULL) {
 		if (!$url) $url = RELATIVE_URL;
-		return $url . (strstr($url, '?') ? '&' : '?') . $args;
+		
+		$o = (object) array();
+		$u = parse_url($url);
+		
+		if ($u['query']) 
+			$q = split('&', $u['query']); for ($i=0; $i<count($q); $i++) { $t = split('=', $q[$i]); $o->{$t[0]} = $t[1]; }
+		$q = split('&', $args); for ($i=0; $i<count($q); $i++) { $t = split('=', $q[$i]); $o->{$t[0]} = $t[1]; }
+		
+		$a = array();
+		foreach ($o as $key => $value) array_push($a, $key . '=' . $value);
+		$u['query'] = join('&', $a);
+		
+		return unparse_url($u);
+	}
+	
+	function unparse_url($parsed_url) { 
+		$scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : ''; 
+		$host     = isset($parsed_url['host']) ? $parsed_url['host'] : ''; 
+		$port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : ''; 
+		$user     = isset($parsed_url['user']) ? $parsed_url['user'] : ''; 
+		$pass     = isset($parsed_url['pass']) ? ':' . $parsed_url['pass']  : ''; 
+		$pass     = ($user || $pass) ? "$pass@" : ''; 
+		$path     = isset($parsed_url['path']) ? $parsed_url['path'] : ''; 
+		$query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : ''; 
+		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : ''; 
+		return $scheme . $user . $pass . $host . $port . $path . $query . $fragment; 
 	}
 	
 	function getBackUrl() {
@@ -207,5 +232,14 @@
 			return $_SERVER['HTTP_REFERER'];
 		else
 			return RELATIVE_URL;
+	}
+	
+	function redirect($url) {
+		echo Context::getInstance()->getDoctype() .
+				'<html><head>' .
+				'<meta http-equiv="refresh" content="0; url='.$url.'">' .
+				'<script type="text/javascript">location.replace("'.$url.'")</script>' .
+				'</head><body></body></html>';
+		exit;
 	}
 	

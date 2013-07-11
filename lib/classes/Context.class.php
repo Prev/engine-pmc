@@ -2,7 +2,7 @@
 
 	/**
 	 * @ author prevdev@gmail.com
-	 * @ 2013.05 ~ 6
+	 * @ 2013.05 ~ 07
 	 *
 	 *
 	 * Context Class
@@ -19,41 +19,40 @@
 		static $attr;
 		
 		/**
+		 * module ID
+		 */
+		public $moduleID;
+		
+		/**
+		 * module Action
+		 */
+		public $moduleAction;
+		
+		/**
 		 * headerTagHandler obj
 		 * HeaderTagHandler Class
 		 */
-		static $headerTagHandler;
+		var $headerTagHandler;
 		
 		
 		/**
 		 * layout name
 		 * default value is defined in config/config.php
 		 */
-		static $layout;
+		var $layout;
 		
 		
 		/**
 		 * menu data
 		 */
-		static $selectedMenu;
-		
-		
-		/**
-		 * module ID
-		 */
-		static $moduleID;
-		
-		/**
-		 * module Action
-		 */
-		static $moduleAction;
+		var $selectedMenu;
 		
 		
 		/**
 		 * set content printable
 		 * if this var is false, can not excute printContent() method
 		 */
-		static private $contentPrintable;
+		private $contentPrintable;
 		
 		
 		
@@ -74,25 +73,25 @@
 		 */
 		public function init($db_info) {
 			self::$attr = new StdClass();
-			self::$headerTagHandler = new HeaderTagHandler();
-			self::$contentPrintable = true;
-			self::setLayout(LAYOUT_NAME);
+			$this->headerTagHandler = new HeaderTagHandler();
+			$this->contentPrintable = true;
+			$this->setLayout(LAYOUT_NAME);
 			
 			if ($_GET['locale']) setcookie('locale', $_GET['locale']);
 			
 			CacheHandler::init();
 			DBHandler::init($db_info);
-			self::initMenu($_GET);
+			$this->initMenu($_GET);
 			
-			self::addHeaderFile('/static/css/global.css');
-			self::addHeaderFile('/static/js/lie.js');
-			self::addMetaTag( array('charset'=>TEXT_ENCODING) );
+			$this->addHeaderFile('/static/css/global.css');
+			$this->addHeaderFile('/static/js/lie.js');
+			$this->addMetaTag( array('charset'=>TEXT_ENCODING) );
 			
 			if (DEBUG_MODE)
-				self::addHeaderFile('/static/js/vdump.js');
+				$this->addHeaderFile('/static/js/vdump.js', -1, 'body-bottom');
 			
 			if (X_UA_Compatible) {
-				self::addMetaTag(
+				$this->addMetaTag(
 					array('http-equiv'=>'X-UA-Compatible', 'content'=>X_UA_Compatible)
 				);
 			}
@@ -106,7 +105,7 @@
 		 * If module is not defined by getVar or menu, set default value 'index'
 		 */
 		
-		static function initMenu($getVars) {
+		function initMenu($getVars) {
 			$moduleID = isset($getVars['module']) ? $getVars['module'] : NULL;
 			$moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
 			
@@ -122,7 +121,7 @@
 					'kr' => '해당 메뉴를 찾을 수 없습니다'
 				));
 			}else {
-				self::$selectedMenu = $getVars['menu'];
+				$this->selectedMenu = $getVars['menu'];
 				
 				if ($data->module) {
 					if ($moduleID) {
@@ -137,8 +136,8 @@
 					$moduleAction = $data->action;
 			}
 			
-			self::$moduleID = $moduleID;
-			self::$moduleAction = $moduleAction;
+			$this->moduleID = $moduleID;
+			$this->moduleAction = $moduleAction;
 		}
 		
 		
@@ -146,11 +145,11 @@
 		 * Get menu data
 		 * Add cached CSS
 		 */
-		public function getMenu($level, $printBlankInIndex=false) {
+		static function getMenu($level, $printBlankInIndex=false) {
 			$arr = DBHandler::execQuery("SELECT * FROM (#)menu WHERE level='" . escape($level) . "'");
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i]->className = 'pmc-menu' . $level . '-' . $arr[$i]->title;
-				if ($arr[$i]->title == self::$selectedMenu) {
+				if ($arr[$i]->title == self::getInstance()->selectedMenu) {
 					$arr[$i]->selected = true;
 					$arr[$i]->className .= ' pmc-menu' . $level . '-selected';
 				}
@@ -161,19 +160,10 @@
 				$arr[$i]->title_locale = fetchLocale($arr[$i]->title_locales);
 			}
 			$menuCSSPath = CacheHandler::getMenuCachePath($arr, $level);
-			self::addHeaderFile($menuCSSPath);
+			self::getInstance()->addHeaderFile($menuCSSPath);
 			
 			return $arr;
 		}
-		
-		
-		/**
-		 * set browser title, <title> tag
-		 */
-		public function setTitle($title) {
-			self::$headerTagHandler->setBrowserTitle($title);
-		}
-		
 		
 		/**
 		 * set context var
@@ -196,11 +186,48 @@
 				return self::$attr->{$key};
 		}
 		
+		/**
+		 * Excute function in layout/template file
+		 */
+		static public function execFunction($function, $args) {
+			if ($args && count($args) > 1)
+				$args = '\'' . join('\',\'', $args) . '\'';
+			else if ($args && count($args) == 1)
+				$args = '\'' . $args[0] . '\'';
+			else
+				$args = '';
+			
+			if (function_exists($function)) {
+				$func = create_function('', "return $function($args);");
+				$r = $func();
+				
+				if ($r !== NULL) echo $r;
+				return;
+			}
+			if (!$GLOBALS['__Module__']) return;
+			$m = $GLOBALS['__Module__'];
+			
+			if (method_exists($m, $function)) {
+				$func = create_function('', 'return $GLOBALS[\'__Module__\']->' . $function . "($args);");
+				$r = $func();
+			}else if ($m->getModel() && method_exists($m->getModel(), $function)) {
+				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getModel()->' . $function . "($args);");
+				$r = $func();
+			}else if ($m->getView() && method_exists($m->getView(), $function)) {
+				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getView()->' . $function . "($args);");
+				$r = $func();
+			}else if ($m->getController() && method_exists($m->getController(), $function)) {
+				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getContoller()->' . $function . "($args);");
+				$r = $func();
+			}
+			if ($r !== NULL) echo $r;
+		}
+		
 		
 		/*
 		 * check existence of layout file and set layout
 		 */
-		static public function setLayout($name) {
+		public function setLayout($name) {
 			if (!is_file(ROOT_DIR . '/layouts/' . $name . '/layout.html')) {
 				Context::printErrorPage(array(
 					'en' => 'layout "'.$name.'" does not exist',
@@ -209,7 +236,15 @@
 				return;
 			}
 			
-			self::$layout = $name;
+			$this->layout = $name;
+		}
+		
+		
+		/**
+		 * set browser title, <title> tag
+		 */
+		function setTitle($title) {
+			$this->headerTagHandler->setBrowserTitle($title);
 		}
 		
 		
@@ -218,7 +253,7 @@
 		 * if index is -1, push file in last of array
 		 * else, push file in current index
 		 */
-		static public function addHeaderFile($path, $index=-1, $position='head', $targetie=NULL) {
+		public function addHeaderFile($path, $index=-1, $position='head', $targetie=NULL) {
 			if (substr($path, 0, 1) != '/')
 				$path = '/' . $path;
 			
@@ -232,20 +267,20 @@
 			
 			switch ($extension = substr(strrchr($path, '.'), 1)) {
 				case 'css' :
-					self::$headerTagHandler->addCSSFile($path, $index, $position, $targetie);
+					$this->headerTagHandler->addCSSFile($path, $index, $position, $targetie);
 					break;
 					
 				case 'js' :
-					self::$headerTagHandler->addJsFile($path, $index, $position, $targetie);
+					$this->headerTagHandler->addJsFile($path, $index, $position, $targetie);
 					break;
 					
 				case 'lessc' :	
 				case 'less' :
-					self::$headerTagHandler->addLesscFile($path, $index, $position, $targetie);
+					$this->headerTagHandler->addLesscFile($path, $index, $position, $targetie);
 					break;
 					
 				case 'ico' :
-					self::$headerTagHandler->setFavicon($path);
+					$this->headerTagHandler->setFavicon($path);
 					break;
 					
 				default :
@@ -260,21 +295,21 @@
 		/**
 		 * add meta tag
 		 */
-		static public function addMetaTag($stringOrObj, $index=-1) {
-			self::$headerTagHandler->addMetaTag($stringOrObj, $index);
+		public function addMetaTag($stringOrObj, $index=-1) {
+			$this->headerTagHandler->addMetaTag($stringOrObj, $index);
 		}
 		
 		/**
 		 * add other header tags
 		 */
-		static public function addHeaderTag($string, $index=-1) {
-			self::$headerTagHandler->addHeaderTag($string, $index);
+		public function addHeaderTag($string, $index=-1) {
+			$this->headerTagHandler->addHeaderTag($string, $index);
 		}
 		
 		/**
 		 * get doctype by defined const 'DOCTYPE' in config/config.php
 		 */
-		static public function getDoctype() {
+		function getDoctype() {
 			switch (DOCTYPE) {
 				case 'html5' :
 					return '<!doctype html>';
@@ -315,92 +350,22 @@
 		/**
 		 * Get header files tags in head
 		 */
-		static public function getHead() {
-			return self::$headerTagHandler->getTags('head');
+		function getHead() {
+			return $this->headerTagHandler->getTags('head');
 		}
 		
 		/**
 		 * Get js and css file tags in body-top (no meta,script,etc tags)
 		 */
-		static public function getBodyTop() {
-			return self::$headerTagHandler->getTags('body-top');
+		function getBodyTop() {
+			return $this->headerTagHandler->getTags('body-top');
 		}
 		
 		/**
 		 * Get js and css file tags in body-bottom (no meta,script,etc tags)
 		 */
-		static public function getBodyBottom() {
-			return self::$headerTagHandler->getTags('body-bottom');
-		}
-		
-		/**
-		 * Excute function in layout/template file
-		 */
-		static public function execFunction($function, $args) {
-			if ($args && count($args) > 1)
-				$args = '\'' . join('\',\'', $args) . '\'';
-			else if ($args && count($args) == 1)
-				$args = '\'' . $args[0] . '\'';
-			else
-				$args = '';
-			
-			if (function_exists($function)) {
-				$func = create_function('', "return $function($args);");
-				$r = $func();
-				
-				if ($r !== NULL) echo $r;
-				return;
-			}
-			if (!$GLOBALS['__Module__']) return;
-			$m = $GLOBALS['__Module__'];
-			
-			if (method_exists($m, $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->' . $function . "($args);");
-				$r = $func();
-			}else if ($m->getModel() && method_exists($m->getModel(), $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getModel()->' . $function . "($args);");
-				$r = $func();
-			}else if ($m->getView() && method_exists($m->getView(), $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getView()->' . $function . "($args);");
-				$r = $func();
-			}else if ($m->getController() && method_exists($m->getController(), $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getContoller()->' . $function . "($args);");
-				$r = $func();
-			}
-			if ($r !== NULL) echo $r;
-		}
-		
-		/**
-		 * print content
-		 * exec layout cache and merge with doctype, header tags etc...
-		 * if encoding is not ut-8, convert encoding to defined encoding
-		 */
-		static public function prints() {
-			if (!self::$contentPrintable) return; // if error printed, return
-			
-			ob_start();
-			CacheHandler::execLayout('/layouts/' . self::$layout . '/layout.html');
-			
-			$content = ob_get_clean();
-			OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
-			
-			$output = self::getDoctype() . LINE_END .
-					  '<html>' . LINE_END .
-					  '<head>' . LINE_END .
-					  self::getHead() . 
-					  '</head>' . LINE_END .
-					  '<body>' . LINE_END .
-					  self::getBodyTop() . LINE_END.
-			 		  $content . LINE_END .
-					  self::getBodyBottom() . LINE_END .
-					  '</body>' . LINE_END .
-					  '</html>';
-				 
-			if (TEXT_ENCODING != 'utf-8')
-				$output = iconv('utf-8', TEXT_ENCODING, $output);
-			
-			echo $output;
-			ob_end_flush();
+		function getBodyBottom() {
+			return $this->headerTagHandler->getTags('body-bottom');
 		}
 		
 		/**
@@ -412,8 +377,8 @@
 			$content = fetchLocale($content);
 			Context::set('errorMessage', $content);
 			
-			self::setLayout('error');
-			self::printContent();
+			self::getInstance()->setLayout('error');
+			self::getInstance()->printContext();
 			
 			exit;
 		}
@@ -440,15 +405,36 @@
 		}
 		
 		/**
-		 * redirect to specific url
+		 * print content
+		 * exec layout cache and merge with doctype, header tags etc...
+		 * if encoding is not ut-8, convert encoding to defined encoding
 		 */
-		static public function redirect($url) {
-			echo	self::getDoctype() .
-					'<html><head>' .
-					'<meta http-equiv="refresh" content="0; url='.$url.'">' .
-					'<script type="text/javascript">location.replace("'.$url.'")</script>' .
-					'</head><body></body></html>';
-			exit;
+		public function printContext() {
+			if (!$this->contentPrintable) return; // if error printed, return
+			
+			ob_start();
+			CacheHandler::execLayout('/layouts/' . $this->layout . '/layout.html');
+			
+			$content = ob_get_clean();
+			OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
+			
+			$output = $this->getDoctype() . LINE_END .
+					  '<html>' . LINE_END .
+					  '<head>' . LINE_END .
+					  $this->getHead() . 
+					  '</head>' . LINE_END .
+					  '<body>' . LINE_END .
+					  $this->getBodyTop() . LINE_END.
+			 		  $content . LINE_END .
+					  $this->getBodyBottom() . LINE_END .
+					  '</body>' . LINE_END .
+					  '</html>';
+				 
+			if (TEXT_ENCODING != 'utf-8')
+				$output = iconv('utf-8', TEXT_ENCODING, $output);
+			
+			echo $output;
+			ob_end_flush();
 		}
 	}
 	

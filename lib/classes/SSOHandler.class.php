@@ -13,7 +13,7 @@
 		
 		static public function getData($redirect=false) {
 			if (!$_COOKIE['pmc_sess_key']) {
-				if ($redirect) Context::redirect(LOGIN_URL . '&next=' . REAL_URI);
+				if ($redirect) redirect(LOGIN_URL . '&next=' . REAL_URI);
 				unset($_SESSION['pmc_sso_data']);
 				return NULL;
 				

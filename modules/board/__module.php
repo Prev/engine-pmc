@@ -32,13 +32,13 @@
 				$this->boardId = $this->boardInfo->id;
 				$this->boardName_kr = $this->boardInfo->boardName_kr;
 				
-				Context::$selectedMenu = $this->boardName;
+				Context::getInstance()->selectedMenu = $this->boardName;
 				
 			}else if ($action == 'dispArticle') {
 				$this->articleNo = self::getModel()->articleNo = $_GET['article_no'] ? $_GET['article_no'] : ($_GET['no'] ? $_GET['no'] : NULL);
 				$this->boardName = self::getModel()->getArticleData()->boardName;
 				
-				Context::$selectedMenu = $this->boardName;
+				Context::getInstance()->selectedMenu = $this->boardName;
 			}
 			
 			self::getModel()->inherit();

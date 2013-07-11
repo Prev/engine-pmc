@@ -27,7 +27,7 @@
 				$real_pw = $_rsa->decrypt($enc_pw);
 				
 				if (md5($real_id . $real_pw) != $check_sum) {
-					Context::redirect(LOGIN_URL . '&result=fail_sec');
+					redirect(getUrlA('result=fail_sec', LOGIN_URL));
 					return;
 				}
 				
@@ -44,7 +44,7 @@
 			unset($_SESSION['pmc_sso_data']);
 			
 			$next = ($_REQUEST['next'] ? $_REQUEST['next'] : ($_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : getUrl()));
-			Context::redirect($next);
+			redirect($next);
 		}
 		
 		private function generateSessionKey() {
@@ -86,16 +86,12 @@
 				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), '/', SESSION_DOMAIN);
 					
 				$next = $_REQUEST['next'] ? $_REQUEST['next'] : getUrl();
-				Context::redirect($next);
+				redirect($next);
 			}
 		}
 		
 		private function goBackToLoginPage($extraVars) {
-			$str = strstr(LOGIN_URL, '?') ? '&' : '?';
-			$str .= $extraVars;
-			$str .= '&next=' . ($_REQUEST['next'] ? $_REQUEST['next'] : RELATIVE_URL);
-			
-			Context::redirect(LOGIN_URL . $str);
+			redirect(getUrlA($extraVars . '&' . $next, LOGIN_URL));
 		}
 	}
 	

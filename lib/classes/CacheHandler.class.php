@@ -96,7 +96,7 @@
 				$absolutePath = self::$rPath . $importVals->path;
 			
 			
-			return '<?php Context::addHeaderFile(' .
+			return '<?php Context::getInstance()->addHeaderFile(' .
 				'\'' . $absolutePath . '\', ' .
 				(isset($importVals->index) ? $importVals->index : -1) . ', ' .
 				'\'' . (isset($importVals->position) ? $importVals->position : 'head') . '\', ' .

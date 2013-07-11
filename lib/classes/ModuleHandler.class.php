@@ -11,21 +11,19 @@
 	
 	class ModuleHandler extends Handler {
 		
-		static $moduleInfo;
-		
-		
-		public function ModuleHandler() {
-			define('MODULE_DIR', ROOT_DIR . '/modules/' . Context::$moduleID);
-		}
-		
+		var $moduleInfo;
 		
 		static function isModule($moduleID) {
 			$path = MODULE_DIR . '/__module.php';
 			return (is_file($path) && is_readable($path)) ? true : false;
 		}
 		
+		function ModuleHandler($moduleID) {
+			define('MODULE_DIR', ROOT_DIR . '/modules/' . $moduleID);
+		}
 		
-		static function getModule($moduleID) {
+		
+		function getModule($moduleID) {
 			if (!ModuleHandler::isModule($moduleID)) return NULL;
 			
 			$filePath = MODULE_DIR . '/__module.php';
@@ -35,14 +33,14 @@
 			
 			if (class_exists($classID)) {
 				if (is_file(MODULE_DIR . '/conf/info.json')) {
-					self::$moduleInfo = json_decode(readFileContent(MODULE_DIR . '/conf/info.json'));
-					if (self::$moduleInfo === NULL)
+					$this->moduleInfo = json_decode(readFileContent(MODULE_DIR . '/conf/info.json'));
+					if ($this->moduleInfo === NULL)
 						Context::printWarning(array(
 							'en' => 'Unexpected token ILLEGAL in conf/info.json',
 							'kr' => 'conf/info.json 파일 파싱에 실패했습니다'
 						));
-					if (self::$moduleInfo->layout)
-						Context::setLayout(self::$moduleInfo->layout);
+					if ($this->moduleInfo->layout)
+						Context::setLayout($this->moduleInfo->layout);
 				}
 				
 				$_loader = create_function('', "return new ${classID}();");
@@ -53,13 +51,13 @@
 			return NULL;
 		}
 		
-		static function getModuleAction($action) {
+		function getModuleAction($action) {
 			if ($action === NULL) return;
 			if (!is_file(MODULE_DIR . '/conf/info.json')) return;
 			if (!$GLOBALS['__Module__']) return;
 			
-			if (self::$moduleInfo) {
-				$actions = self::$moduleInfo->actions; //array
+			if ($this->moduleInfo) {
+				$actions = $this->moduleInfo->actions; //array
 				
 				for ($i=0; $i<count($actions); $i++) {
 					if ($action == $actions[$i]->name) {
@@ -101,8 +99,8 @@
 		}
 		
 		public function procModule() {
-			$moduleID = Context::$moduleID;
-			$moduleAction = Context::$moduleAction;
+			$moduleID = Context::getInstance()->moduleID;
+			$moduleAction = Context::getInstance()->moduleAction;
 			
 			
 			if (!$moduleID) {
@@ -120,22 +118,19 @@
 				return;
 			}
 			
-			$func = create_function('',
-				'$_module = ModuleHandler::getModule("'.$moduleID.'");
-				if ($_module === NULL) {
-					Context::printErrorPage(array(
-						"en" => "Cannot load module in ModuleHandler::procModule - temporary function",
-						"kr" => "모듈을 불러올 수 없습니다 - temporary function in ModuleHandler::procModule"
-					));
-					return;
-				}
-				if ($moduleAction_func = ModuleHandler::getModuleAction('.($moduleAction ? "'${moduleAction}'" : 'NULL').')) {
-					$GLOBALS[\'__ModuleAction__\'] = \''.$moduleAction.'\';
-					$GLOBALS[\'__ModuleActionFunc__\'] = $moduleAction_func;
-				}
-				$_module->init();
-			');
-			$func();
+			$_module = $this->getModule($moduleID);
+			if ($_module === NULL) {
+				Context::printErrorPage(array(
+					'en' => 'Cannot load module in ModuleHandler::procModule',
+					'kr' => '모듈을 불러올 수 없습니다 - ModuleHandler::procModule'
+				));
+				return;
+			}
+			if ($moduleAction_func = $this->getModuleAction($moduleAction ? $moduleAction : NULL)) {
+				$GLOBALS['__ModuleAction__'] = $moduleAction;
+				$GLOBALS['__ModuleActionFunc__'] = $moduleAction_func;
+			}
+			$_module->init();
 		}
 		
 	}
