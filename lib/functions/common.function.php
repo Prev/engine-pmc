@@ -186,32 +186,52 @@
 			$_SERVER['HTTP_HOST'];
 	}
 	
-	function getUrl($module=NULL, $action=NULL) {
-		if ($module && $action)
-			return RELATIVE_URL . "/?module=${module}&action=${action}";
-		else if ($module)
-			return RELATIVE_URL . "/?module=${module}";
-		else
-			return RELATIVE_URL;
-	}
-	
 	function getUrlA($args, $url=NULL) {
-		if (!$url) $url = RELATIVE_URL;
-		
-		$o = (object) array();
-		$u = parse_url($url);
-		
-		if ($u['query']) 
-			$q = split('&', $u['query']); for ($i=0; $i<count($q); $i++) { $t = split('=', $q[$i]); $o->{$t[0]} = $t[1]; }
-		$q = split('&', $args); for ($i=0; $i<count($q); $i++) { $t = split('=', $q[$i]); $o->{$t[0]} = $t[1]; }
-		
-		$a = array();
-		foreach ($o as $key => $value) array_push($a, $key . '=' . $value);
-		$u['query'] = join('&', $a);
-		
-		return unparse_url($u);
+		return getUrlA(NULL, NULL, $url, $args);
 	}
-	
+
+	function getUrl($module=NULL, $action=NULL, $url=NULL, $queryParam=NULL) {
+		if(empty($url) && !empty($module)) {
+			if ($module && $action)
+				return RELATIVE_URL . '?module=' . $module . '&action=' . $action;
+			else if ($module)
+				return RELATIVE_URL . '?module=' . $module;
+		}
+		else if(!empty($url)) {
+			$parsedUrl = parse_url($url);
+
+			$parameter = $parsedUrl['query'];
+			$parameter = empty($parameter) ? array() : $parameter;
+			$queryParam = empty($queryParam) ? array() : $queryParam;
+
+			$temp = split('&', $parameter);
+
+			for($i = count($temp); $i >= 0; $i--) {
+				$keyValueSplited = split('=', $temp[$i]);
+				$key = strval($keyValueSplited[0]);
+
+				if(empty($key))
+					continue;
+				$value = strval($keyValueSplited[1]);
+				if(is_null($queryParam[$key]))
+					$queryParam[$key] = $value;
+			}
+
+			$query = '';
+
+			foreach ($queryParam as $key => $value) {
+				if(!empty($value))
+					$query .= '&' . $key . '=' . $value;
+				else
+					$query .= '&' . $key;
+			}
+
+			return (empty($module) ? unparse_url($parsedUrl) :  RELATIVE_URL . '?module=' . $module) . (empty($action) ? '' : '&action=' . $action) . $query;
+		}
+		else 
+			return is_null($url) ? RELATIVE_URL : $url;
+	}
+
 	function unparse_url($parsed_url) { 
 		$scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : ''; 
 		$host     = isset($parsed_url['host']) ? $parsed_url['host'] : ''; 
@@ -220,7 +240,7 @@
 		$pass     = isset($parsed_url['pass']) ? ':' . $parsed_url['pass']  : ''; 
 		$pass     = ($user || $pass) ? "$pass@" : ''; 
 		$path     = isset($parsed_url['path']) ? $parsed_url['path'] : ''; 
-		$query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : ''; 
+		// $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : ''; 
 		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : ''; 
 		return $scheme . $user . $pass . $host . $port . $path . $query . $fragment; 
 	}
