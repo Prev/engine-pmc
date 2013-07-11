@@ -6,10 +6,17 @@
 	 *
 	 * @ proj P.M.C (Parameter MVC Core)
 	 */
-	
+
+	/*	    ____  __  _________
+		   / __ \/  |/  / ____/
+		  / /_/ / /|_/ / /     
+		 / ____/ /  / / /___   
+		/_/   /_/  /_/\____/   
+	*/	                       
+
 	define('PMC', true);
 	define('ROOT_DIR', dirname(__FILE__));
-	
+ 	 
 	require ROOT_DIR . '/config/config.php';
 	
 	$oContext = &Context::getInstance();
@@ -21,3 +28,4 @@
 	if ($GLOBALS['__Module__']) {
 		$oContext->printContext();
 	}
+	

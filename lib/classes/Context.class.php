@@ -54,9 +54,6 @@
 		 */
 		private $contentPrintable;
 		
-		
-		
-		
 		/**
 		 * Get Context instance
 		 */
@@ -96,7 +93,7 @@
 				);
 			}
 			
-			Context::setTitle('engine pmc');
+			$this->setTitle('engine pmc');
 		}
 		
 		/**
@@ -113,7 +110,6 @@
 				$data = DBHandler::execQueryOne("SELECT * FROM (#)menu WHERE is_index='1' LIMIT 1");
 				if ($data) $getVars['menu'] = $data->title;
 			}
-			
 			$data = DBHandler::execQueryOne("SELECT * FROM (#)menu WHERE title='" . escape($getVars['menu']) . "' LIMIT 1");
 			if (!$data && !$moduleID) {
 				self::printErrorPage(array(
@@ -121,8 +117,7 @@
 					'kr' => '해당 메뉴를 찾을 수 없습니다'
 				));
 			}else {
-				$this->selectedMenu = $getVars['menu'];
-				
+				$this->selectedMenu = $getVars['menu'];				
 				if ($data->module) {
 					if ($moduleID) {
 						Context::printErrorPage(array(
@@ -164,7 +159,7 @@
 			
 			return $arr;
 		}
-		
+
 		/**
 		 * set context var
 		 * layouts/template file can access vars defined with this funcs

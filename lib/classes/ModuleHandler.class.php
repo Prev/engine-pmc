@@ -40,7 +40,7 @@
 							'kr' => 'conf/info.json 파일 파싱에 실패했습니다'
 						));
 					if ($this->moduleInfo->layout)
-						Context::setLayout($this->moduleInfo->layout);
+						Context::getInstance()->setLayout($this->moduleInfo->layout);
 				}
 				
 				$_loader = create_function('', "return new ${classID}();");
@@ -78,7 +78,7 @@
 						
 						if (method_exists($o, $action)) {
 							if ($actions[$i]->layout) 
-								Context::setLayout($actions[$i]->layout);
+								Context::getInstance()->setLayout($actions[$i]->layout);
 							return create_function('', '$GLOBALS[\'__Module__\']->get' . ucfirst($actions[$i]->type) . '()->' . $action . '();');
 						}else {
 							Context::printErrorPage(array(
