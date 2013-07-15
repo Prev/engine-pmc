@@ -13,8 +13,8 @@
 		
 		return (object) array(
 			'type' => 'mysqli',
-			'username' => 'root',
-			'password' => 'apmsetup',
+			'username' => 'pmc_test',
+			'password' => 'test123',
 			'database_name' => 'pmc_test',
 			'prefix' => 'pmc_'
 		);

@@ -226,8 +226,10 @@
 				return;
 			}
 			
-			self::$module = $module;
-			$view = $module->view;
+			if ($module) {
+				self::$module = $module;
+				$view = $module->view;
+			}
 
 			// cache does not exist or cache and original file is diff or DEBUG_MODE
 			if (!is_file(self::getLayoutCacheDir($filePath)) ||
@@ -245,7 +247,7 @@
 			$__attr = new StdClass();
 			foreach (Context::$attr as $key => $value)
 				$__attr->{$key} = $value;
-			if ($view) {
+			if (isset($view)) {
 				foreach ($view as $key => $value)
 					$__attr->{$key} = $value;
 			}

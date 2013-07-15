@@ -93,7 +93,11 @@
 	 */
 	define('SERVER_INFO_FILE_PATH', (ROOT_DIR . '/config/server-info.json'));
 	
-	
+		/**
+		 * Define now request's protocol
+		 */
+		define('PROTOCOL', empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == 'off' ? 'http' : 'https');
+		
 		/**
 		 * Define realavite url (=root url)
 		 */
@@ -105,11 +109,6 @@
 		 */
 		define('SESSION_DOMAIN', getSessionDomain());
 	
-	
-		/**
-		 * Define now request's protocol
-		 */
-		define('PROTOCOL', $_SERVER['HTTPS'] ? 'https':'http');
 	
 	
 		/**

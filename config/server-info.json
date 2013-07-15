@@ -7,6 +7,13 @@
 		"uri":"/pmc"
 	},
 	{
+		"type":"test",
+		"protocol":"http",
+		"host":"localhost",
+		"session_domain":"localhost",
+		"uri":"/engine-pmc"
+	},
+	{
 		"type":"running",
 		"protocol":"http",
 		"host":"parameter.kr",

@@ -52,13 +52,13 @@
 		 * set content printable
 		 * if this var is false, can not excute printContent() method
 		 */
-		private $contentPrintable;
+		private $contentPrintable = true;
 		
 		/**
 		 * Get Context instance
 		 */
 		public function &getInstance() {
-			if(!$GLOBALS['__Context__']) {
+			if(!isset($GLOBALS['__Context__'])) {
 				$GLOBALS['__Context__'] = new Context();
 			}
 			
@@ -71,11 +71,17 @@
 		public function init($db_info) {
 			self::$attr = new StdClass();
 			$this->headerTagHandler = new HeaderTagHandler();
-			$this->contentPrintable = true;
 			$this->setLayout(LAYOUT_NAME);
 			
-			if ($_GET['locale']) setcookie('locale', $_GET['locale']);
-			
+			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale']);
+			if (!isset($GLOBALS['serverInfo'])) {
+				Context::printErrorPage(array(
+					'en' => 'Cannot find connected server with the server defined in conf/server_info.json',
+					'kr' => 'conf/server_info.json 파일에서 현재 서버와 연결된 서버를 찾을 수 없습니다'
+				));
+				return;
+			}
+
 			CacheHandler::init();
 			DBHandler::init($db_info);
 			$this->initMenu($_GET);
@@ -336,7 +342,7 @@
 			
 			self::getInstance()->setLayout('error');
 			self::getInstance()->procLayout();
-			
+
 			exit;
 		}
 		
@@ -368,7 +374,7 @@
 		 */
 		public function procLayout() {
 			if (!$this->contentPrintable) return; // if error printed, return
-			
+
 			ob_start();
 			CacheHandler::execLayout('/layouts/' . $this->layout . '/layout.html');
 			

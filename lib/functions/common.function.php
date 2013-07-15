@@ -37,9 +37,9 @@
 	}
 	
 	function getLocale($compareLocale=NULL) {
-		if ($_GET['locale'])
+		if (isset($_GET['locale']))
 			$locale = $_GET['locale'];
-		else if ($_COOKIE['locale'])
+		else if (isset($_COOKIE['locale']))
 			$locale = $_COOKIE['locale'];
 		else
 			$locale = DEFAULT_LOCALE;
@@ -152,17 +152,21 @@
 	}
 	
 	function getServerInfo() {
-		$server_info = json_decode(readFileContent(SERVER_INFO_FILE_PATH));
+		if (isset($GLOBALS['serverInfo'])) return $GLOBALS['serverInfo'];
 		
+		$server_info = json_decode(readFileContent(SERVER_INFO_FILE_PATH));
 		foreach($server_info as $_key => $_value) {
 			if ($_SERVER['HTTP_HOST'] === $_value->host) {
 				if (!defined('DEBUG_MODE'))
 					define('DEBUG_MODE', ($_value->type === 'test'));
-					
-				return $_value;
+				
+				$GLOBALS['serverInfo'] = $_value;
+				return $GLOBALS['serverInfo'];
 				break;
 			}
 		}
+		if (!defined('DEBUG_MODE'))
+			define('DEBUG_MODE', true);
 		return NULL;
 	}
 	
@@ -175,13 +179,7 @@
 		
 		return ($serverInfo = getServerInfo()) ?
 			($serverInfo->protocol . '://' . $serverInfo->host . $serverInfo->uri) :
-			($_SERVER['HTTPS']?'https':'http') . '://' . $_SERVER['HTTP_HOST'];
-		
-		
-		if (!defined('DEBUG_MODE'))
-			define('DEBUG_MODE', false);
-			
-		return RELATIVE_URL;
+			PROTOCOL . '://' . $_SERVER['HTTP_HOST'];
 	}
 	
 	function getSessionDomain() {
