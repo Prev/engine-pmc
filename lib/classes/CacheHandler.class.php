@@ -11,7 +11,8 @@
 	
 	class CacheHandler extends Handler {
 		
-		static $rPath; //relative path
+		static $module;
+		static $rPath; // module relative path
 		
 		static public function init() {
 			if (!is_dir(ROOT_DIR . '/cache/')) {
@@ -130,14 +131,24 @@
 		static private function compileLayout_parseFunc($m) {
 			if (!$m[1]) return;
 			
-			$c = $m[2];
-			$c = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $c, -1);
-			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
-			$c = join('\\\'', explode('\'', $c));
+			$function = $m[1];
+			$args = $m[2];
+			$args = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $args, -1);
+			$args = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $args, -1);
 
-			return '<?php Context::execFunction(\''.$m[1].'\', \''.$c.'\'); ?>';
+			if (function_exists($function))
+				return '<?php if ($func = '.$function.'('.$args.')) echo $func; ?>';
+
+			else if (self::$module && method_exists(self::$module, $function))
+				return '<?php if ($func = ModuleHandler::getModule(\''.self::$module->moduleID.'\')->'.$function.'('.$args.')) echo $func; ?>';
+			
+			else if (self::$module && self::$module->view && method_exists(self::$module->view, $function)) {
+				return '<?php if ($func = ModuleHandler::getModule(\''.self::$module->moduleID.'\')->view->'.$function.'('.$args.')) echo $func; ?>';
+			}
 		}
 		
+
+
 		static private function deleteWhiteSpace($content) {
 			if (strpos($content, "> ") !== false) {
 				$content = join('>', explode("> ", $content));
@@ -197,7 +208,7 @@
 		 *
 		 * argument '$filePath' is like '/layouts/default/layout.html'
 		 */
-		static public function execLayout($filePath, $view=NULL) {
+		static public function execLayout($filePath, $module=NULL) {
 			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR)
 				$filePath = substr($filePath, strlen(ROOT_DIR));
 			if (substr($filePath, 0, 1) != '/')
@@ -215,9 +226,13 @@
 				return;
 			}
 			
+			self::$module = $module;
+			$view = $module->view;
+
+			// cache does not exist or cache and original file is diff or DEBUG_MODE
 			if (!is_file(self::getLayoutCacheDir($filePath)) ||
-				(self::getOriginFileTime($filePath) != filemtime(ROOT_DIR . $filePath))) {
-				// cache does not exist or cache and original file is diff
+				self::getOriginFileTime($filePath) != filemtime(ROOT_DIR . $filePath) ||
+				DEBUG_MODE ) {
 				
 				self::$rPath = substr($filePath, 0, strrpos($filePath, '/')+1); //module relative path
 				self::makeLayoutCache(
@@ -226,6 +241,7 @@
 					filemtime(ROOT_DIR . $filePath)
 				);
 			}
+
 			$__attr = new StdClass();
 			foreach (Context::$attr as $key => $value)
 				$__attr->{$key} = $value;
@@ -233,13 +249,6 @@
 				foreach ($view as $key => $value)
 					$__attr->{$key} = $value;
 			}
-			//var_dump2($__attr);
-			//var_dump2(Context::$attr);
-			//var_dump2($__attr);
-			//if ($view) $__attr = $view;
-			//else $__attr = Context::$attr;
-			//var_dump2($__attr);
-
 			require self::getLayoutCacheDir($filePath);
 		}
 		

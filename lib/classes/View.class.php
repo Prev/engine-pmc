@@ -24,7 +24,7 @@
 				(substr($templateName, 0, 1) == '/') ?
 					ROOT_DIR . $templateName :
 					ModuleHandler::getModuleDir($this->module->moduleID) . '/template/' . $templateName
-			, $this);
+			, $this->module);
 			
 		}
 	}

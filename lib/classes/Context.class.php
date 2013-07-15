@@ -181,46 +181,6 @@
 				return self::$attr->{$key};
 		}
 		
-		/**
-		 * Excute function in layout/template file
-		 */
-		static public function execFunction($function, $args) {
-			/*if ($args && count($args) > 1)
-				$args = '\'' . join('\',\'', $args) . '\'';
-			else if ($args && count($args) == 1)
-				$args = '\'' . $args[0] . '\'';
-			else
-				$args = '';*/
-			
-			if (function_exists($function)) {
-				$func = create_function('', "return ${function}(${args});");
-				$r = $func();
-				
-				if ($r !== NULL) echo $r;
-				return;
-			}
-			$defaultModuleID = self::getInstance()->moduleID;
-
-			if (!ModuleHandler::getModule($defaultModuleID)) return;
-			$m = ModuleHandler::getModule($defaultModuleID);
-
-			
-			if (method_exists($m, $function)) {
-				$func = create_function('', 'return ModuleHandler::getModule(\''.$defaultModuleID.'\')->' . $function . "($args);");
-				$r = $func();
-			}else {
-				foreach (array('model', 'controller', 'view') as $key => $mvc) {
-					if ($m->{$mvc} && method_exists($m->{$mvc}, $function)) {
-						$func = create_function('', 'return ModuleHandler::getModule(\''.$defaultModuleID.'\')->'.$mvc.'->' . $function . "($args);");
-						$r = $func();
-						break;
-					}
-				}
-			}
-			if ($r !== NULL) echo $r;
-		}
-		
-		
 		/*
 		 * check existence of layout file and set layout
 		 */
