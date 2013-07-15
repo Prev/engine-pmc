@@ -1,7 +1,11 @@
 <?php
 	
-	class LoginModule_View extends LoginModule {
+	class LoginModule_View extends View {
 		
+		function dispDefault() {
+			
+		}
+
 		function dispLoginPage() {
 			switch ($_GET['result']) {
 				case 'fail':

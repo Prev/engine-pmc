@@ -1,5 +1,5 @@
 <?php
 	
-	class IndexModule_Model extends IndexModule {
+	class IndexModule_Model extends Model {
 		
 	}

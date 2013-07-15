@@ -11,7 +11,7 @@
 	
 	class CacheHandler extends Handler {
 		
-		static $rPath;
+		static $rPath; //relative path
 		
 		static public function init() {
 			if (!is_dir(ROOT_DIR . '/cache/')) {
@@ -31,7 +31,7 @@
 			// {@ PHPCode }
 			$html = preg_replace_callback('/{@([\s\S]+?)}/', array('CacheHandler', 'compileLayout_parseCode'), $html);
 			
-			// {$a} -> echo  $__attr->a ( Context::get('a'),  $GLOBALS['__Context__']->attr->a )
+			// {$a} -> echo  $__attr->a ( Context::get('a') or View->a )
 			$html = preg_replace('/{\$([\>a-zA-Z0-9_-]*)}/', '<?php echo \$__attr->$1; ?>', $html, -1);
 			
 			// {func()} -> Context::execFunction('func', array())
@@ -133,8 +133,9 @@
 			$c = $m[2];
 			$c = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $c, -1);
 			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
-			
-			return '<?php Context::execFunction(\''.$m[1].'\', array('.$c.')); ?>';
+			$c = join('\\\'', explode('\'', $c));
+
+			return '<?php Context::execFunction(\''.$m[1].'\', \''.$c.'\'); ?>';
 		}
 		
 		static private function deleteWhiteSpace($content) {
@@ -196,7 +197,7 @@
 		 *
 		 * argument '$filePath' is like '/layouts/default/layout.html'
 		 */
-		static public function execLayout($filePath) {
+		static public function execLayout($filePath, $view=NULL) {
 			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR)
 				$filePath = substr($filePath, strlen(ROOT_DIR));
 			if (substr($filePath, 0, 1) != '/')
@@ -225,9 +226,20 @@
 					filemtime(ROOT_DIR . $filePath)
 				);
 			}
-			
-			$__attr = Context::$attr;
-			
+			$__attr = new StdClass();
+			foreach (Context::$attr as $key => $value)
+				$__attr->{$key} = $value;
+			if ($view) {
+				foreach ($view as $key => $value)
+					$__attr->{$key} = $value;
+			}
+			//var_dump2($__attr);
+			//var_dump2(Context::$attr);
+			//var_dump2($__attr);
+			//if ($view) $__attr = $view;
+			//else $__attr = Context::$attr;
+			//var_dump2($__attr);
+
 			require self::getLayoutCacheDir($filePath);
 		}
 		

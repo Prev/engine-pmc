@@ -1,6 +1,14 @@
 <?php
 
-	class BoardModule_View extends BoardModule {
+	class BoardModule_View extends View {
+
+		public $boardId;
+		public $boardInfo;
+		public $articleNo;
+		
+		public $boardName;
+		public $aop;
+		public $nowPage;
 
 		function printArticlePrefix($orderKey, $category=NULL) {
 			$html = '';
@@ -18,6 +26,9 @@
 
 			echo $html;
 		}
+		
+		function dispDefault() {
+		}
 
 		function dispList() {
 			if (!$this->boardInfo)
@@ -25,17 +36,18 @@
 
 			else {
 				Context::set('nowPage', $this->nowPage);
-				Context::set('pageNumbers', self::getModel()->getPageNumbers());
+				Context::set('pageNumbers', $this->model->getPageNumbers());
 				Context::set('QS', substr(
 					($_GET['board_name'] ? '&board_name=' . $_GET['board_name']  : '') .
 					($_GET['aop'] ? '&aop=' . $_GET['aop']  : '') 
 					,1)
 				);
 				Context::set('articleData', array_merge(
-					self::getModel()->getNoticeArticles(),
-					self::getModel()->getArticleDatas()
+					$this->model->getNoticeArticles(),
+					$this->model->getArticleDatas()
 					)
 				);
+				//var_dump2(Context::$attr);
 				self::execTemplate('board');
 			}
 		}
@@ -45,12 +57,12 @@
 				self::execTemplate('article_not_found');
 
 			else {
-				$data = self::getModel()->getArticleData();
+				$data = $this->model->getArticleData();
 				if (!$data) {
 					self::execTemplate('article_not_found');
 					return;
 				}
-	//if ($data->read_permission)
+				//if ($data->read_permission)
 
 				Context::set('title', $data->title);
 				Context::set('board', ($data->boardName_kr ? $data->boardName_kr : $data->boardName));
@@ -58,7 +70,7 @@
 				Context::set('writer', $data->writerNick);
 				Context::set('url', (USE_SHORT_URL ? 
 					getUrl() . '/' . $this->articleNo :
-					getUrl() . '/?module=board&action=dispArticle&article_no=' . $this->articleNo
+					getUrl('board', 'dispArticle', array(article_no=>$this->articleNo))
 					));
 				Context::set('content', $data->content);
 

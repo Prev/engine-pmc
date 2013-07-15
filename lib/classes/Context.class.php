@@ -102,7 +102,7 @@
 		 * If module is not defined by getVar or menu, set default value 'index'
 		 */
 		
-		function initMenu($getVars) {
+		private function initMenu($getVars) {
 			$moduleID = isset($getVars['module']) ? $getVars['module'] : NULL;
 			$moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
 			
@@ -185,35 +185,37 @@
 		 * Excute function in layout/template file
 		 */
 		static public function execFunction($function, $args) {
-			if ($args && count($args) > 1)
+			/*if ($args && count($args) > 1)
 				$args = '\'' . join('\',\'', $args) . '\'';
 			else if ($args && count($args) == 1)
 				$args = '\'' . $args[0] . '\'';
 			else
-				$args = '';
+				$args = '';*/
 			
 			if (function_exists($function)) {
-				$func = create_function('', "return $function($args);");
+				$func = create_function('', "return ${function}(${args});");
 				$r = $func();
 				
 				if ($r !== NULL) echo $r;
 				return;
 			}
-			if (!$GLOBALS['__Module__']) return;
-			$m = $GLOBALS['__Module__'];
+			$defaultModuleID = self::getInstance()->moduleID;
+
+			if (!ModuleHandler::getModule($defaultModuleID)) return;
+			$m = ModuleHandler::getModule($defaultModuleID);
+
 			
 			if (method_exists($m, $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->' . $function . "($args);");
+				$func = create_function('', 'return ModuleHandler::getModule(\''.$defaultModuleID.'\')->' . $function . "($args);");
 				$r = $func();
-			}else if ($m->getModel() && method_exists($m->getModel(), $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getModel()->' . $function . "($args);");
-				$r = $func();
-			}else if ($m->getView() && method_exists($m->getView(), $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getView()->' . $function . "($args);");
-				$r = $func();
-			}else if ($m->getController() && method_exists($m->getController(), $function)) {
-				$func = create_function('', 'return $GLOBALS[\'__Module__\']->getContoller()->' . $function . "($args);");
-				$r = $func();
+			}else {
+				foreach (array('model', 'controller', 'view') as $key => $mvc) {
+					if ($m->{$mvc} && method_exists($m->{$mvc}, $function)) {
+						$func = create_function('', 'return ModuleHandler::getModule(\''.$defaultModuleID.'\')->'.$mvc.'->' . $function . "($args);");
+						$r = $func();
+						break;
+					}
+				}
 			}
 			if ($r !== NULL) echo $r;
 		}
@@ -238,7 +240,7 @@
 		/**
 		 * set browser title, <title> tag
 		 */
-		function setTitle($title) {
+		public function setTitle($title) {
 			$this->headerTagHandler->setBrowserTitle($title);
 		}
 		
@@ -304,7 +306,7 @@
 		/**
 		 * get doctype by defined const 'DOCTYPE' in config/config.php
 		 */
-		function getDoctype() {
+		public function getDoctype() {
 			switch (DOCTYPE) {
 				case 'html5' :
 					return '<!doctype html>';
@@ -345,21 +347,21 @@
 		/**
 		 * Get header files tags in head
 		 */
-		function getHead() {
+		public function getHead() {
 			return $this->headerTagHandler->getTags('head');
 		}
 		
 		/**
 		 * Get js and css file tags in body-top (no meta,script,etc tags)
 		 */
-		function getBodyTop() {
+		public function getBodyTop() {
 			return $this->headerTagHandler->getTags('body-top');
 		}
 		
 		/**
 		 * Get js and css file tags in body-bottom (no meta,script,etc tags)
 		 */
-		function getBodyBottom() {
+		public function getBodyBottom() {
 			return $this->headerTagHandler->getTags('body-bottom');
 		}
 		
@@ -373,7 +375,7 @@
 			Context::set('errorMessage', $content);
 			
 			self::getInstance()->setLayout('error');
-			self::getInstance()->printContext();
+			self::getInstance()->procLayout();
 			
 			exit;
 		}
@@ -404,7 +406,7 @@
 		 * exec layout cache and merge with doctype, header tags etc...
 		 * if encoding is not ut-8, convert encoding to defined encoding
 		 */
-		public function printContext() {
+		public function procLayout() {
 			if (!$this->contentPrintable) return; // if error printed, return
 			
 			ob_start();
@@ -430,6 +432,27 @@
 			
 			echo $output;
 			ob_end_flush();
+		}
+
+		/*
+		 * get module content
+		 */
+		public function getModuleContent($moduleID=NULL, $moduleAction=NULL) {
+			if (!$moduleAction && !$moduleID)	$moduleAction = $this->moduleAction;
+			if (!$moduleID) 					$moduleID = $this->moduleID;
+
+			$module = ModuleHandler::initModule(
+				$moduleID,
+				$moduleAction
+			);
+			if (!$module)
+				$this->printWarning(array(
+					'en'=>'Cannot load module content',
+					'kr'=>'모듈 콘텐츠를 불러올 수 없습니다'
+				));
+			else {
+				$module->exec();
+			}
 		}
 	}
 	

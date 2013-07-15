@@ -1,6 +1,6 @@
 <?php
 	
-	class BoardModule extends ModuleBase {
+	class BoardModule extends Module {
 		
 		protected $boardId;
 		protected $boardInfo;
@@ -13,13 +13,13 @@
 		protected $nowPage;
 		
 		public function init() {
-			$action = $GLOBALS['__ModuleAction__'] ? $GLOBALS['__ModuleAction__'] : 'dispList';
-			
+			$action = $this->action;
+
 			if ($action == 'dispList') {
 				$this->boardName = $_GET['board_name'] ? $_GET['board_name'] : ( $_GET['menu'] ? $_GET['menu'] : NULL );
 				$this->aop = $_GET['aop'] ? $_GET['aop'] : 20;
 				$this->nowPage = $_GET['page'] ? $_GET['page'] : 1;
-				
+
 				if (!$this->boardName) {
 					Context::printErrorPage(array(
 						'en' => 'Cannot excute board - board ID not defined',
@@ -31,35 +31,29 @@
 				$this->boardInfo = DBHandler::execQueryOne("SELECT * FROM (#)board WHERE name='{$this->boardName}' LIMIT 1");
 				$this->boardId = $this->boardInfo->id;
 				$this->boardName_kr = $this->boardInfo->boardName_kr;
-				
+
 				Context::getInstance()->selectedMenu = $this->boardName;
 				
 			}else if ($action == 'dispArticle') {
-				$this->articleNo = self::getModel()->articleNo = $_GET['article_no'] ? $_GET['article_no'] : ($_GET['no'] ? $_GET['no'] : NULL);
-				$this->boardName = self::getModel()->getArticleData()->boardName;
+				$this->articleNo = $this->model->articleNo = $_GET['article_no'] ? $_GET['article_no'] : ($_GET['no'] ? $_GET['no'] : NULL);
+				$this->boardName = $this->model->getArticleData()->boardName;
 				
 				Context::getInstance()->selectedMenu = $this->boardName;
+				$this->view->articleNo = $this->articleNo;
 			}
 			
-			self::getModel()->inherit();
-			self::getView()->inherit();
+			$this->setProperties($this->model);
+			$this->setProperties($this->view);
 		}
 		
-		protected function inherit() {
-			$m = $GLOBALS['__Module__'];
+		private function setProperties($target) {
+			$target->boardId = $this->boardId;
+			$target->boardInfo = $this->boardInfo;
+			$tatget->articleNo = $this->articleNo;
 			
-			$this->boardId = $m->boardId;
-			$this->boardInfo = $m->boardInfo;
-			$this->articleNo = $m->articleNo;
-			
-			$this->boardName = $m->boardName;
-			$this->aop = $m->aop;
-			$this->nowPage = $m->nowPage;
-		}
-		
-		public function printContent() {
-			if ($GLOBALS['__ModuleAction__'] === NULL)
-				self::getView()->dispList();
+			$target->boardName = $this->boardName;
+			$target->aop = $this->aop;
+			$target->nowPage = $this->nowPage;
 		}
 		
 	}

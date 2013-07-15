@@ -1,8 +1,17 @@
 <?php
 	
-	class BoardModule_Model extends BoardModule {
+	class BoardModule_Model extends Model {
 		
+		public $boardId;
+		public $boardInfo;
+		public $articleNo;
+		
+		public $boardName;
+		public $aop;
+		public $nowPage;
+
 		function getArticleDatas() {
+			
 			$limitNum = ($this->nowPage - 1) * $this->aop;
 			$data = DBHandler::execQuery("SELECT (#)article.*, (#)user.user_name FROM `(#)article`,`(#)user` WHERE (#)article.board_id = '{$this->boardId}' AND (#)user.id = (#)article.writer_id ORDER BY (#)article.top_no DESC, (#)article.order_key ASC LIMIT $limitNum,{$this->aop}");
 			

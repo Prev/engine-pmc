@@ -1,5 +1,5 @@
 <?php
 	
-	class LoginModule_Model extends LoginModule {
+	class LoginModule_Model extends Model {
 		
 	}

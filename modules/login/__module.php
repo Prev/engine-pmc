@@ -1,6 +1,6 @@
 <?php
 	
-	class LoginModule extends ModuleBase {
+	class LoginModule extends Module {
 		
 		public function init() {
 		}

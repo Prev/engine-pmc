@@ -5,7 +5,8 @@
 	"actions":[
 		{
 			"name":"dispList",
-			"type":"view"
+			"type":"view",
+			"default":true
 		},
 		{
 			"name":"dispArticle",

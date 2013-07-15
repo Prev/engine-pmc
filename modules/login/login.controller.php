@@ -1,6 +1,6 @@
 <?php
 	
-	class LoginModule_Controller extends LoginModule {
+	class LoginModule_Controller extends Controller {
 		
 		public function procLogin() {
 			self::login($_POST['id'], $_POST['pw'], $_POST['auto_login']);

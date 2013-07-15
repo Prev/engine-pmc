@@ -17,7 +17,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.1.2');
+	define('PMC_VERSION', '0.1.3');
 	
 	
 	/**
@@ -147,7 +147,10 @@
 	require ROOT_DIR . '/lib/classes/Handler.class.php';
 	require ROOT_DIR . '/lib/classes/DBHandler.class.php';
 	require ROOT_DIR . '/lib/classes/ModuleHandler.class.php';
-	require ROOT_DIR . '/lib/classes/ModuleBase.class.php';
+	require ROOT_DIR . '/lib/classes/Module.class.php';
+	require ROOT_DIR . '/lib/classes/Model.class.php';
+	require ROOT_DIR . '/lib/classes/View.class.php';
+	require ROOT_DIR . '/lib/classes/Controller.class.php';
 	require ROOT_DIR . '/lib/classes/HeaderTagHandler.class.php';
 	require ROOT_DIR . '/lib/classes/ErrorLogger.class.php';
 	require ROOT_DIR . '/lib/classes/CacheHandler.class.php';

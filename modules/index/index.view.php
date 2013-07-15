@@ -1,9 +1,22 @@
 <?php
 	
-	class IndexModule_View extends IndexModule {
+	class IndexModule_View extends View {
 		
+		var $userData;
+		var $message;
+		var $loggedin;
+
+		public function init() {
+			
+		}
+
+		public function dispDefault() {
+			$this->execTemplate('welcome');
+		}
+
 		function dispCredit () {
-			$GLOBALS['__Module__']->appendText = 'Credit: prevdev@gmail.com';
+			echo 'Credit: prevdev@gmail.com';
+			$this->dispDefault();
 		}
 		
 	}

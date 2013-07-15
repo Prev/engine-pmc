@@ -8,6 +8,12 @@
 		var_dump($obj);
 		echo '</pre>';
 	}
+
+
+	function getContent($moduleID=NULL, $moduleAction=NULL) {
+		Context::getInstance()->getModuleContent($moduleID, $moduleAction);
+	}
+
 	
 	function getFilePathClear($path) {
 		return str_replace("\\", '/', str_replace(ROOT_DIR, '', $path));
@@ -186,30 +192,40 @@
 			$_SERVER['HTTP_HOST'];
 	}
 	
-	function getUrl($module=NULL, $action=NULL) {
-		if ($module && $action)
-			return RELATIVE_URL . "/?module=${module}&action=${action}";
-		else if ($module)
-			return RELATIVE_URL . "/?module=${module}";
-		else
-			return RELATIVE_URL;
-	}
-	
-	function getUrlA($args, $url=NULL) {
+	function getUrl($module=NULL, $action=NULL, $queryParam=NULL, $url=NULL) {
 		if (!$url) $url = RELATIVE_URL;
-		
-		$o = (object) array();
-		$u = parse_url($url);
-		
-		if ($u['query']) 
-			$q = split('&', $u['query']); for ($i=0; $i<count($q); $i++) { $t = split('=', $q[$i]); $o->{$t[0]} = $t[1]; }
-		$q = split('&', $args); for ($i=0; $i<count($q); $i++) { $t = split('=', $q[$i]); $o->{$t[0]} = $t[1]; }
-		
-		$a = array();
-		foreach ($o as $key => $value) array_push($a, $key . '=' . $value);
-		$u['query'] = join('&', $a);
-		
-		return unparse_url($u);
+		if (isset($module)) {
+			if (is_array($queryParam)) $queryParam = arrayToUrlQuery($queryParam);
+
+			return $url .
+				('?module=' . $module) .
+				(isset($action) ? '&action=' . $action : '') .
+				(isset($queryParam) ? '&' . $queryParam : '');
+		}else {
+			if (is_string($queryParam)) $queryParam = urlQueryToArray($queryParam);
+
+			$parsedUrl = parse_url($url);
+			$queryObj = new StdClass();
+
+			if ($parsedUrl['query']) {
+				$tempArr = split('&', $parsedUrl['query']);
+				for ($i=0; $i<count($tempArr); $i++) {
+					$tempArr2 = split('=', $tempArr[$i]);
+					$queryObj->{$tempArr2[0]} = $tempArr2[1];
+				}
+			}
+			if ($queryParam) {
+				foreach ($queryParam as $key => $value)
+					$queryObj->{$key} = $value;
+			}
+			
+			$parsedUrl['query'] = arrayToUrlQuery($queryObj);
+			return unparse_url($parsedUrl);
+		}
+	}
+
+	function getUrlA($queryParam, $url) {
+		return getUrl(NULL, NULL, $queryParam, $url);
 	}
 	
 	function unparse_url($parsed_url) { 
@@ -225,6 +241,25 @@
 		return $scheme . $user . $pass . $host . $port . $path . $query . $fragment; 
 	}
 	
+	function arrayToUrlQuery($array) {
+		if (!$array) return NULL;
+		else {
+			$tempArr = array();
+			foreach($array as $key => $value)
+				array_push($tempArr, $key . '=' . $value);
+			return join('&', $tempArr);
+		}
+	}
+	function urlQueryToArray($query) {
+		$arr = array();
+		$tempArr = split('&', $query);
+		for ($i=0; $i<count($tempArr); $i++) {
+			$tempArr2 = split('=', $tempArr[$i]);
+			$arr[$tempArr2[0]] = $tempArr2[1];
+		}
+		return $arr;
+	}
+
 	function getBackUrl() {
 		if ($_GET['next'])
 			return $_GET['next'];
