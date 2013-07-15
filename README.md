@@ -13,8 +13,19 @@
 
 
 #Change Log
+
+###v 0.1.3
++ 다중 모듈 지원
++ Module, View, Controller 클래스 추가
++ 템플릿 데이터 view에서 가져올 수 있게 수정
++ MVC 관련 각종 프로세스 수정
++ 템플릿 함수 Context 에서 CacheHandler 처리로 변경
+
+###v 0.1.2
++ Context, ModuleHandler 클래스 인스턴스화
++ var_dump2, getUrlA 함수 버그픽스
+
 ###v 0.1.1
 + var_dump2 함수 추가
 
 ###v 0.1.0
-+ 첫 커밋
