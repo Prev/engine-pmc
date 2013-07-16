@@ -28,7 +28,7 @@
 테스트 서버의 경에는 `type`을 `test`로, 실제 운영할 서버의 경우에는 `running` 으로 설정 해주시기 바랍니다.
 
 #####둘째, `conf/database.php` 파일에서 데이터베이스 관련 정보를 업데이트 하십시오
-```json
+```php
 return (object) array(
  'type' => 'mysqli',
  'username' => '%접속아이디%',
@@ -38,7 +38,7 @@ return (object) array(
 );
 ```
 
-#####셋째, `cache` 생성 문제
+#####셋째, cache 생성 문제
 cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파일 생성 및 수정 권한을 추가하십시오
 
 #####기타
