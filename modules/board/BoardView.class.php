@@ -1,6 +1,6 @@
 <?php
 
-	class BoardModule_View extends View {
+	class BoardView extends View {
 
 		public $boardId;
 		public $boardInfo;

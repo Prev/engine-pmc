@@ -1,6 +1,6 @@
 <?php
 	
-	class BoardModule_Model extends Model {
+	class BoardModel extends Model {
 		
 		public $boardId;
 		public $boardInfo;

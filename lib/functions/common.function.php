@@ -253,7 +253,9 @@
 		$tempArr = split('&', $query);
 		for ($i=0; $i<count($tempArr); $i++) {
 			$tempArr2 = split('=', $tempArr[$i]);
-			$arr[$tempArr2[0]] = $tempArr2[1];
+
+			if ($tempArr2[0])
+				$arr[$tempArr2[0]] = $tempArr2[1];
 		}
 		return $arr;
 	}

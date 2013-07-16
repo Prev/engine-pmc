@@ -1,24 +1,25 @@
 <?php
 	
-	class LoginModule_Controller extends Controller {
-		
+	class LoginController extends Controller {
+
 		public function procLogin() {
 			self::login($_POST['id'], $_POST['pw'], $_POST['auto_login']);
 		}
 		
 		public function procSecureLogin() {
 			require ROOT_DIR . '/lib/encryption/RSA.class.php';
-			
+
+			$enc_id = $_POST['enc_id'];
+			$enc_pw = $_POST['enc_pw'];
+			$check_sum = $_POST['check_sum'];
+			$next = $_REQUEST['next'] ? $_REQUEST['next'] : getUrl();
+
 			$_rsa = new RSA(
 				'10001',
 				'3c6c9ac18899b33cdfb03503eb81fc9',
 				'801d5852519f4382e8faa29ae15222d'
 			);
-			
-			$enc_id = $_POST['enc_id'];
-			$enc_pw = $_POST['enc_pw'];
-			$check_sum = $_POST['check_sum'];
-			
+
 			if (!isset($enc_id) || !isset($enc_pw) || !isset($check_sum)) {
 				Context::printErrorPage('Variable Error');
 				return;
@@ -27,7 +28,7 @@
 				$real_pw = $_rsa->decrypt($enc_pw);
 				
 				if (md5($real_id . $real_pw) != $check_sum) {
-					redirect(getUrlA('result=fail_sec', LOGIN_URL));
+					$this->goBackToLoginPage('result=fail_sec', $next);
 					return;
 				}
 				
@@ -63,13 +64,14 @@
 		private function login($id, $pw, $autoLogin) {
 			$id = escape($id);
 			$pw = escape($pw);
-			
+			$next = $_REQUEST['next'] ? $_REQUEST['next'] : getUrl();
+
 			$r = DBHandler::execQueryOne("SELECT id,input_id,password,password_salt FROM (#)user WHERE input_id='${id}' LIMIT 1");
 			
 			// ID does not exist OR password do not match
 			if (!$r || ($r->password != hash('sha256', $pw . $r->password_salt))) {
 				$this->insertLoginlog($id, false, $autoLogin);
-				$this->goBackToLoginPage('result=fail');
+				$this->goBackToLoginPage('result=fail' ,$next);
 			}else {
 				do {
 					$sessionKey = $this->generateSessionKey();
@@ -85,13 +87,12 @@
 				$this->insertLoginlog($id, true, $autoLogin);
 				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), '/', SESSION_DOMAIN);
 					
-				$next = $_REQUEST['next'] ? $_REQUEST['next'] : getUrl();
 				redirect($next);
 			}
 		}
 		
-		private function goBackToLoginPage($extraVars) {
-			redirect(getUrlA($extraVars . '&' . $next, LOGIN_URL));
+		private function goBackToLoginPage($extraVars, $next) {
+			redirect(getUrlA($extraVars . '&next=' . $next, LOGIN_URL));
 		}
 	}
 	

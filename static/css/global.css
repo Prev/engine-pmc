@@ -45,6 +45,7 @@ a img{ border:none; outline:none }
 .clearfix:after{ display:block; clear:both; content:"" }
 .fl{ float:left }
 .fr{ float:right }
+.bold{ font-weight: bold }
 
 input,label{ vertical-align:middle }
 

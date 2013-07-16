@@ -4,8 +4,13 @@
 	"author":"prevdev@gmail.com",
 	"actions":[
 		{
+			"name":"dispDefault",
+			"view":"TestView",
+			"default":true
+		},
+		{
 			"name":"dispBlank",
-			"type":"view",
+			"view":"TestBlankView",
 			"layout":"blank"
 		}
 	]

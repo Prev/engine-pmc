@@ -15,7 +15,8 @@
 		
 		public $moduleID;
 		public $action;
-		public $actionTarget;
+		public $actionData;
+		public $moduleInfo;
 
 		public $controller;
 		public $view;
@@ -24,13 +25,19 @@
 		final public function __construct() {
 			$this->moduleID = substr(get_class($this), 0, strrpos(get_class($this), 'Module'));
 			$this->moduleID = strtolower($this->moduleID);	
-			
-			$this->loadMVCClass($this->moduleID, 'model');
-			$this->loadMVCClass($this->moduleID, 'view');
-			$this->loadMVCClass($this->moduleID, 'controller');
+		}
+
+		final public function __initBase() {
+			$ufModuleID = ucfirst($this->moduleID);
+			$actionData = $this->actionData ? $this->actionData : new StdClass();
 
 			foreach(array('model', 'view', 'controller') as $key => $mvc) {
-				if (!$this->{$mvc}) continue;
+				if ($actionData->{$mvc})
+					$this->{$mvc} = $this->loadMVCClass(ucfirst($actionData->{$mvc}), false);
+				else if ($this->moduleInfo->{'default_'.$mvc})
+					$this->{$mvc} = $this->loadMVCClass($this->moduleInfo->{'default_'.$mvc}, false);
+				else
+					$this->{$mvc} = $this->loadMVCClass(ucfirst($mvc), true);
 
 				$this->{$mvc}->setProperties(
 					$this,
@@ -39,28 +46,37 @@
 					$this->controller
 				);
 			}
-
-			if (method_exists($this->model, 'init'))		$this->model->init();
-			if (method_exists($this->controller, 'init'))	$this->controller->init();
-			if (method_exists($this->view, 'init'))			$this->view->init();
 		}
 		
 		final public function exec() {
-			if ($this->action && $this->actionTarget)
-				call_user_method($this->action, $this->{$this->actionTarget});
-
-			else
-				$this->view->dispDefault();
+			foreach(array('model', 'view', 'controller') as $key => $mvc) {
+				if (method_exists($this->{$mvc}, $this->action))
+					$this->{$mvc}->{$this->action}();
+			}
 		}
 		
-		private function loadMVCClass($moduleID, $type) {
-			$type = strtolower($type);
-			if (is_file(ModuleHandler::getModuleDir($moduleID) . "/${moduleID}.${type}.php")) {
-				require ModuleHandler::getModuleDir($moduleID) . "/${moduleID}.${type}.php";
+		private function loadMVCClass($className, $isGlobalFile) {
+			if ($isGlobalFile) {
+				$_loader = create_function('', 'return new '. $className .'();');
+				return $_loader();
+			}else {
+				$classPath = ModuleHandler::getModuleDir($this->moduleID) . '/' . $className . '.class.php';
 				
-				if (class_exists(get_class($this) . '_' . ucfirst($type))) {
-					$_loader = create_function('', 'return new '. get_class($this) . '_' . ucfirst($type) .'();');
-					$this->{$type} = $_loader();
+				if (!is_file($classPath)) {
+					Context::printErrorPage(array(
+						'en'=>'Cannot load lass "'. $className . '" - cannot load file',
+						'kr'=>'클래스 "'. $className . '" 를 불러 올 수 없습니다. - 파일을 불러 올 수 없음'
+					)); 
+				}else {
+					require $classPath;
+					if (!class_exists($className)) {
+						Context::printErrorPage(array(
+							'en'=>'Cannot load lass "'. $className . '" - cannot find class',
+							'kr'=>'클래스 "'. $className . '" 를 불러 올 수 없습니다. - 클래스를 찾을 수 없음'
+						)); 
+					}
+					$_loader = create_function('', 'return new '. $className .'();');
+					return $_loader();
 				}
 			}
 		}

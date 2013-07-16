@@ -5,12 +5,14 @@
 	"actions":[
 		{
 			"name":"dispList",
-			"type":"view",
+			"model":"BoardModel",
+			"view":"BoardView",
 			"default":true
 		},
 		{
 			"name":"dispArticle",
-			"type":"view"
+			"model":"BoardModel",
+			"view":"BoardView"
 		}
 	]
 }

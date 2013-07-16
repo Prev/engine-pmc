@@ -17,7 +17,7 @@
 				unset($_SESSION['pmc_sso_data']);
 				return NULL;
 				
-			}else if ($_SESSION['pmc_sso'] && (time() > strtotime($_SESSION['pmc_sso_data']->expire_time))) {
+			}else if ($_SESSION['pmc_sso_data'] && (time() < strtotime($_SESSION['pmc_sso_data']->expire_time))) {
 				return $_SESSION['pmc_sso_data'];
 			}else {
 				$urlData = getURLData(SSO_URL . '?sses_key=' . $_COOKIE['pmc_sess_key'], 'PMC-SSO Connection');
