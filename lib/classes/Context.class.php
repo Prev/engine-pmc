@@ -57,7 +57,7 @@
 		/**
 		 * Get Context instance
 		 */
-		public function &getInstance() {
+		public function getInstance() {
 			if(!isset($GLOBALS['__Context__'])) {
 				$GLOBALS['__Context__'] = new Context();
 			}

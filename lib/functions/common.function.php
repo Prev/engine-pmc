@@ -135,7 +135,7 @@
 		$port = strstr($url, 'https://') ? 443 : 80;
 		$output = '';
 		
-		if (!($fp = fsockopen(($port == 443 ? 'ssl://'.$host : $host), $port, &$errno, &$errstr, 30))) return NULL;
+		if (!($fp = fsockopen(($port == 443 ? 'ssl://'.$host : $host), $port))) return NULL;
 		
 		fputs($fp,
 			"GET ${url} HTTP/1.0\r\n" .

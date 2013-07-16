@@ -3,7 +3,7 @@
 	class BoardController extends Controller {
 		
 		const DEFAULT_AOP = 20;
-
+		
 		public function init() {
 			$action = $this->module->action;
 			

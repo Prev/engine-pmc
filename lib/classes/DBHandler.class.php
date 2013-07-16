@@ -14,11 +14,13 @@
 		static public $db;
 		static public $type;
 		static public $prefix;
-		
+		static public $orm;
+
 		static public function init($info) {
 			self::$type = $info->type;
 			self::$prefix = $info->prefix;
-			
+			self::$orm = ORMExtended::open($info->host, $info->username, $info->password, $info->database_name);
+
 			$charset = join('', explode('-', TEXT_ENCODING));
 			
 			switch (self::$type) {

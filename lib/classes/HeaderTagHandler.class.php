@@ -113,10 +113,9 @@
 		 * Add Less CSS File
 		 */
 		public function addLesscFile($path, $index=-1, $position='head', $targetie=NULL) {
-			require_once( ROOT_DIR . '/lib/lessc/lessc.inc.php' );
+			require_once( ROOT_DIR . '/lib/others/lib.lessc.php' );
 			
 			if (!is_dir(ROOT_DIR . '/cache/lessc/')) mkdir(ROOT_DIR . '/cache/lessc/');
-			
 			$cachePath = '/cache/lessc/' . md5($path) . '.css';
 			
 			try {

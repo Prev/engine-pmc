@@ -142,7 +142,9 @@
 	
 	
 	require ROOT_DIR . '/config/database.php';
-	
+	require ROOT_DIR . '/lib/others/lib.idiorm.php';
+	require ROOT_DIR . '/lib/classes/ORMExtended.class.php';
+
 	require ROOT_DIR . '/lib/classes/Handler.class.php';
 	require ROOT_DIR . '/lib/classes/DBHandler.class.php';
 	require ROOT_DIR . '/lib/classes/ModuleHandler.class.php';

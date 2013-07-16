@@ -3,7 +3,7 @@
 	class LoginController extends Controller {
 
 		public function procLogin() {
-			self::login($_POST['id'], $_POST['pw'], $_POST['auto_login']);
+			$this->login($_POST['id'], $_POST['pw'], $_POST['auto_login']);
 		}
 		
 		public function procSecureLogin() {
@@ -32,7 +32,7 @@
 					return;
 				}
 				
-				self::login($real_id, $real_pw, $_POST['auto_login']);
+				$this->login($real_id, $real_pw, $_POST['auto_login']);
 			}
 		}
 		public function procLogout() {

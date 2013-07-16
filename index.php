@@ -2,6 +2,8 @@
 	
 	/*
 	 * @ author prevdev@gmail.com
+	 * @ https://github.com/Prev/engine-pmc
+	 *
 	 * @ 2013.05 - 2013.07
 	 *
 	 * @ proj P.M.C (Parameter MVC Core)
@@ -12,7 +14,7 @@
  	 
 	require ROOT_DIR . '/config/config.php';
 	
-	$oContext = &Context::getInstance();
+	$oContext = Context::getInstance();
 	$oContext->init(getDBInfo());
 	
 
