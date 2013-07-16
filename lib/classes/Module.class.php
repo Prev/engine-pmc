@@ -39,7 +39,7 @@
 				else
 					$this->{$mvc} = $this->loadMVCClass(ucfirst($mvc), true);
 
-				$this->{$mvc}->setProperties(
+				$this->{$mvc}->setMMVC(
 					$this,
 					$this->model,
 					$this->view,

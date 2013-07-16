@@ -146,6 +146,7 @@
 	require ROOT_DIR . '/lib/classes/Handler.class.php';
 	require ROOT_DIR . '/lib/classes/DBHandler.class.php';
 	require ROOT_DIR . '/lib/classes/ModuleHandler.class.php';
+	require ROOT_DIR . '/lib/classes/MVC.class.php';
 	require ROOT_DIR . '/lib/classes/Module.class.php';
 	require ROOT_DIR . '/lib/classes/Model.class.php';
 	require ROOT_DIR . '/lib/classes/View.class.php';

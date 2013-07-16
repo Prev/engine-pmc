@@ -14,6 +14,18 @@
 
 #Change Log
 
+###v 0.1.4
++ MVC 전반적 구조 변경
+++ 다중 Model, Controller, View 지원
+++ action 별 MVC 지정 가능
+++ default action 정의 필수로 변경
++ 모듈 MVC 작명 규칙 변경
+++ ex) IndexModel, IndexController, IndexView, IndexCreditView
++ conf/info.json 파일 상위폴더로 이동 및 명령어 변경
+++ action별 model, view, controller 지정 가능
+++ default_model, default_view, default_controller 지정 가능
++SSO 버그 픽스
+
 ###v 0.1.3
 + 다중 모듈 지원
 + Module, View, Controller 클래스 추가

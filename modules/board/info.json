@@ -2,17 +2,19 @@
 	"name":"board module",
 	"version":"1.0.0",
 	"author":"prevdev@gmail.com",
+	"default_controller":"BoardController",
+
 	"actions":[
 		{
 			"name":"dispList",
-			"model":"BoardModel",
-			"view":"BoardView",
+			"model":"BoardListModel",
+			"view":"BoardListView",
 			"default":true
 		},
 		{
 			"name":"dispArticle",
-			"model":"BoardModel",
-			"view":"BoardView"
+			"model":"BoardArticleModel",
+			"view":"BoardArticleView"
 		}
 	]
 }

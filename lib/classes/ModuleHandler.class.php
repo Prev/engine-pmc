@@ -66,7 +66,7 @@
 			}
 			$_module->__initBase();
 			$_module->init();
-
+			
 			if (method_exists($_module->model, 'init'))			$_module->model->init();
 			if (method_exists($_module->controller, 'init'))	$_module->controller->init();
 			if (method_exists($_module->view, 'init'))			$_module->view->init();

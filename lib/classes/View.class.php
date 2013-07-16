@@ -1,17 +1,17 @@
 <?php
 	
-	class View {
+	class View extends MVC {
 
 		protected $module;
 		protected $model;
 		protected $controller;
 		
-		final public function setProperties($module, $model, $view, $controller) {
+		final public function setMMVC($module, $model, $view, $controller) {
 			$this->module = $module;
 			$this->model = $model;
 			$this->controller = $controller;
 		}
-
+		
 		public function execTemplate($templateName) {
 			if (substr($templateName, strlen($templateName)-5, 5) != '.html')
 				$templateName .= '.html';
