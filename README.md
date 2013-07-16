@@ -11,19 +11,48 @@
 + 다양한 config 변수 제공
 + 디버깅을 위한 var_dump2 함수
 
+#Install
+설정할 대부분의 파일은 `config` 폴더안에 있습니다.
+#####먼저 `config/server-info.json` 파일을 자신의 서버와 맞게 설정하세요
+만약 서버 도메인이 `localhost` 이고 `/pmc` 라는 하위 경로를 사용 할 경우
+`{
+ "type":"test",
+ "protocol":"http",
+ "host":"localhost",
+ "session_domain":"localhost",
+ "uri":"/pmc"
+}`
+처럼 사용하시면 됩니다.
+테스트 서버의 경에는 `type`을 `test`로, 실제 운영할 서버의 경우에는 `running` 으로 설정 해주시기 바랍니다.
+
+#####둘째, `conf/database.php` 파일에서 데이터베이스 관련 정보를 업데이트 하십시오
+`return (object) array(
+ 'type' => 'mysqli',
+ 'username' => '%접속아이디%',
+ 'password' => '%접속비밀번호%',
+ 'database_name' => '%데이터베이스 이름%',
+ 'prefix' => 'pmc_'
+);`
+
+#####셋째, cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파일 생성 및 수정 권한을 추가하십시오
+
+#####기타
++ 현재 데이터베이스 자동 초기화 기능이 없으므로 `conf/initialize.sql` 에서 SQL을 복사 후 실행하여 사용하시길 바랍니다.
++ 이 밖에 각종 설정은 `conf/config.php` 에서 하실 수 있습니다.
+
 
 #Change Log
 
 ###v 0.1.4
 + MVC 전반적 구조 변경
-++ 다중 Model, Controller, View 지원
-++ action 별 MVC 지정 가능
-++ default action 정의 필수로 변경
+ + 다중 Model, Controller, View 지원
+ + action 별 MVC 지정 가능
+ + default action 정의 필수로 변경
 + 모듈 MVC 작명 규칙 변경
-++ ex) IndexModel, IndexController, IndexView, IndexCreditView
+ + ex) IndexModel, IndexController, IndexView, IndexCreditView
 + conf/info.json 파일 상위폴더로 이동 및 명령어 변경
-++ action별 model, view, controller 지정 가능
-++ default_model, default_view, default_controller 지정 가능
+ + action별 model, view, controller 지정 가능
+ + default_model, default_view, default_controller 지정 가능
 +SSO 버그 픽스
 
 ###v 0.1.3
