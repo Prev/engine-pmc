@@ -115,8 +115,9 @@
 		public function addLesscFile($path, $index=-1, $position='head', $targetie=NULL) {
 			require_once( ROOT_DIR . '/lib/others/lib.lessc.php' );
 			
-			if (!is_dir(ROOT_DIR . '/cache/lessc/')) mkdir(ROOT_DIR . '/cache/lessc/');
-			$cachePath = '/cache/lessc/' . md5($path) . '.css';
+			$siteCacheDir = '/cache/' . getServerInfo()->host . '_' . substr(md5(getServerInfo()->uri), 0, 8);
+			if (!is_dir(ROOT_DIR . $siteCacheDir . '/lessc/')) mkdir(ROOT_DIR . $siteCacheDir . '/lessc/');
+			$cachePath = $siteCacheDir . '/lessc/' . md5($path) . '.css';
 			
 			try {
 				$lessc = new lessc();

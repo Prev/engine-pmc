@@ -49,6 +49,12 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
+###v 0.1.5
++ strict 모드에서 동작하도록 업데이트
+ + isset 설정, split deprecated 문제 개선
++ SHORT_URL 모드 해제시 버그 개선
++ 웹사이트별 다른 캐시폴더를 사용도록 업데이트
+
 ###v 0.1.4
 + MVC 전반적 구조 변경
  + 다중 Model, Controller, View 지원

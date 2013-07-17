@@ -13,11 +13,18 @@
 		
 		static $module;
 		static $rPath; // module relative path
-		
+		static $siteCacheDir;
+
 		static public function init() {
+			self::$siteCacheDir = '/cache/' . getServerInfo()->host . '_' . substr(md5(getServerInfo()->uri), 0, 8);
+
 			if (!is_dir(ROOT_DIR . '/cache/')) {
 				mkdir(ROOT_DIR . '/cache/');
 				chmod(ROOT_DIR . '/cache/', 0755);
+			}
+			if (!is_dir(ROOT_DIR . self::$siteCacheDir)) {
+				mkdir(ROOT_DIR . self::$siteCacheDir);
+				chmod(ROOT_DIR . self::$siteCacheDir, 0755);
 			}
 		}
 		
@@ -191,7 +198,7 @@
 		
 		
 		static private function getLayoutCacheDir($originFilePath) {
-			return ROOT_DIR . '/cache/layout/' . md5($originFilePath) . '.compiled.php';
+			return ROOT_DIR . self::$siteCacheDir . '/layout/' . md5($originFilePath) . '.compiled.php';
 		}
 		
 		static private function makeLayoutCache($filePath, $content, $fileTime) {	
@@ -214,8 +221,8 @@
 			if (substr($filePath, 0, 1) != '/')
 				$filePath = '/' . $filePath;
 				
-			if (!is_dir(ROOT_DIR . '/cache/layout/')) {
-				mkdir(ROOT_DIR . '/cache/layout/');
+			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/layout/')) {
+				mkdir(ROOT_DIR . self::$siteCacheDir . '/layout/');
 			}
 				
 			if (!is_file(ROOT_DIR . $filePath)) {
@@ -269,16 +276,16 @@
 			if ($tmp[0] != md5(json_encode2($menuData)))
 				self::makeMenuCache($menuData, $level);
 			
-			return '/cache/menu/menu' . $level . '.css';
+			return self::$siteCacheDir . '/menu/menu' . $level . '.css';
 		}
 		
 		static private function getMenuCacheDir($level) {
-			return ROOT_DIR . '/cache/menu/menu' . $level . '.css';
+			return ROOT_DIR . self::$siteCacheDir . '/menu/menu' . $level . '.css';
 		}
 		
 		static private function makeMenuCache($menuData, $level) {
-			if (!is_dir(ROOT_DIR . '/cache/menu/')) {
-				mkdir(ROOT_DIR . '/cache/menu/');
+			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/menu/')) {
+				mkdir(ROOT_DIR . self::$siteCacheDir . '/menu/');
 			}
 			
 			$str = '@charset "utf-8";' . "\r\n\r\n";
