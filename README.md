@@ -12,7 +12,7 @@
 + 다양한 config 변수 제공
 + 디버깅의 편리
 
-데모 사이트 : [데모사이트](engine-pmc.parameter.kr)
+[데모사이트](http://engine-pmc.parameter.kr)
 
 #Install
 설정할 대부분의 파일은 `config` 폴더안에 있습니다.
