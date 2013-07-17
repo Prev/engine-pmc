@@ -47,7 +47,7 @@
 	 * ex) menu -> http://engine-pmc.org/freeboard
 	 * ex) article -> http://engine-pmc.org/15
 	 */
-	define('USE_SHORT_URL', false);
+	define('USE_SHORT_URL', true);
 	
 	
 	/**

@@ -26,10 +26,9 @@
 			switch (self::$type) {
 				case 'mysqli':
 					@self::$db = new MySQLi($info->host, $info->username, $info->password, $info->database_name);
+					
 					$e = mysqli_connect_error();
-					
 					if (!$e) self::$db->set_charset($charset);
-					
 					break;
 					
 				case 'mysql':
@@ -60,13 +59,11 @@
 			$arr = array();
 			$query = join(DBHandler::$prefix, explode('(#)', $query));
 			$backtrace = debug_backtrace();
-			
 			$backtrace_path = getFilePathClear($backtrace[0]['file']);
 			
 			switch (self::$type) {
 				case 'mysqli':
 					$result = self::$db->query($query);
-					
 					if ($result === false) {
 						Context::printWarning(array(
 							'en' => 'Fail to excute query "<b>'.$query."</b>\" in <b>${backtrace_path}</b> on line <b>{$backtrace[0]['line']}</b>",
@@ -146,7 +143,14 @@
 		}
 		
 		static public function escapeString($string) {
-			return self::$db->real_escape_string($string);
+			switch(self::$type) {
+				case 'mysqli':
+					return self::$db->real_escape_string($string);
+				break;
+				case 'mysql' : 
+				default :
+					return mysql_real_escape_string($string);
+			 }
 		}
 	}
 	
