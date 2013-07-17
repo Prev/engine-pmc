@@ -12,6 +12,8 @@
 + 다양한 config 변수 제공
 + 디버깅의 편리
 
+데모 사이트 : [데모사이트](engine-pmc.parameter.kr)
+
 #Install
 설정할 대부분의 파일은 `config` 폴더안에 있습니다.
 
@@ -48,6 +50,10 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 
 #Change Log
+
+###v 0.1.6
++ ORM 기능 개선
++ ORM 사용시 테이블 자동 prefix 탑재
 
 ###v 0.1.5
 + strict 모드에서 동작하도록 업데이트

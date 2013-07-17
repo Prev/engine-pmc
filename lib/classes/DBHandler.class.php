@@ -9,17 +9,57 @@
 	 * Control all about database and excute queries
 	 */
 	
-	class DBHandler extends Handler {
+	class DBHandler extends ORM {
 		
 		static public $db;
 		static public $type;
 		static public $prefix;
-		static public $orm;
+
+		// @override
+		static public function for_table($table_name, $connection_name = self::DEFAULT_CONNECTION) {
+			self::_setup_db($connection_name);
+			return new self(self::$prefix . $table_name, array(), $connection_name);
+		}
+		// @override
+		protected function _quote_identifier($identifier) {
+			$parts = explode('.', $identifier);
+			if (count($parts) >= 2) $parts[0] = self::$prefix . $parts[0];
+			$parts = array_map(array($this, '_quote_identifier_part'), $parts);
+			return join('.', $parts);
+		}
+		// @override
+		protected function _add_simple_condition($type, $column_name, $separator, $value) {
+			if (count($this->_join_sources) > 0 && strpos($column_name, '.') === false)
+				$column_name = self::$prefix . "{$this->_table_name}.{$column_name}";
+			$column_name = $this->_quote_identifier($column_name);
+			return $this->_add_condition($type, "{$column_name} {$separator} ?", $value);
+		} 
+		// @override
+		protected function _add_join_source($join_operator, $table, $constraint, $table_alias=null) {
+			return parent::_add_join_source($join_operator, self::$prefix . $table, $constraint, $table_alias);
+		}
+		// @override
+		protected function _create_instance_from_row($row) {
+			$instance = self::for_table($this->_table_name, $this->_connection_name);
+			$instance->use_id_column($this->_instance_id_column);
+			$instance->hydrate($row);
+			return $instance;
+		}
+		public function getQuery() {
+			return parent::_build_select();
+		}
+		public function getData() {
+			return $this->_data;
+		}
+
 
 		static public function init($info) {
 			self::$type = $info->type;
 			self::$prefix = $info->prefix;
-			//self::$orm = ORMExtended::open($info->host, $info->username, $info->password, $info->database_name);
+
+			self::configure('mysql:host=' . $info->host . ';dbname=' . $info->database_name);
+			self::configure('username', $info->username);
+			self::configure('password', $info->password);
 
 			$charset = join('', explode('-', TEXT_ENCODING));
 			
@@ -104,7 +144,7 @@
 						));
 						return NULL;
 					}
-					if (mysql_num_rows($result) === NULL) return $result;
+					if ($result === true) return $result;
 					
 					switch ($fetchType) {
 						case 'object':

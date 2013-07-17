@@ -1497,7 +1497,7 @@
                     return $cached_result;
                 }
             }
-
+            
             self::_execute($query, $this->_values, $this->_connection_name);
             $statement = self::get_last_statement();
 

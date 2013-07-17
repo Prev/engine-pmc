@@ -12,7 +12,7 @@
 		}
 		
 		return (object) array(
-			'type' => 'mysqli',
+			'type' => 'mysql',
 			'host' => 'localhost',
 			'username' => 'pmc_test',
 			'password' => 'test123',

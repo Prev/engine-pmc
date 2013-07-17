@@ -122,13 +122,13 @@
 				if (isset($data)) $getVars['menu'] = $data->title;
 			}
 			if (!isset($getVars['menu'])) $getVars['menu'] = NULL;
-
+			
 			$data = DBHandler::execQueryOne("
 				SELECT * FROM (#)menu
 				WHERE title='" . escape($getVars['menu']) . "'
 				LIMIT 1
 			");
-
+			
 			if (!isset($data) && !isset($moduleID)) {
 				self::printErrorPage(array(
 					'en' => 'Cannot find requested menu',

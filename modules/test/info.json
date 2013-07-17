@@ -12,6 +12,10 @@
 			"name":"dispBlank",
 			"view":"TestBlankView",
 			"layout":"blank"
+		},
+		{
+			"name":"procSQL",
+			"view":"testSQLController"
 		}
 	]
 }
