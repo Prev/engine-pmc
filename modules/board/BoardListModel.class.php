@@ -7,22 +7,24 @@
 		public $nowPage;
 
 		function getBoardInfo($boardName) {
-			return DBHandler::execQueryOne("
-				SELECT * FROM (#)board
-				WHERE name='${boardName}'
-				LIMIT 1
-			");
+			return DBHandler::for_table('board')
+				->where('name', $boardName)
+				->find_one();
 		}
 
 		function getArticleDatas() {
 			$limitNum = ($this->nowPage - 1) * $this->aop;
-			$data = DBHandler::execQuery("
-				SELECT (#)article.*, (#)user.user_name FROM `(#)article`,`(#)user`
-				WHERE (#)article.board_id = '{$this->boardId}'
-					AND (#)user.id = (#)article.writer_id
-				ORDER BY (#)article.top_no DESC, (#)article.order_key ASC
-				LIMIT $limitNum,{$this->aop}
-			");
+
+			$data = DBHandler::for_table('article')
+				->select('article.*')->select('user.user_name')
+				->where('article.board_id', $this->boardId)
+				->join('user', array(
+					'user.id','=','article.writer_id'
+				))
+				->order_by_asc('article.top_no')
+				->order_by_asc('article.order_key')
+				->limit($limitNum, $this->aop)
+				->find_many();
 			
 			for ($i=0; $i<count($data); $i++) {
 				$data[$i]->is_reply = isset($data[$i]->parent_no);
@@ -32,13 +34,15 @@
 		}
 		
 		function getNoticeArticles() {
-			$data = DBHandler::execQuery("
-				SELECT (#)article.*, (#)user.user_name FROM `(#)article`,`(#)user`
-				WHERE (#)article.board_id = '{$this->boardId}'
-					AND is_notice = '1'
-					AND (#)user.id = (#)article.writer_id
-				ORDER BY (#)article.no DESC
-			");
+			$data = DBHandler::for_table('article')
+				->select('article.*')->select('user.user_name')
+				->where('article.board_id', $this->boardId)
+				->where('article.is_notice', 1)
+				->join('user', array(
+					'user.id', '=', 'article.writer_id'
+				))
+				->order_by_desc('article.no')
+				->find_many();
 			
 			for ($i=0; $i<count($data); $i++) {
 				$data[$i]->top_notice = true;
@@ -50,10 +54,11 @@
 		function getPageNumbers() {
 			$obj = (object) array();
 			
-			$result = DBHandler::execQuery("
-				SELECT no FROM (#)article
-				WHERE board_id='{$this->boardId}'
-			");
+			$result = DBHandler::for_table('article')
+				->select('no')
+				->where('board_id', $this->boardId)
+				->find_many();
+
 			$totalPageNum = (int)((count($result)-1) / $this->aop) + 1;
 			$tenDigit = (int)(($this->nowPage-1) / 10);
 			

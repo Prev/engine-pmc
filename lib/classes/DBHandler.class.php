@@ -16,9 +16,11 @@
 		static public $prefix;
 
 		// @override
-		static public function for_table($table_name, $connection_name = self::DEFAULT_CONNECTION) {
+		static public function for_table($table_name, $connection_name = self::DEFAULT_CONNECTION, $appendPrefix=true) {
+			if ($appendPrefix) $table_name = self::$prefix . $table_name;
+
 			self::_setup_db($connection_name);
-			return new self(self::$prefix . $table_name, array(), $connection_name);
+			return new self($table_name, array(), $connection_name);
 		}
 		// @override
 		protected function _quote_identifier($identifier) {
@@ -40,11 +42,21 @@
 		}
 		// @override
 		protected function _create_instance_from_row($row) {
-			$instance = self::for_table($this->_table_name, $this->_connection_name);
+			$instance = self::for_table($this->_table_name, $this->_connection_name, false);
 			$instance->use_id_column($this->_instance_id_column);
 			$instance->hydrate($row);
 			return $instance;
 		}
+		// @override
+		public function limit($args1, $args2=NULL) {
+            if (isset($args2)) {
+            	$this->_offset = $args1;
+            	$this->_limit = $args2;
+            }else
+            	$this->_limit = $args1;
+
+            return $this;
+        }
 		public function getQuery() {
 			return parent::_build_select();
 		}
@@ -95,7 +107,7 @@
 			));
 		}
 		
-		static public function execQuery($query, $fetchType='object') {
+		static public function rawQuery($query, $fetchType='object') {
 			$arr = array();
 			$query = join(DBHandler::$prefix, explode('(#)', $query));
 			$backtrace = debug_backtrace();
@@ -170,7 +182,7 @@
 			return $arr;
 		}
 		
-		static public function execQueryOne($query, $fetchType='object') {
+		static public function rawQueryOne($query, $fetchType='object') {
 			$result = self::execQuery($query, $fetchType);
 			if (is_array($result) && count($result) !== 0)
 				return $result[0];

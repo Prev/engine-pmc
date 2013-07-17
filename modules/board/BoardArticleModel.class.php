@@ -3,14 +3,16 @@
 	class BoardArticleModel extends Model {
 		
 		function getArticleData($articleNo) {
-			$data = DBHandler::execQueryOne("
-				SELECT (#)article.*, (#)board.*, (#)user.nick_name
-				FROM (#)article, (#)board, (#)user
-				WHERE (#)article.no='${articleNo}'
-					AND (#)board.id=(#)article.board_id
-					AND (#)user.id = (#)article.writer_id
-				LIMIT 1"
-			);
+			$data = DBHandler::for_table('article')
+				->select('article.*')->select('board.*')->select('user.nick_name')
+				->where('article.no', $articleNo)
+				->join('board', array(
+					'board.id', '=', 'article.board_id'
+				))
+				->join('user', array(
+					'user.id', '=', 'article.writer_id'
+				))
+				->find_one();
 
 			if ($data) {
 				$data->boardName = $data->name;

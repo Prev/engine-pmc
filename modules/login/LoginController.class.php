@@ -41,11 +41,10 @@
 			
 			$sessionKey = $_COOKIE['pmc_sess_key'];
 			
-			DBHandler::execQuery("
-				DELETE FROM (#)session
-				WHERE session_key='${sessionKey}'
-				LIMIT 1
-			");
+			DBHandler::for_table('session')
+				->where('session_key', $sessionKey)
+				->delete_many();
+
 			setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
 			unset($_SESSION['pmc_sso_data']);
 			
@@ -63,10 +62,14 @@
 			$autoLogin = $autoLogin ? 1 : 0;
 			$succeed = $succeed ? 1 : 0;
 			
-			DBHandler::execQuery("
-				INSERT INTO (#)login_log (ip_address, input_id, succeed, auto_login)
-				VALUES ('${ipAdress}', '${inputId}', ${succeed}, ${autoLogin})
-			");
+			$logRecord = DBHandler::for_table('login_log')->create();
+			$logRecord->set(array(
+				'ip_address' => $ipAdress,
+				'input_id' => $inputId,
+				'succeed' => $succeed,
+				'auto_login' => $autoLogin
+			));
+			$logRecord->save();
 		}
 		
 		private function login($id, $pw, $autoLogin) {
@@ -74,11 +77,10 @@
 			$pw = escape($pw);
 			$next = isset($_REQUEST['next']) ? $_REQUEST['next'] : getUrl();
 
-			$r = DBHandler::execQueryOne("
-				SELECT id,input_id,password,password_salt
-				FROM (#)user WHERE input_id='${id}'
-				LIMIT 1
-			");
+			$r = DBHandler::for_table('user')
+				->select('id')->select('input_id')->select('password')->select('password_salt')
+				->where('input_id', $id)
+				->find_one();
 			
 			// ID does not exist OR password do not match
 			if (!$r || ($r->password != hash('sha256', $pw . $r->password_salt))) {
@@ -87,24 +89,30 @@
 			}else {
 				do {
 					$sessionKey = $this->generateSessionKey();
-					$r2 = DBHandler::execQueryOne("
-						SELECT session_key
-						FROM (#)session
-						WHERE session_key='${sessionKey}'
-					");
+					$r2 = DBHandler::for_table('session')
+						->select('session_key')
+						->where('session_key', $sessionKey)
+						->find_many();
 				}while(count($r2) !== 0);
 				
 				$expireTime = time() + ($autoLogin ? 604800 : 10800); // auto login: 7day /else: 3hour
 				$ipAddr = $_SERVER['REMOTE_ADDR'];
 				
-				DBHandler::execQuery("
-					INSERT INTO (#)session (session_key, expire_time, ip_address, user_id)
-					VALUES ('${sessionKey}', '".date('Y-m-d H:i:s', $expireTime)."', '${ipAddr}', '{$r->id}')
-				");
-				DBHandler::execQuery("
-					UPDATE (#)user SET last_logined_ip='${ipAddr}'
-					WHERE id='{$r->id}'
-				");
+				$newSessionRecord = DBHandler::for_table('session')
+					->create();
+				$newSessionRecord->set(array(
+					'session_key' => $sessionKey,
+					'expire_time' => date('Y-m-d H:i:s', $expireTime),
+					'ip_address' => $ipAddr,
+					'user_id' => $r->id
+				));
+				$newSessionRecord->save();
+
+				$user = DBHandler::for_table('user')
+					->where('id', $r->id)
+					->find_one();
+				$user->set('last_logined_ip', $ipAddr);
+				$user->save();
 				
 				$this->insertLoginlog($id, true, $autoLogin);
 				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), getServerInfo()->uri, SESSION_DOMAIN);

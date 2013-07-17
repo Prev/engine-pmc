@@ -114,21 +114,18 @@
 			$moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
 			
 			if (!isset($getVars['menu']) && !$moduleID) {
-				$data = DBHandler::execQueryOne("
-					SELECT * FROM (#)menu
-					WHERE is_index='1'
-					LIMIT 1
-				");
+				$data = DBHandler::for_table('menu')
+					->where('is_index', 1)
+					->find_one();
+
 				if (isset($data)) $getVars['menu'] = $data->title;
 			}
 			if (!isset($getVars['menu'])) $getVars['menu'] = NULL;
 			
-			$data = DBHandler::execQueryOne("
-				SELECT * FROM (#)menu
-				WHERE title='" . escape($getVars['menu']) . "'
-				LIMIT 1
-			");
-			
+			$data = DBHandler::for_table('menu')
+				->where('title', $getVars['menu'])
+				->find_one();
+
 			if (!isset($data) && !isset($moduleID)) {
 				self::printErrorPage(array(
 					'en' => 'Cannot find requested menu',
@@ -159,7 +156,10 @@
 		 * Add cached CSS
 		 */
 		static function getMenu($level, $printBlankInIndex=false) {
-			$arr = DBHandler::execQuery("SELECT * FROM (#)menu WHERE level='" . escape($level) . "'");
+			$arr = DBHandler::for_table('menu')
+				->where('level', $level)
+				->find_many();
+				
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i]->className = 'pmc-menu' . $level . '-' . $arr[$i]->title;
 				if ($arr[$i]->title == self::getInstance()->selectedMenu) {
