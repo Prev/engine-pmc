@@ -3,7 +3,8 @@
 	class LoginController extends Controller {
 
 		public function procLogin() {
-			$this->login($_POST['id'], $_POST['pw'], $_POST['auto_login']);
+			if (!isset($_POST['auto_login'])) $_POST['auto_login'] = false;
+			$this->login($_POST['id'], $_POST['pw'], evalCheckbox($_POST['auto_login']));
 		}
 		
 		public function procSecureLogin() {
@@ -31,12 +32,12 @@
 					$this->goBackToLoginPage('result=fail_sec', $next);
 					return;
 				}
-				
-				$this->login($real_id, $real_pw, $_POST['auto_login']);
+				if (!isset($_POST['auto_login'])) $_POST['auto_login'] = false;
+				$this->login($real_id, $real_pw, evalCheckbox($_POST['auto_login']));
 			}
 		}
 		public function procLogout() {
-			if (!$_COOKIE['pmc_sess_key']) return;
+			if (!isset($_COOKIE['pmc_sess_key'])) return;
 			
 			$sessionKey = $_COOKIE['pmc_sess_key'];
 			
@@ -45,10 +46,10 @@
 				WHERE session_key='${sessionKey}'
 				LIMIT 1
 			");
-			setcookie('pmc_sess_key', '', time()-60, '/', SESSION_DOMAIN);
+			setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
 			unset($_SESSION['pmc_sso_data']);
 			
-			$next = ($_REQUEST['next'] ? $_REQUEST['next'] : ($_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : getUrl()));
+			$next = (isset($_REQUEST['next']) ? $_REQUEST['next'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : getUrl()));
 			redirect($next);
 		}
 		
@@ -71,12 +72,13 @@
 		private function login($id, $pw, $autoLogin) {
 			$id = escape($id);
 			$pw = escape($pw);
-			$next = $_REQUEST['next'] ? $_REQUEST['next'] : getUrl();
+			$next = isset($_REQUEST['next']) ? $_REQUEST['next'] : getUrl();
 
 			$r = DBHandler::execQueryOne("
 				SELECT id,input_id,password,password_salt
 				FROM (#)user WHERE input_id='${id}'
-				LIMIT 1");
+				LIMIT 1
+			");
 			
 			// ID does not exist OR password do not match
 			if (!$r || ($r->password != hash('sha256', $pw . $r->password_salt))) {
@@ -103,10 +105,10 @@
 					UPDATE (#)user SET last_logined_ip='${ipAddr}'
 					WHERE id='{$r->id}'
 				");
-					
+				
 				$this->insertLoginlog($id, true, $autoLogin);
-				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), '/', SESSION_DOMAIN);
-					
+				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), getServerInfo()->uri, SESSION_DOMAIN);
+				
 				redirect($next);
 			}
 		}

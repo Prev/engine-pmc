@@ -12,12 +12,12 @@
 	class SSOHandler extends Handler {
 		
 		static public function getData($redirect=false) {
-			if (!$_COOKIE['pmc_sess_key']) {
+			if (!isset($_COOKIE['pmc_sess_key'])) {
 				if ($redirect) redirect(LOGIN_URL . '&next=' . REAL_URI);
 				unset($_SESSION['pmc_sso_data']);
 				return NULL;
 				
-			}else if ($_SESSION['pmc_sso_data'] && (time() < strtotime($_SESSION['pmc_sso_data']->expire_time))) {
+			}else if (isset($_SESSION['pmc_sso_data']) && (time() < strtotime($_SESSION['pmc_sso_data']->expire_time))) {
 				return $_SESSION['pmc_sso_data'];
 			}else {
 				$urlData = getURLData(SSO_URL . '?sses_key=' . $_COOKIE['pmc_sess_key'], 'PMC-SSO Connection');
@@ -31,7 +31,7 @@
 				}
 				
 				$urlData = json_decode($urlData);
-				if ($urlData->error) {
+				if (isset($urlData->error)) {
 					unset($_SESSION['pmc_sso_data']);
 					return NULL;
 				}

@@ -19,7 +19,7 @@
 		static public function init($info) {
 			self::$type = $info->type;
 			self::$prefix = $info->prefix;
-			self::$orm = ORMExtended::open($info->host, $info->username, $info->password, $info->database_name);
+			//self::$orm = ORMExtended::open($info->host, $info->username, $info->password, $info->database_name);
 
 			$charset = join('', explode('-', TEXT_ENCODING));
 			
@@ -74,7 +74,7 @@
 						));
 						return NULL;
 					}
-					if ($result->num_rows === NULL) return $result;
+					if (!isset($result->num_rows)) return $result;
 					
 					switch ($fetchType) {
 						case 'object':

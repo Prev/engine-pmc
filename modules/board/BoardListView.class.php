@@ -17,8 +17,8 @@
 				$this->nowPage = $this->nowPage;
 				$this->pageNumbers = $this->model->getPageNumbers();
 				$this->QS = substr(
-					($_GET['board_name'] ? '&board_name=' . $_GET['board_name']  : '') .
-					($_GET['aop'] ? '&aop=' . $_GET['aop']  : '') 
+					(isset($_GET['board_name']) ? '&board_name=' . $_GET['board_name']  : '') .
+					(isset($_GET['aop']) ? '&aop=' . $_GET['aop']  : '') 
 				, 1);
 				$this->articleData = array_merge(
 					$this->model->getNoticeArticles(),

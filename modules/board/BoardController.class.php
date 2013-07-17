@@ -9,9 +9,9 @@
 			
 			switch ($action) {
 				case 'dispList' :
-					$boardName = $_GET['board_name'] ? escape($_GET['board_name']) : ( $_GET['menu'] ? escape($_GET['menu']) : NULL);
-					$aop = $_GET['aop'] ? escape($_GET['aop']) : self::DEFAULT_AOP;
-					$nowPage = $_GET['page'] ? escape($_GET['page']) : 1;
+					$boardName = isset($_GET['board_name']) ? escape($_GET['board_name']) : (isset($_GET['menu']) ? escape($_GET['menu']) : NULL);
+					$aop = isset($_GET['aop']) ? escape($_GET['aop']) : self::DEFAULT_AOP;
+					$nowPage = isset($_GET['page']) ? escape($_GET['page']) : 1;
 
 					if ($boardName === NULL) {
 						Context::printErrorPage(array(

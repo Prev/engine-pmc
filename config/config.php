@@ -11,13 +11,16 @@
 	
 	session_start();
 	
+	date_default_timezone_set('Asia/Seoul');
+
+
 	require ROOT_DIR . '/lib/functions/common.function.php';
 	
 	
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.1.4');
+	define('PMC_VERSION', '0.1.5');
 	
 	
 	/**
@@ -44,7 +47,7 @@
 	 * ex) menu -> http://engine-pmc.org/freeboard
 	 * ex) article -> http://engine-pmc.org/15
 	 */
-	define('USE_SHORT_URL', true);
+	define('USE_SHORT_URL', false);
 	
 	
 	/**
@@ -122,7 +125,7 @@
 	 * login file url
 	 */
 	//define('LOGIN_URL', RELATIVE_URL . '/?module=login&action=dispLoginPage');
-	define('LOGIN_URL', RELATIVE_URL . '/login');
+	define('LOGIN_URL', RELATIVE_URL . (USE_SHORT_URL ? '/login' : '/?module=login'));
 	
 	/**
 	 * define sso process file url

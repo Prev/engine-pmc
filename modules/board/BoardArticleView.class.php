@@ -31,9 +31,12 @@
 				$this->writer = $articleData->writerNick;
 				$this->url = (USE_SHORT_URL ? 
 					getUrl() . '/' . $this->articleNo :
-					getUrl('board', 'dispArticle', array(article_no=>$this->articleNo))
+					getUrl('board', 'dispArticle', array('article_no' => $this->articleNo))
 				);
 				$this->content = $articleData->content;
+
+				$this->prevArticle = NULL;
+				$this->nextArticle = NULL;
 
 				self::execTemplate('article');
 			}

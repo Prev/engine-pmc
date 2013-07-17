@@ -1,3 +1,15 @@
+--
+-- 데이터베이스: `pmc_test`
+--
+CREATE DATABASE IF NOT EXISTS `pmc_test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `pmc_test`;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `pmc_article`
+--
+
 CREATE TABLE IF NOT EXISTS `pmc_article` (
   `no` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `board_id` int(11) unsigned NOT NULL,
@@ -17,8 +29,14 @@ CREATE TABLE IF NOT EXISTS `pmc_article` (
   KEY `board_id` (`board_id`),
   KEY `writer_id` (`writer_id`),
   KEY `top_no` (`top_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `pmc_article_comment`
+--
 
 CREATE TABLE IF NOT EXISTS `pmc_article_comment` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -29,8 +47,13 @@ CREATE TABLE IF NOT EXISTS `pmc_article_comment` (
   PRIMARY KEY (`id`),
   KEY `writer_id` (`writer_id`),
   KEY `article_no` (`article_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `pmc_board`
+--
 
 CREATE TABLE IF NOT EXISTS `pmc_board` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -43,12 +66,21 @@ CREATE TABLE IF NOT EXISTS `pmc_board` (
   `extra_vars` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_en` (`name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- 테이블의 덤프 데이터 `pmc_board`
+--
 
 INSERT INTO `pmc_board` (`id`, `name`, `name_kr`, `categorys`, `read_permission`, `comment_permission`, `write_permission`, `extra_vars`) VALUES
-	(1, 'freeboard', '자유게시판', NULL, '["*"]', '["*"]', '["*"]', NULL),
-	(2, 'notice', '공지사항', NULL, '["*"]', '["*"]', '["*"]', NULL);
+(1, 'freeboard', '자유게시판', NULL, '["*"]', '["*"]', '["*"]', NULL),
+(2, 'notice', '공지사항', NULL, '["*"]', '["*"]', '["*"]', NULL);
 
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `pmc_login_log`
+--
 
 CREATE TABLE IF NOT EXISTS `pmc_login_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -58,13 +90,18 @@ CREATE TABLE IF NOT EXISTS `pmc_login_log` (
   `auto_login` tinyint(1) NOT NULL,
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=185 ;
 
+-- --------------------------------------------------------
 
-REATE TABLE IF NOT EXISTS `pmc_menu` (
+--
+-- 테이블 구조 `pmc_menu`
+--
+
+CREATE TABLE IF NOT EXISTS `pmc_menu` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
-  `title_kr` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `title_locales` tinytext COLLATE utf8_unicode_ci NOT NULL,
   `level` int(1) unsigned NOT NULL,
   `is_index` tinyint(1) NOT NULL DEFAULT '0',
   `css_property` tinytext COLLATE utf8_unicode_ci,
@@ -76,11 +113,20 @@ REATE TABLE IF NOT EXISTS `pmc_menu` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
 
-INSERT INTO `pmc_menu` (`id`, `title`, `title_kr`, `level`, `is_index`, `css_property`, `css_hover_property`, `css_active_property`, `module`, `action`, `extra_vars`) VALUES
-	(1, 'home', '홈', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL),
-	(2, 'notice', '공지사항', 1, 0, NULL, NULL, NULL, 'board', NULL, NULL),
-	(3, 'freeboard', '자유게시판', 1, 0, NULL, NULL, NULL, 'board', NULL, NULL);
+--
+-- 테이블의 덤프 데이터 `pmc_menu`
+--
 
+INSERT INTO `pmc_menu` (`id`, `title`, `title_locales`, `level`, `is_index`, `css_property`, `css_hover_property`, `css_active_property`, `module`, `action`, `extra_vars`) VALUES
+(1, 'home', '{"en":"Home", "kr":"홈"}', 1, 1, NULL, NULL, NULL, 'index', NULL, NULL),
+(2, 'notice', '{"en":"Notice", "kr":"공지사항"}', 1, 0, NULL, NULL, NULL, 'board', NULL, NULL),
+(3, 'freeboard', '{"en":"Free Board", "kr":"자유게시판"}', 1, 0, NULL, NULL, NULL, 'board', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `pmc_session`
+--
 
 CREATE TABLE IF NOT EXISTS `pmc_session` (
   `session_key` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
@@ -93,7 +139,11 @@ CREATE TABLE IF NOT EXISTS `pmc_session` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
 
+--
+-- 테이블 구조 `pmc_user`
+--
 
 CREATE TABLE IF NOT EXISTS `pmc_user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -109,18 +159,35 @@ CREATE TABLE IF NOT EXISTS `pmc_user` (
   `extra_vars` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`input_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+
+--
+-- 테이블의 덤프 데이터 `pmc_user`
+--
 
 INSERT INTO `pmc_user` (`id`, `input_id`, `password`, `password_salt`, `nick_name`, `user_name`, `email_address`, `phone_number`, `permission`, `last_logined_ip`, `extra_vars`) VALUES
-	(1, 'tester', '875bdbdd2cdb7326981de9c27bf9d76d52c75cd9bb1299417b1135b69a748b69', 'f98c94ebb87dc80be2a26991e3d5cc62', 'Tester', '테스터', 'tester@parmeter.kr', '010-1234-5678', NULL, '127.0.0.1', NULL);
+(1, 'tester', '875bdbdd2cdb7326981de9c27bf9d76d52c75cd9bb1299417b1135b69a748b69', 'f98c94ebb87dc80be2a26991e3d5cc62', 'Tester', '테스터', 'tester@parmeter.kr', '010-1234-5678', NULL, '123.142.203.94', NULL),
+(2, 'tester2', '875bdbdd2cdb7326981de9c27bf9d76d52c75cd9bb1299417b1135b69a748b69', 'f98c94ebb87dc80be2a26991e3d5cc62', 'tester2', '테스터2', 'tester2@parameter.kr', '010-1234-5678', NULL, '', NULL);
 
+--
+-- Constraints for dumped tables
+--
 
+--
+-- Constraints for table `pmc_article`
+--
 ALTER TABLE `pmc_article`
   ADD CONSTRAINT `pmc_article_ibfk_1` FOREIGN KEY (`board_id`) REFERENCES `pmc_board` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `pmc_article_ibfk_2` FOREIGN KEY (`writer_id`) REFERENCES `pmc_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `pmc_article_ibfk_3` FOREIGN KEY (`top_no`) REFERENCES `pmc_article` (`no`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+--
+-- Constraints for table `pmc_article_comment`
+--
 ALTER TABLE `pmc_article_comment`
   ADD CONSTRAINT `pmc_article_comment_ibfk_1` FOREIGN KEY (`article_no`) REFERENCES `pmc_article` (`no`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `pmc_article_comment_ibfk_2` FOREIGN KEY (`writer_id`) REFERENCES `pmc_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

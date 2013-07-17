@@ -32,9 +32,9 @@
 			$actionData = $this->actionData ? $this->actionData : new StdClass();
 
 			foreach(array('model', 'view', 'controller') as $key => $mvc) {
-				if ($actionData->{$mvc})
+				if (isset($actionData->{$mvc}))
 					$this->{$mvc} = $this->loadMVCClass(ucfirst($actionData->{$mvc}), false);
-				else if ($this->moduleInfo->{'default_'.$mvc})
+				else if (isset($this->moduleInfo->{'default_'.$mvc}))
 					$this->{$mvc} = $this->loadMVCClass($this->moduleInfo->{'default_'.$mvc}, false);
 				else
 					$this->{$mvc} = $this->loadMVCClass(ucfirst($mvc), true);

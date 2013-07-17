@@ -57,7 +57,7 @@
 		/**
 		 * Get Context instance
 		 */
-		public function getInstance() {
+		public static function getInstance() {
 			if(!isset($GLOBALS['__Context__'])) {
 				$GLOBALS['__Context__'] = new Context();
 			}
@@ -83,6 +83,7 @@
 			}
 
 			CacheHandler::init();
+			ModuleHandler::init();
 			DBHandler::init($db_info);
 			$this->initMenu($_GET);
 			
@@ -113,27 +114,38 @@
 			$moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
 			
 			if (!isset($getVars['menu']) && !$moduleID) {
-				$data = DBHandler::execQueryOne("SELECT * FROM (#)menu WHERE is_index='1' LIMIT 1");
-				if ($data) $getVars['menu'] = $data->title;
+				$data = DBHandler::execQueryOne("
+					SELECT * FROM (#)menu
+					WHERE is_index='1'
+					LIMIT 1
+				");
+				if (isset($data)) $getVars['menu'] = $data->title;
 			}
-			$data = DBHandler::execQueryOne("SELECT * FROM (#)menu WHERE title='" . escape($getVars['menu']) . "' LIMIT 1");
-			if (!$data && !$moduleID) {
+			if (!isset($getVars['menu'])) $getVars['menu'] = NULL;
+
+			$data = DBHandler::execQueryOne("
+				SELECT * FROM (#)menu
+				WHERE title='" . escape($getVars['menu']) . "'
+				LIMIT 1
+			");
+
+			if (!isset($data) && !isset($moduleID)) {
 				self::printErrorPage(array(
 					'en' => 'Cannot find requested menu',
 					'kr' => '해당 메뉴를 찾을 수 없습니다'
 				));
 			}else {
 				$this->selectedMenu = $getVars['menu'];				
-				if ($data->module) {
+				if (isset($data) && isset($data->module)) {
 					if ($moduleID) {
 						Context::printErrorPage(array(
 							'en' => 'Cannot excute module "'.$moduleID.'" in menu "'.$getVars['menu'].'"',
 							'kr' => '해당 메뉴 "'.$getVars['menu'].'" 에서 연결된 모듈 '.$moduleID.'"" 을 실행 할 수 없습니다'
 						));
 					}else
-					$moduleID = $data->module;
+						$moduleID = $data->module;
 				}
-				if ($data->module && $data->action && !$moduleAction)
+				if ($data && $data->module && $data->action && !$moduleAction)
 					$moduleAction = $data->action;
 			}
 			
@@ -154,7 +166,7 @@
 					$arr[$i]->selected = true;
 					$arr[$i]->className .= ' pmc-menu' . $level . '-selected';
 				}
-				if ($arr[$i]->is_index && $printBlankInIndex)
+				if ($arr[$i]->is_index && $printBlankInIndex && USE_SHORT_URL)
 					$arr[$i]->title = '';
 				
 				$arr[$i]->title_locales = json_decode($arr[$i]->title_locales);

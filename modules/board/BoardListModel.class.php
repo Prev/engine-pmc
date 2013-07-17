@@ -25,7 +25,7 @@
 			");
 			
 			for ($i=0; $i<count($data); $i++) {
-				$data[$i]->is_reply = ($data[$i]->parent_no == NULL);
+				$data[$i]->is_reply = isset($data[$i]->parent_no);
 				$data[$i]->upload_time2 = getRelativeTime(strtotime($data[$i]->upload_time));
 			}
 			return $data;

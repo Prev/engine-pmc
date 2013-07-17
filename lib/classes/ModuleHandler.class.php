@@ -34,7 +34,7 @@
 
 
 		static public function initModule($moduleID, $moduleAction=NULL) {
-			if (self::$modules->{$moduleID}) return self::$modules->{$moduleID};
+			if (isset(self::$modules->{$moduleID})) return self::$modules->{$moduleID};
 
 			$moduleDir = self::getModuleDir($moduleID);
 			if (!$moduleID) {
@@ -92,7 +92,7 @@
 							'en' => 'Unexpected token ILLEGAL in info.json',
 							'kr' => 'info.json 파일 파싱에 실패했습니다'
 						));
-					if (self::$moduleInfos->{$moduleID}->layout)
+					if (isset(self::$moduleInfos->{$moduleID}->layout))
 						Context::getInstance()->setLayout(self::$moduleInfos->{$moduleID}->layout);
 				}
 				
@@ -116,11 +116,11 @@
 				
 				for ($i=0; $i<count($actions); $i++) {
 					// action이 지정되지 않고 default action이 info.json에서 정의됬을 시 해당 action 실행
-					if (!$action && $actions[$i]->default === true)
+					if (!isset($action) && isset($actions[$i]->default) && $actions[$i]->default === true)
 						$action = $actions[$i]->name;
 					
 					if ($action == $actions[$i]->name) {
-						if ($actions[$i]->layout) 
+						if (isset($actions[$i]->layout))
 							Context::getInstance()->setLayout($actions[$i]->layout);
 						return $actions[$i];
 					}

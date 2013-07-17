@@ -14,10 +14,10 @@
 		"uri":"/engine-pmc"
 	},
 	{
-		"type":"running",
+		"type":"test",
 		"protocol":"http",
-		"host":"parameter.kr",
+		"host":"engine-pmc.parameter.kr",
 		"session_domain":"parameter.kr",
-		"uri":"/projects/pmc"
+		"uri":""
 	}
 ]

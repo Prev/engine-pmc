@@ -13,13 +13,13 @@
 			<li class="hits">{# 'en'=>'Hits', 'kr'=>'조회수'}</li>
 		</ul>
 		{@ foreach ($articleData as $key => $data): }
-			<ul class="{@ echo $data->top_notice ? 'notice' : 'article' }">
-				<condition do="$data->top_notice">
+			<ul class="{@ echo isset($data->top_notice) ? 'notice' : 'article' }">
+				<condition do="isset($data->top_notice)">
 					<li class="notice-icon">{# 'en'=>'Notice', 'kr'=>'공지'}</li>
 				</condition>
 			
 				<li class="title">
-					<condition do="!$data->top_notice">
+					<condition do="!isset($data->top_notice)">
 						{printArticlePrefix($data->order_key, $data->category)}
 					</condition>
 					<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>

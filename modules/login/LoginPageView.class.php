@@ -11,14 +11,15 @@
 				return;
 			}
 
-			switch ($_GET['result']) {
-				case 'fail':
-				case 'fail_sec':
-					$this->errorType = $_GET['result'];
-					break;
-			}
+			if (isset($_GET['result']))
+				switch ($_GET['result']) {
+					case 'fail':
+					case 'fail_sec':
+						$this->errorType = $_GET['result'];
+						break;
+				}
 			
-			$this->next = $_GET['next'] ? $_GET['next'] : $_SERVER['HTTP_REFERER'];
+			$this->next = isset($_GET['next']) ? $_GET['next'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
 			self::execTemplate('login_form');
 		}
 		

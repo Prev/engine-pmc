@@ -24,7 +24,19 @@
 			$str = '0' . $str;
 		return $str;
 	}
+
+	function split2($hashhack, $string) {
+		if (strpos($hashhack, $string) === false)
+			return array(0 => $string, 1 => NULL);
+		else
+			return split($hashhack, $string);
+	}
 	
+	function evalCheckbox($formData) {
+		return isset($formData) && 
+			($formData == true || strtolower($formData) == 'on');
+	}
+
 	function getRelativeTime($time) {
 		if ($time + 60 > time())
 			return '방금 전';
@@ -205,16 +217,19 @@
 			$parsedUrl = parse_url($url);
 			$queryObj = new StdClass();
 
-			if ($parsedUrl['query']) {
-				$tempArr = split('&', $parsedUrl['query']);
+			if (isset($parsedUrl['query'])) {
+				$tempArr = split2('&', $parsedUrl['query']);
+
 				for ($i=0; $i<count($tempArr); $i++) {
-					$tempArr2 = split('=', $tempArr[$i]);
-					$queryObj->{$tempArr2[0]} = $tempArr2[1];
+					$tempArr2 = split2('=', $tempArr[$i]);
+					if ($tempArr2[0])
+						$queryObj->{$tempArr2[0]} = $tempArr2[1];
 				}
 			}
 			if ($queryParam) {
-				foreach ($queryParam as $key => $value)
-					$queryObj->{$key} = $value;
+				foreach ($queryParam as $key => $value) {
+					if ($key) $queryObj->{$key} = $value;
+				}
 			}
 			
 			$parsedUrl['query'] = arrayToUrlQuery($queryObj);
@@ -243,19 +258,29 @@
 		if (!$array) return NULL;
 		else {
 			$tempArr = array();
-			foreach($array as $key => $value)
-				array_push($tempArr, $key . '=' . $value);
+			foreach($array as $key => $value) {
+				if (!$key)
+					continue;
+				else if ($key && !$value)
+					array_push($tempArr, $key);
+				else
+					array_push($tempArr, $key . '=' . $value);
+			}
 			return join('&', $tempArr);
 		}
 	}
 	function urlQueryToArray($query) {
 		$arr = array();
-		$tempArr = split('&', $query);
-		for ($i=0; $i<count($tempArr); $i++) {
-			$tempArr2 = split('=', $tempArr[$i]);
+		 $tempArr = split2('&', $query);
 
-			if ($tempArr2[0])
-				$arr[$tempArr2[0]] = $tempArr2[1];
+		for ($i=0; $i<count($tempArr); $i++) {
+			if (strpos('=', $tempArr[$i]) == false)
+				$arr[$tempArr[$i]] = NULL;
+			else {
+				$tempArr2 = split('=', $tempArr[$i]);
+				if ($tempArr2[0])
+					$arr[$tempArr2[0]] = $tempArr2[1];
+			}
 		}
 		return $arr;
 	}

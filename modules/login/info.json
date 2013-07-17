@@ -5,7 +5,8 @@
 	"actions":[
 		{
 			"name":"dispLoginPage",
-			"view":"LoginPageView"
+			"view":"LoginPageView",
+			"default":true
 		},
 		{
 			"name":"procLogin",

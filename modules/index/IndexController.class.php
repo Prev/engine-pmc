@@ -4,11 +4,14 @@
 		
 		public function init() {
 			$ssoData = SSOHandler::getData();
+			if (!isset($ssoData)) {
+				$ssoData = new StdClass();
+				$ssoData->user_data = NULL;
+			}
 
 			$this->view->setProperties(array(
 				'userData' => $ssoData->user_data,
-				'message' => $message,
-				'loggedin' => ($ssoData ? true : false)
+				'loggedin' => (isset($ssoData->user_data) ? true : false)
 			));
 		}
 		

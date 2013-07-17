@@ -75,8 +75,10 @@ class RSA {
 		return $result; // Remove last space.
 	}
 
-	public function decrypt($s, $utf8_decoded = FALSE){
-		$blocks = split(",", $s);
+	public function decrypt($s, $utf8_decoded = FALSE) {
+		if (strpos(',', $s) === false) $blocks = array(0 => $s);
+		else $blocks = split(',', $s);
+
 		$result = "";
 		for ($i = 0; $i < count($blocks); $i++){
 			$block = bcpowmod(self::biFromHex($blocks[$i]), $this->d, $this->m);
