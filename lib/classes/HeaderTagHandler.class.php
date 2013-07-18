@@ -115,9 +115,14 @@
 		 * Add Less CSS File
 		 */
 		public function addLesscFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
-			require_once( ROOT_DIR . '/lib/others/lib.lessc.php' );
-			
-			$siteCacheDir = '/cache/' . getServerInfo()->host . '_' . substr(md5(getServerInfo()->uri), 0, 8);
+			$this->addCSSFile(
+				CacheHandler::getLessCachePath($path),
+				$index,
+				$position,
+				$requiredAgent,
+				$targetie
+			);
+			/*$siteCacheDir = '/cache/' . getServerInfo()->host . '_' . substr(md5(getServerInfo()->uri), 0, 8);
 			if (!is_dir(ROOT_DIR . $siteCacheDir . '/lessc/')) mkdir(ROOT_DIR . $siteCacheDir . '/lessc/');
 			$cachePath = $siteCacheDir . '/lessc/' . md5($path) . '.css';
 			
@@ -130,7 +135,7 @@
 					'kr' => 'Less CSS 오류 - ' . $e->getMessage()
 				));
 			}
-			$this->addCSSFile($cachePath, $index, $position, $requiredAgent, $targetie);
+			$this->addCSSFile($cachePath, $index, $position, $requiredAgent, $targetie);*/
 		}
 		
 		/**

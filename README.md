@@ -51,25 +51,32 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
-###v 0.1.7
+####v 0.1.8
++ lesscss 기능 개선
+ + url() absolute path replace 처리
+ + CacheHandler 에서 처리하도록 변경
++ CacheHandler 개선
+
+
+####v 0.1.7
 + default layout form 디자인 개선
 + RSA key config/confing.php 에서 설정하도록 변경
 + CacheHandler에서 템플릿 컴파일 기능 TemplateHandler 로 분리
 + <import> 태그, Context::addHeaderFile 에서 requiredAgent 속성 추가
 + 로그인페이지 디자인 개선
 
-###v 0.1.6
+####v 0.1.6
 + ORM 기능 개선
 + ORM 사용시 테이블 자동 prefix 탑재
 + ORM 적용
 
-###v 0.1.5
+####v 0.1.5
 + strict 모드에서 동작하도록 업데이트
  + isset 설정, split deprecated 문제 개선
 + SHORT_URL 모드 해제시 버그 개선
 + 웹사이트별 다른 캐시폴더를 사용도록 업데이트
 
-###v 0.1.4
+####v 0.1.4
 + MVC 전반적 구조 변경
  + 다중 Model, Controller, View 지원
  + action 별 MVC 지정 가능
@@ -81,18 +88,16 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
  + default_model, default_view, default_controller 지정 가능
 +SSO 버그 픽스
 
-###v 0.1.3
+####v 0.1.3
 + 다중 모듈 지원
 + Module, View, Controller 클래스 추가
 + 템플릿 데이터 view에서 가져올 수 있게 수정
 + MVC 관련 각종 프로세스 수정
 + 템플릿 함수 Context 에서 CacheHandler 처리로 변경
 
-###v 0.1.2
+####v 0.1.2
 + Context, ModuleHandler 클래스 인스턴스화
 + var_dump2, getUrlA 함수 버그픽스
 
-###v 0.1.1
+####v 0.1.1
 + var_dump2 함수 추가
-
-###v 0.1.0

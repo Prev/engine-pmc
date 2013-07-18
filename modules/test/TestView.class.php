@@ -7,5 +7,9 @@
 			echo 'getContent("index", "dispCredit"):<br><br>';
 			getContent('index', 'dispCredit');
 		}
+
+		public function dispLessc() {
+			$this->execTemplate('test_less');
+		}
 		
 	}

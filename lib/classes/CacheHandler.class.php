@@ -11,7 +11,7 @@
 	
 	class CacheHandler extends Handler {
 		
-		static $module;
+		static $lessc;
 		static $siteCacheDir;
 
 		static public function init() {
@@ -28,25 +28,7 @@
 		}
 		
 		
-		static private function getOriginFileTime($filePath) {
-			$content = readFileContent(self::getLayoutCacheDir($filePath));
-			
-			$tmp = explode('/*T:', $content);
-			$tmp = explode('*/', $tmp[1]);
-			return $tmp[0];
-		}
-		
-		static private function getLayoutCacheDir($originFilePath) {
-			return ROOT_DIR . self::$siteCacheDir . '/layout/' . md5($originFilePath) . '.compiled.php';
-		}
-		
-		static private function makeLayoutCache($filePath, $content, $fileTime) {	
-			$cacheFileName = self::getLayoutCacheDir($filePath);
-			$fp = fopen($cacheFileName, 'w');
-			
-			fwrite($fp,  '<?php if (!defined(\'PMC\')) exit; /*T:'.$fileTime.'*/ ?>' . "\r\n" . $content);
-		}
-		
+		/* template(layout) proccess */
 		/**
 		 * Execute Layout Cache
 		 * if there is no cache, make it first
@@ -55,14 +37,11 @@
 		 * argument '$filePath' is like '/layouts/default/layout.html'
 		 */
 		static public function execTemplate($filePath, $module=NULL) {
-			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR)
-				$filePath = substr($filePath, strlen(ROOT_DIR));
-			if (substr($filePath, 0, 1) != '/')
-				$filePath = '/' . $filePath;
+			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR) $filePath = substr($filePath, strlen(ROOT_DIR));
+			if (substr($filePath, 0, 1) != '/') $filePath = '/' . $filePath;
 				
-			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/layout/')) {
+			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/layout/'))
 				mkdir(ROOT_DIR . self::$siteCacheDir . '/layout/');
-			}
 				
 			if (!is_file(ROOT_DIR . $filePath)) {
 				Context::printWarning(array(
@@ -72,26 +51,28 @@
 				return;
 			}
 			
-			if ($module) {
-				self::$module = $module;
+			if ($module) 
 				$view = $module->view;
-			}
 
 			// cache does not exist or cache and original file is diff or DEBUG_MODE
-			if (!is_file(self::getLayoutCacheDir($filePath)) ||
-				self::getOriginFileTime($filePath) != filemtime(ROOT_DIR . $filePath) ||
+			if (!is_file(self::getTemplateCacheDir($filePath)) ||
+				filemtime(self::getTemplateCacheDir($filePath)) < filemtime(ROOT_DIR . $filePath) ||
 				DEBUG_MODE ) {
-				
-				$relatviePath = substr($filePath, 0, strrpos($filePath, '/')+1); //module relative path
+
+				/* 
+				 *	module relative path
+				 *	$filePath == /modules/index/template/welcome.html
+				 *		=> $relativePath = /modules/index/template/
+				 */
+				$relatviePath = substr($filePath, 0, strrpos($filePath, '/')+1);
 				$content = TemplateHandler::compileTemplate(
 					readFileContent(ROOT_DIR . $filePath),
 					$moudle,
-				$relatviePath);
-
-				self::makeLayoutCache(
+					$relatviePath
+				);
+				self::makeTemplateCache(
 					$filePath,
-					$content,
-					filemtime(ROOT_DIR . $filePath)
+					$content
 				);
 			}
 
@@ -102,11 +83,54 @@
 				foreach ($view as $key => $value)
 					$__attr->{$key} = $value;
 			}
-			require self::getLayoutCacheDir($filePath);
+			require self::getTemplateCacheDir($filePath);
+		}
+		static private function getTemplateCacheDir($originFilePath) {
+			return ROOT_DIR . self::$siteCacheDir . '/layout/' . md5($originFilePath) . '.compiled.php';
+		}
+		static private function makeTemplateCache($filePath, $content) {	
+			$cacheFileName = self::getTemplateCacheDir($filePath);
+			$fp = fopen($cacheFileName, 'w');
+			
+			fwrite($fp,  '<?php if (!defined(\'PMC\')) exit; ?>' . "\r\n" . $content);
 		}
 		
 		
-		
+		/* lessc proccess */
+		static public function getLessCachePath($filePath) {
+			require_once( ROOT_DIR . '/lib/others/lib.lessc.php' );
+			
+			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR) $filePath = substr($filePath, strlen(ROOT_DIR));
+			if (substr($filePath, 0, 1) != '/') $filePath = '/' . $filePath;
+
+			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/lessc/'))
+				mkdir(ROOT_DIR . self::$siteCacheDir . '/lessc/');
+
+			$cachePath = ROOT_DIR . self::$siteCacheDir . '/lessc/' . md5($filePath) . '.css';
+			$originPath = ROOT_DIR . $filePath;
+			$relatviePath = substr($filePath, 0, strrpos($filePath, '/')+1);
+
+			if (!is_file($cachePath) ||
+				filemtime($cachePath) < filemtime($originPath) ||
+				DEBUG_MODE) {
+
+				if (!isset(self::$lessc))
+					self::$lessc = new lessc();
+
+				$content = readFilecontent($originPath);
+				$content = preg_replace('`url\(/(.*)\)`', 'url(' . RELATIVE_URL . '/$1)', $content);
+				$content = preg_replace('`url\((.*)\)`', 'url(' . RELATIVE_URL . $relatviePath . '$1)', $content);
+				
+				$content = self::$lessc->compile($content);
+
+				$fp = fopen($cachePath, 'w');
+				fwrite($fp, $content);
+			}
+			return substr($cachePath, strpos($cachePath, ROOT_DIR)+strlen(ROOT_DIR));
+		}
+
+
+		/* menu proccess */
 		static public function getMenuCachePath($menuData, $level) {
 			if (!is_file(self::getMenuCacheDir($level)))
 				self::makeMenuCache($menuData, $level);
@@ -114,19 +138,19 @@
 			$fp = fopen(self::getMenuCacheDir($level), 'r');
 			$firstLine = fgets($fp, 1024);
 			
+			// menu hash
 			$tmp = explode('/*H:', $firstLine);
 			$tmp = explode('*/', $tmp[1]);
 			
+			// compare hash and json encoded data
 			if ($tmp[0] != md5(json_encode2($menuData)))
 				self::makeMenuCache($menuData, $level);
 			
 			return self::$siteCacheDir . '/menu/menu' . $level . '.css';
 		}
-		
 		static private function getMenuCacheDir($level) {
 			return ROOT_DIR . self::$siteCacheDir . '/menu/menu' . $level . '.css';
 		}
-		
 		static private function makeMenuCache($menuData, $level) {
 			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/menu/')) {
 				mkdir(ROOT_DIR . self::$siteCacheDir . '/menu/');
