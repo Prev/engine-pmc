@@ -1,5 +1,13 @@
 <?php
 	
+	/**
+	 * @ author prevdev@gmail.com
+	 * @ 2013.07
+	 *
+	 *
+	 * (abstract) Model Class
+	 */
+
 	class Model extends MVC {
 
 		protected $module;

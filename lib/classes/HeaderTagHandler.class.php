@@ -122,20 +122,6 @@
 				$requiredAgent,
 				$targetie
 			);
-			/*$siteCacheDir = '/cache/' . getServerInfo()->host . '_' . substr(md5(getServerInfo()->uri), 0, 8);
-			if (!is_dir(ROOT_DIR . $siteCacheDir . '/lessc/')) mkdir(ROOT_DIR . $siteCacheDir . '/lessc/');
-			$cachePath = $siteCacheDir . '/lessc/' . md5($path) . '.css';
-			
-			try {
-				$lessc = new lessc();
-				$lessc->checkedCompile(ROOT_DIR.$path, ROOT_DIR.$cachePath);
-			}catch (Exception $e) {
-				Context::printWarning(array(
-					'en' => 'Less CSS Error - ' . $e->getMessage(),
-					'kr' => 'Less CSS 오류 - ' . $e->getMessage()
-				));
-			}
-			$this->addCSSFile($cachePath, $index, $position, $requiredAgent, $targetie);*/
 		}
 		
 		/**

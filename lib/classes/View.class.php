@@ -1,5 +1,13 @@
 <?php
 	
+	/**
+	 * @ author prevdev@gmail.com
+	 * @ 2013.07
+	 *
+	 *
+	 * (abstract) View Class
+	 */
+
 	class View extends MVC {
 
 		protected $module;

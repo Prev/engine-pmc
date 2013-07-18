@@ -1,5 +1,14 @@
 <?php
 	
+	/**
+	 * @ author prevdev@gmail.com
+	 * @ 2013.07
+	 *
+	 *
+	 * MVC Class
+	 * Base of Model/Controller/View
+	 */
+
 	abstract class MVC {
 
 		abstract public function setMMVC($module, $model, $view, $controller);

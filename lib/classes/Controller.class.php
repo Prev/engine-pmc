@@ -1,5 +1,13 @@
 <?php
 	
+	/**
+	 * @ author prevdev@gmail.com
+	 * @ 2013.07
+	 *
+	 *
+	 * (abstract) Controller Class
+	 */
+
 	class Controller extends MVC {
 
 		protected $module;

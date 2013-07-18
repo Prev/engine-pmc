@@ -67,6 +67,18 @@
 				$obj->user_data->{$key} = $value;
 			}
 			
+			$queryResult = mysql_query("
+				SELECT ${prefix}user_group_user.*, ${prefix}user_group.*
+				FROM ${prefix}user_group_user, ${prefix}user_group
+				WHERE ${prefix}user_group_user.user_id='${user_id}'
+					AND ${prefix}user_group.id = ${prefix}user_group_user.group_id
+			", $db);
+
+			$obj->user_data->groups = array();
+			while ($row = mysql_fetch_object($queryResult))
+				array_push($obj->user_data->groups, $row);
+
+
 			mysql_query("DELETE FROM ${prefix}session WHERE expire_time < now()", $db);
 			echo json_encode($obj);
 		}
