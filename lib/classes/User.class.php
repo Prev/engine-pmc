@@ -8,43 +8,42 @@
 	 * User Class
 	 */
 	class User {
-		private $user;
+		static private $userSingleTon;
 
-		public function __construct($user) {
-			if($user instanceof DBHandler) {
-				if(
-					isset($user->id) && 
-					isset($user->input_id) &&
-					isset($user->password) &&
-					isset($user->password_salt) &&
-					isset($user->nick_name) &&
-					isset($user->user_name) &&
-					isset($user->email_address) &&
-					isset($user->phone_number)
-					) {
-					$this->user = $user;
-				}
+		private $user;
+		private $group;
+
+		static public function getCurrentUser() {
+			return self::$userSingleTon;
+		}
+
+		static public function init($user = null, $group = null) {
+			if(!isset($user)||!isset($group))
+				self::$userSingleTon = isset($_SESSION['pmc_user']) ? $_SESSION['pmc_user'] : null;
+			else
+				self::$userSingleTon = new User($user, $group);
+		}
+
+		public function __construct($user, $group) {
+			if( isset($user->user_id) &&
+				isset($user->nick_name) &&
+				isset($user->user_name) &&
+				isset($user->email_address) &&
+				isset($user->phone_number)) {
+				$this->user = $user;
+				$this->group = $group;
 			}
 			else {
 				Context::printWarning('User class is not initialize with User record data');
 			}
 		}
 
-		public function __set($name, $value) {
-			$this->user->set($name, $value);
-			$this->user->save();
-			$this->user->{$name} = $value;
-		}
-
 		public function __get($name) {			
-			return $this->user->{$name};
+			$ret = $this->user->{$name};
+			return isset($ret) ? $ret : $this->group->{$name};
 		}
 
 		public function __isset($name) {
-			return isset($this->user{$name});
-		}
-
-		public function __unset($name) {
-			unset($this->user->{$name});
+			return isset($this->user{$name}) || isset($this->group->{$name});
 		}
 	}

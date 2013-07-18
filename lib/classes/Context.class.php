@@ -69,11 +69,13 @@
 		 * Initalize Context instance
 		 */
 		public function init($db_info) {
+			ob_start();
 			self::$attr = new StdClass();
 			$this->headerTagHandler = new HeaderTagHandler();
 			$this->setLayout(LAYOUT_NAME);
-			
+
 			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale']);
+
 			if (!isset($GLOBALS['serverInfo'])) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot find connected server with the server defined in conf/server_info.json',
@@ -379,6 +381,96 @@
 			ErrorLogger::log('Warning : ' . $message, $backtrace);
 		}
 		
+		public function checkSSO() {
+			if(isset($_GET['sses_key']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PMC-SSO') !== false) {
+
+				$session_key = $_GET['sses_key'];
+
+				$queryResult = DBHandler::for_table('session')
+						->select('*')
+						->where('session_key', $session_key)
+						->where_gt('expire_time', 'now()')->find_one();
+
+				$ret = new stdClass();
+				$ret->result = 'success';
+				$ret->expire_time = $queryResult->expire_time;
+				$ret->userData = null;
+				$ret->groupData = null;
+
+				$userData = DBHandler::for_table('user')->select('*')->where('id', $queryResult->user_id)->find_one();
+
+				if(empty($userData)) {
+					$ret->result = 'fail';
+					echo json_encode2($ret);
+					return false;
+				}
+
+				$userData = $userData->getData();
+
+				foreach ($userData as $key => $value) {
+					if ($key === 'id' || $key === 'password' || $key === 'password_salt') continue;
+					if ($key == 'input_id') $ret->userData->user_id = $value;
+					
+					$ret->userData->{$key} = $value;
+				}
+
+				$groupData = DBHandler::for_table('user_group')
+						->select('*')
+						->join('user_group_user', array('user_group_user.group_id', '=', 'user_group.id'))
+						->where('user_group_user.user_id', $queryResult->user_id)
+						->find_one();
+				
+				if(empty($groupData)) {
+					$ret->result = 'fail';
+					echo json_encode2($ret);
+					return false;
+				}
+
+				$groupData = $groupData->getData();	
+
+				foreach($groupData as $key => $value) {
+					if($key == 'name' || $key == 'name_locales')
+						$ret->groupData->{'group_' . $key} = $value;
+				}
+
+				echo json_encode2($ret);
+				return false;
+			}
+			else if(isset($_COOKIE['pmc_sess_key']) &&
+					!isset($_SESSION['pmc_user'])){ // TODO : expire check;
+
+					$urlData = getURLData(SSO_URL . '?sses_key=' . $_COOKIE['pmc_sess_key'], 'PMC-SSO Connection');
+
+					if (!$urlData) {
+						Context::printErrorPage(array(
+							'en' => 'cannot load sso data',
+							'kr' => 'SSO 데이터를 불러올 수 없습니다'
+						));
+						unset($_SESSION['pmc_user']);
+						return NULL;
+					}
+
+					$urlData = json_decode($urlData);
+
+					if (!$urlData || $urlData->result === 'fail') {
+						Context::printErrorPage(array(
+							'en' => 'cannot load sso data',
+							'kr' => 'SSO 데이터를 불러올 수 없습니다'
+						));
+						unset($_SESSION['pmc_user']);
+						return NULL;
+					}
+					User::init($urlData->userData, $urlData->groupData);
+
+					$_SESSION['pmc_user'] = User::getCurrentUser();
+					return true;
+				}
+			else {
+				User::init();
+				return true;
+			} 
+		}
+
 		/**
 		 * print content
 		 * exec layout cache and merge with doctype, header tags etc...
@@ -387,7 +479,6 @@
 		public function procLayout() {
 			if (!$this->contentPrintable) return; // if error printed, return
 
-			ob_start();
 			CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
 			
 			$content = ob_get_clean();

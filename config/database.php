@@ -15,7 +15,7 @@
 			'type' => 'mysql',
 			'host' => 'localhost',
 			'username' => 'pmc_test',
-			'password' => 'q1w2e3',
+			'password' => 'test123',
 			'database_name' => 'pmc_test',
 			'prefix' => 'pmc_'
 		);

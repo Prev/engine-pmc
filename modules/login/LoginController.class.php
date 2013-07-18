@@ -46,7 +46,7 @@
 				->delete_many();
 
 			setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
-			unset($_SESSION['pmc_sso_data']);
+			unset($_SESSION['pmc_user']);
 			
 			$next = (isset($_REQUEST['next']) ? $_REQUEST['next'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : getUrl()));
 			redirect($next);
@@ -70,18 +70,17 @@
 				'auto_login' => $autoLogin
 			));
 			$logRecord->save();
+
 		}
 		
 		private function login($id, $pw, $autoLogin) {
-			$id = escape($id);
-			$pw = escape($pw);
-			$next = isset($_REQUEST['next']) ? $_REQUEST['next'] : getUrl();
+			$next = !empty($_REQUEST['next']) ? $_REQUEST['next'] : getUrl();
 
 			$r = DBHandler::for_table('user')
 				->select('id')->select('input_id')->select('password')->select('password_salt')
 				->where('input_id', $id)
 				->find_one();
-			
+
 			// ID does not exist OR password do not match
 			if (!$r || ($r->password != hash('sha256', $pw . $r->password_salt))) {
 				$this->insertLoginlog($id, false, $autoLogin);
@@ -94,30 +93,33 @@
 						->where('session_key', $sessionKey)
 						->find_many();
 				}while(count($r2) !== 0);
-				
+
 				$expireTime = time() + ($autoLogin ? 604800 : 10800); // auto login: 7day /else: 3hour
 				$ipAddr = $_SERVER['REMOTE_ADDR'];
-				
+
 				$newSessionRecord = DBHandler::for_table('session')
 					->create();
+
 				$newSessionRecord->set(array(
 					'session_key' => $sessionKey,
 					'expire_time' => date('Y-m-d H:i:s', $expireTime),
 					'ip_address' => $ipAddr,
 					'user_id' => $r->id
 				));
+
 				$newSessionRecord->save();
 
 				$user = DBHandler::for_table('user')
-					->where('id', $r->id)
-					->find_one();
+					->find_one($r->id);
+
 				$user->set('last_logined_ip', $ipAddr);
 				$user->save();
-				
+
 				$this->insertLoginlog($id, true, $autoLogin);
 				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), getServerInfo()->uri, SESSION_DOMAIN);
-				
+
 				redirect($next);
+
 			}
 		}
 		

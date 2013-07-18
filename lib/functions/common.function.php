@@ -142,7 +142,7 @@
 	function getURLData($url, $userAgent=NULL) {
 		$temp = explode('://', $url);
 		$temp = explode('/', $temp[1]);
-		
+
 		$host = $temp[0];
 		$port = strstr($url, 'https://') ? 443 : 80;
 		$output = '';
@@ -151,7 +151,7 @@
 		
 		fputs($fp,
 			"GET ${url} HTTP/1.0\r\n" .
-			"Host: ${host}:${port}\r\n" .
+			"Host: ${host}\r\n" .
 			'User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) PHP fsocket' . ($userAgent ? ' ' . $userAgent : '') . "\r\n\r\n");
 		
 		while(!feof($fp))
@@ -164,7 +164,7 @@
 	}
 	
 	function getServerInfo() {
-		if (isset($GLOBALS['serverInfo'])) return $GLOBALS['serverInfo'];
+		if (!empty($GLOBALS['serverInfo'])) return $GLOBALS['serverInfo'];
 		
 		$server_info = json_decode(readFileContent(SERVER_INFO_FILE_PATH));
 		foreach($server_info as $_key => $_value) {

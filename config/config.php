@@ -41,13 +41,17 @@
 	 */
 	define('LAYOUT_NAME', 'default');
 	
-	
+	/**
+	 *  Define using sso
+	 */
+	define('USE_SSO', true);
+
 	/**
 	 * Define using short url
 	 * ex) menu -> http://engine-pmc.org/freeboard
 	 * ex) article -> http://engine-pmc.org/15
 	 */
-	define('USE_SHORT_URL', true);
+	define('USE_SHORT_URL', false);
 	
 
 	/**
@@ -138,7 +142,7 @@
 	/**
 	 * define sso process file url
 	 */
-	define('SSO_URL', RELATIVE_URL . '/pmc.sso.php');
+	define('SSO_URL', RELATIVE_URL . '/');
 	
 	
 	/**
@@ -168,5 +172,4 @@
 	require ROOT_DIR . '/lib/classes/TemplateHandler.class.php';
 	require ROOT_DIR . '/lib/classes/CacheHandler.class.php';
 	require ROOT_DIR . '/lib/classes/Context.class.php';
-	require ROOT_DIR . '/lib/classes/SSOHandler.class.php';
 	require ROOT_DIR . '/lib/classes/User.class.php';

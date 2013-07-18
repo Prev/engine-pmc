@@ -21,6 +21,7 @@
 			self::_setup_db($connection_name);
 			return new self($table_name, array(), $connection_name);
 		}
+
 		// @override
 		protected function _quote_identifier($identifier) {
 			$parts = explode('.', $identifier);
@@ -28,17 +29,20 @@
 			$parts = array_map(array($this, '_quote_identifier_part'), $parts);
 			return join('.', $parts);
 		}
+
 		// @override
 		protected function _add_simple_condition($type, $column_name, $separator, $value) {
 			if (count($this->_join_sources) > 0 && strpos($column_name, '.') === false)
 				$column_name = self::$prefix . "{$this->_table_name}.{$column_name}";
 			$column_name = $this->_quote_identifier($column_name);
 			return $this->_add_condition($type, "{$column_name} {$separator} ?", $value);
-		} 
+		}
+
 		// @override
 		protected function _add_join_source($join_operator, $table, $constraint, $table_alias=null) {
 			return parent::_add_join_source($join_operator, self::$prefix . $table, $constraint, $table_alias);
 		}
+
 		// @override
 		protected function _create_instance_from_row($row) {
 			$instance = self::for_table($this->_table_name, $this->_connection_name, false);
@@ -46,6 +50,7 @@
 			$instance->hydrate($row);
 			return $instance;
 		}
+
 		// @override
 		public function limit($args1, $args2=NULL) {
             if (isset($args2)) {

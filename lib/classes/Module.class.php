@@ -9,9 +9,9 @@
 	 * Base class of modules
 	 */
 	
-	abstract class Module {
+	class Module {
 		
-		abstract public function init();
+		public function init() {}
 		
 		public $moduleID;
 		public $action;

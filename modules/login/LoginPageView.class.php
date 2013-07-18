@@ -6,7 +6,7 @@
 		var $next;
 
 		function dispLoginPage() {
-			if (SSOHandler::getData()) {
+			if (!is_null(User::getCurrentUser())) {
 				redirect(getUrl());
 				return;
 			}

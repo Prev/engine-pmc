@@ -2,6 +2,7 @@
 	
 	/**
 	 * @ author prevdev@gmail.com
+	 * @ author luaviskang@gmail.com
 	 * @ 2013.05
 	 *
 	 *
@@ -81,27 +82,44 @@
 			$moduleDir = self::getModuleDir($moduleID);
 			$filePath = $moduleDir . '/__' . ucfirst($moduleID) . 'Module.class.php';
 			$classID = ucfirst(strtolower($moduleID)) . 'Module';
-			
-			require $filePath;
-			
-			if (class_exists($classID)) {
-				if (is_file($moduleDir . '/info.json')) {
-					self::$moduleInfos->{$moduleID} = json_decode(readFileContent($moduleDir . '/info.json'));
-					if (self::$moduleInfos->{$moduleID} === NULL)
-						Context::printWarning(array(
-							'en' => 'Unexpected token ILLEGAL in info.json',
-							'kr' => 'info.json 파일 파싱에 실패했습니다'
-						));
-					if (isset(self::$moduleInfos->{$moduleID}->layout))
-						Context::getInstance()->setLayout(self::$moduleInfos->{$moduleID}->layout);
+
+			if (is_file($moduleDir . '/info.json')) {
+				self::$moduleInfos->{$moduleID} = json_decode(readFileContent($moduleDir . '/info.json'));
+				if (self::$moduleInfos->{$moduleID} === NULL) {
+					Context::printWarning(array(
+						'en' => 'Unexpected token ILLEGAL in info.json',
+						'kr' => 'info.json 파일 파싱에 실패했습니다'
+					));
 				}
-				
-				$_loader = create_function('', "return new ${classID}();");
-				self::$modules->{$moduleID} = $_loader();
-				self::$modules->{$moduleID}->moduleInfo = self::$moduleInfos->{$moduleID};
-				return self::$modules->{$moduleID};
+				else if(isset(self::$moduleInfos->{$moduleID}->group)) {
+					if(
+						is_null(User::getCurrentUser()) &&
+						User::getCurrentUser()->group_name != self::$moduleInfos->{$moduleID}->group) {
+						Context::printErrorPage(array(
+							'en' => 'Operation not permitted',
+							'kr' => '권한이 없습니다.'
+						));
+					}
+				}
+
+				if (isset(self::$moduleInfos->{$moduleID}->layout))
+					Context::getInstance()->setLayout(self::$moduleInfos->{$moduleID}->layout);
 			}
-			return NULL;
+
+			if(is_file($filePath)) {
+				require $filePath;
+
+				if(class_exists($classID)) {
+					$_loader = create_function('', 'return new ' . $classID . '();');
+					self::$modules->{$moduleID} = $_loader();
+					self::$modules->{$moduleID}->moduleInfo = self::$moduleInfos->{$moduleID};
+					return self::$modules->{$moduleID};
+				}
+			}
+			$_loader = create_function('', 'return new Module();');
+			self::$modules->{$moduleID} = $_loader();
+			self::$modules->{$moduleID}->moduleInfo = self::$moduleInfos->{$moduleID};
+			return self::$modules->{$moduleID};
 		}
 		
 		static private function loadModuleAction($action, $module) {
@@ -131,6 +149,24 @@
 						'kr' => '모듈 액션이 정의되지 않았습니다.'
 					));
 				}
+				else if(isset($action->private) && $action->private === true) {
+					Context::printErrorPage(array(
+						'en' => 'Module action is not opened',
+						'kr' => '모듈 액션이 공개되어 있지 않습니다'
+					));
+				}
+				else if(isset($action->group)) {
+					if(!is_null(User::getCurrentUser())) {
+						if(User::getCurrentUser()->group_name === $action->group) {
+							return NULL;
+						}
+					}
+					Context::printErrorPage(array(
+						'en' => 'Operation not permitted',
+						'kr' => '권한이 없습니다.'
+					));
+				}
+
 				Context::printErrorPage(array(
 					'en' => 'Cannot execute module action - permission denined by configuration file',
 					'kr' => '모듈 액션을 실행할 수 없습니다 - Cofiguration 파일에 의해 권한이 거부됨'
