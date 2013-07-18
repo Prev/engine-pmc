@@ -18,7 +18,6 @@
 		// @override
 		static public function for_table($table_name, $connection_name = self::DEFAULT_CONNECTION, $appendPrefix=true) {
 			if ($appendPrefix) $table_name = self::$prefix . $table_name;
-
 			self::_setup_db($connection_name);
 			return new self($table_name, array(), $connection_name);
 		}

@@ -8,7 +8,7 @@
 	 * TemplateHandler Class
 	 * complie template
 	 */
-	
+
 	class TemplateHandler extends Handler {
 		
 		private $module;

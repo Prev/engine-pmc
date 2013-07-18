@@ -67,7 +67,7 @@
 				$relatviePath = substr($filePath, 0, strrpos($filePath, '/')+1);
 				$content = TemplateHandler::compileTemplate(
 					readFileContent(ROOT_DIR . $filePath),
-					$moudle,
+					$module,
 					$relatviePath
 				);
 				self::makeTemplateCache(

@@ -169,9 +169,4 @@
 	require ROOT_DIR . '/lib/classes/CacheHandler.class.php';
 	require ROOT_DIR . '/lib/classes/Context.class.php';
 	require ROOT_DIR . '/lib/classes/SSOHandler.class.php';
-	
-	
-	
-	
-	
-	
+	require ROOT_DIR . '/lib/classes/User.class.php';
