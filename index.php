@@ -11,7 +11,7 @@
 
 	define('PMC', true);
 	define('ROOT_DIR', dirname(__FILE__));
- 	 
+ 	
 	require ROOT_DIR . '/config/config.php';
 
 	$oContext = Context::getInstance();

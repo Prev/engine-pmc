@@ -16,9 +16,9 @@
 			$next = $_REQUEST['next'] ? $_REQUEST['next'] : getUrl();
 
 			$_rsa = new RSA(
-				'10001',
-				'3c6c9ac18899b33cdfb03503eb81fc9',
-				'801d5852519f4382e8faa29ae15222d'
+				RSA_PUBLIC_KEY,
+				RSA_PRIVATE_KEY,
+				RSA_MODULUS
 			);
 
 			if (!isset($enc_id) || !isset($enc_pw) || !isset($check_sum)) {

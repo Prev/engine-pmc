@@ -90,7 +90,7 @@
 			$this->addHeaderFile('/static/css/global.css');
 			$this->addHeaderFile('/static/js/lie.js');
 			$this->addMetaTag( array('charset'=>TEXT_ENCODING) );
-			
+
 			if (DEBUG_MODE)
 				$this->addHeaderFile('/static/js/vdump.js', -1, 'body-bottom');
 			
@@ -228,7 +228,7 @@
 		 * if index is -1, push file in last of array
 		 * else, push file in current index
 		 */
-		public function addHeaderFile($path, $index=-1, $position='head', $targetie=NULL) {
+		public function addHeaderFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
 			if (substr($path, 0, 1) != '/')
 				$path = '/' . $path;
 			
@@ -242,16 +242,16 @@
 			
 			switch ($extension = substr(strrchr($path, '.'), 1)) {
 				case 'css' :
-					$this->headerTagHandler->addCSSFile($path, $index, $position, $targetie);
+					$this->headerTagHandler->addCSSFile($path, $index, $position, $requiredAgent, $targetie);
 					break;
 					
 				case 'js' :
-					$this->headerTagHandler->addJsFile($path, $index, $position, $targetie);
+					$this->headerTagHandler->addJsFile($path, $index, $position, $requiredAgent, $targetie);
 					break;
 					
 				case 'lessc' :	
 				case 'less' :
-					$this->headerTagHandler->addLesscFile($path, $index, $position, $targetie);
+					$this->headerTagHandler->addLesscFile($path, $index, $position, $requiredAgent, $targetie);
 					break;
 					
 				case 'ico' :
@@ -388,7 +388,7 @@
 			if (!$this->contentPrintable) return; // if error printed, return
 
 			ob_start();
-			CacheHandler::execLayout('/layouts/' . $this->layout . '/layout.html');
+			CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
 			
 			$content = ob_get_clean();
 			OB_GZIP ? ob_start('ob_gzhandler') : ob_start();

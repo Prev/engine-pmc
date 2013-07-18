@@ -51,6 +51,13 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
+###v 0.1.7
++ default layout form 디자인 개선
++ RSA key config/confing.php 에서 설정하도록 변경
++ CacheHandler에서 템플릿 컴파일 기능 TemplateHandler 로 분리
++ <import> 태그, Context::addHeaderFile 에서 requiredAgent 속성 추가
++ 로그인페이지 디자인 개선
+
 ###v 0.1.6
 + ORM 기능 개선
 + ORM 사용시 테이블 자동 prefix 탑재

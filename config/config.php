@@ -49,7 +49,7 @@
 	 */
 	define('USE_SHORT_URL', true);
 	
-	
+
 	/**
 	  * Define default locale
 	  * Get current locale by calling getLocale() func
@@ -75,6 +75,14 @@
 		 */
 		define('LINE_END', (ZIP_BLANK ? '' : "\r\n"));
 	
+
+	/**
+	 * define login rsa keys (hex)
+	 */
+	define('RSA_PUBLIC_KEY', '10001');
+	define('RSA_PRIVATE_KEY', '3c6c9ac18899b33cdfb03503eb81fc9');
+	define('RSA_MODULUS', '801d5852519f4382e8faa29ae15222d');
+
 	
 	/**
 	 * Define Debugging mode
@@ -157,6 +165,7 @@
 	require ROOT_DIR . '/lib/classes/Controller.class.php';
 	require ROOT_DIR . '/lib/classes/HeaderTagHandler.class.php';
 	require ROOT_DIR . '/lib/classes/ErrorLogger.class.php';
+	require ROOT_DIR . '/lib/classes/TemplateHandler.class.php';
 	require ROOT_DIR . '/lib/classes/CacheHandler.class.php';
 	require ROOT_DIR . '/lib/classes/Context.class.php';
 	require ROOT_DIR . '/lib/classes/SSOHandler.class.php';

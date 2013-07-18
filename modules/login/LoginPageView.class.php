@@ -19,6 +19,10 @@
 						break;
 				}
 			
+			$this->rsaKeys = (object) array(
+				'publicKey' => RSA_PUBLIC_KEY,
+				'modulus' => RSA_MODULUS
+			);
 			$this->next = isset($_GET['next']) ? $_GET['next'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
 			self::execTemplate('login_form');
 		}

@@ -1,0 +1,71 @@
+#login-wrap{ width:250px; margin:5px auto 30px auto; }
+#login-wrap #login-title{ font-size:24px; margin-bottom:10px; }
+#login-wrap #input-wrap .input-warp-content{ margin-bottom: 5px; }
+#login-wrap #input-wrap .input-warp-content .ie-alternative-label{
+	font-size: 12px;
+	color: #666;
+	*zoom:1;
+	padding-left: 1px;
+}
+#login-wrap #input-wrap label{
+	display: block;
+	color:#666;
+	font-size: 14px;
+	margin-bottom: 3px;
+}
+#login-wrap #input-wrap input{
+	width: 240px;
+	box-sizing: border-box;
+	font-size: 14px;
+	padding: 5px 7px;
+	background: #fff;
+	border: 1px solid #d9d9d9;
+	border-top: 1px solid #c0c0c0;
+	border-radius: 2px;
+	box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+#login-wrap #input-wrap input:hover{
+	border: 1px solid #b9b9b9;
+	border-top: 1px solid #a0a0a0;
+	box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+#login-wrap #input-wrap input:focus {
+	outline: none;
+	border: 1px solid #999;
+	box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+#login-wrap #input-wrap input:disabled {
+	background: #F3F3F3 !important;
+	border-color: #CCC !important;
+	box-shadow: inset 0 1px 2px rgba(0,0,0,0.1) !important;;
+}
+
+
+#login-wrap #submit-wrap #sl-wrap{ padding:3px 0 0 2px }
+#login-wrap #submit-wrap #sl-wrap label{ padding:3px 15px 3px 3px; }
+
+#login-wrap #submit-wrap #submit-btn-wrap{ margin:10px 0 0 0; }
+#login-wrap #submit-wrap #submit-btn-wrap button{
+	font-size: 14px;
+	padding: 7px 12px;
+	border: 1px solid #2f5bb7;
+	border-radius: 2px;
+	color: #fff;
+	text-shadow: 0 1px rgba(0,0,0,0.3);
+	background-color: #357ae8;
+	background-image: -webkit-gradient(linear,left top,left bottom,from(#4d90fe),to(#357ae8));
+	background-image: -webkit-linear-gradient(top,#4d90fe,#357ae8);
+	background-image: -moz-linear-gradient(top,#4d90fe,#357ae8);
+	background-image: -ms-linear-gradient(top,#4d90fe,#357ae8);
+	background-image: -o-linear-gradient(top,#4d90fe,#357ae8);
+	background-image: linear-gradient(top,#4d90fe,#357ae8);
+}
+
+
+#error-message{
+	width:420px;
+	margin:0px auto 20px auto;
+	padding:11px;
+	border:1px solid #ffbee5;
+	background-color:#ffe0f2;
+}

@@ -90,10 +90,11 @@
 		/**
 		 * Add CSS File
 		 */
-		public function addCSSFile($path, $index=-1, $position='head', $targetie=NULL) {
+		public function addCSSFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
 			$this->insertIntoArray($this->cssFiles, (object) array(
 				'path'=>$path,
 				'position'=>$position,
+				'requiredAgent'=>$requiredAgent,
 				'targetie'=>$targetie
 			), $index);
 		}
@@ -101,10 +102,11 @@
 		/**
 		 * Add JS File
 		 */
-		public function addJSFile($path, $index=-1, $position='head', $targetie=NULL) {
+		public function addJSFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
 			$this->insertIntoArray($this->jsFiles, (object) array(
 				'path'=>$path,
 				'position'=>$position,
+				'requiredAgent'=>$requiredAgent,
 				'targetie'=>$targetie
 			), $index);
 		}
@@ -112,7 +114,7 @@
 		/**
 		 * Add Less CSS File
 		 */
-		public function addLesscFile($path, $index=-1, $position='head', $targetie=NULL) {
+		public function addLesscFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
 			require_once( ROOT_DIR . '/lib/others/lib.lessc.php' );
 			
 			$siteCacheDir = '/cache/' . getServerInfo()->host . '_' . substr(md5(getServerInfo()->uri), 0, 8);
@@ -128,7 +130,7 @@
 					'kr' => 'Less CSS 오류 - ' . $e->getMessage()
 				));
 			}
-			$this->addCSSFile($cachePath, $index, $position, $targetie);
+			$this->addCSSFile($cachePath, $index, $position, $requiredAgent, $targetie);
 		}
 		
 		/**
@@ -218,8 +220,9 @@
 					));
 					continue;
 				}
-				if ($headerFiles[$i]->position !== $position)
-					continue;
+
+				if ($headerFiles[$i]->position !== $position) continue;
+				if (isset($headerFiles[$i]->requiredAgent) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), strtolower($headerFiles[$i]->requiredAgent)) === false) continue; 
 				
 				if ($headerFiles[$i]->targetie !== NULL)
 					$html .= '<!--[if '.$headerFiles[$i]->targetie.']>' . LINE_END;

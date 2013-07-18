@@ -3,7 +3,7 @@ var rsa;
 
 window.addEventListener("load", function () {
 	form = document.forms.login_form;
-	rsa = new RSA("10001", null, "801d5852519f4382e8faa29ae15222d");
+	rsa = new RSA(rsaKeys.publicKey, null, rsaKeys.modulus);
 	
 	toggleSecureLogin(form.secure_login);
 });
