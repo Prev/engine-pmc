@@ -23,10 +23,3 @@
 	);
 
 	$oContext->procLayout();
-
-
-	$data = DBHandler::for_table('user')->find_one(1);
-	$user = new User($data);
-	$user->input_id = 'steven';
-
-	var_dump2($user);
