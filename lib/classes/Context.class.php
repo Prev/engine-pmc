@@ -415,7 +415,7 @@
 				}
 
 				$groupData = DBHandler::for_table('user_group')
-						->select('*')
+						->select_many('name', 'name_locales')
 						->join('user_group_user', array('user_group_user.group_id', '=', 'user_group.id'))
 						->where('user_group_user.user_id', $queryResult->user_id)
 						->find_one();
@@ -429,8 +429,7 @@
 				$groupData = $groupData->getData();	
 
 				foreach($groupData as $key => $value) {
-					if($key == 'name' || $key == 'name_locales')
-						$ret->groupData->{'group_' . $key} = $value;
+					$ret->groupData->{'group_' . $key} = $value;
 				}
 
 				echo json_encode2($ret);
@@ -440,7 +439,6 @@
 					!isset($_SESSION['pmc_user'])){ // TODO : expire check;
 
 					$urlData = getURLData(SSO_URL . '?sses_key=' . $_COOKIE['pmc_sess_key'], 'PMC-SSO Connection');
-
 					if (!$urlData) {
 						Context::printErrorPage(array(
 							'en' => 'cannot load sso data',
