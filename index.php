@@ -22,6 +22,6 @@
 			$oContext->moduleID,
 			$oContext->moduleAction
 		);
-
+		
 		$oContext->procLayout();
 	}

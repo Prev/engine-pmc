@@ -146,14 +146,14 @@
 		$host = $temp[0];
 		$port = strstr($url, 'https://') ? 443 : 80;
 		$output = '';
-		
+
 		if (!($fp = fsockopen(($port == 443 ? 'ssl://'.$host : $host), $port))) return NULL;
 		
 		fputs($fp,
 			"GET ${url} HTTP/1.0\r\n" .
 			"Host: ${host}\r\n" .
 			'User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) PHP fsocket' . ($userAgent ? ' ' . $userAgent : '') . "\r\n\r\n");
-		
+
 		while(!feof($fp))
 			$output .= fgets($fp, 1024);    
 		

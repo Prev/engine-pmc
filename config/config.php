@@ -41,10 +41,6 @@
 	 */
 	define('LAYOUT_NAME', 'default');
 	
-	/**
-	 *  Define using sso
-	 */
-	define('USE_SSO', true);
 
 	/**
 	 * Define using short url
@@ -139,7 +135,13 @@
 	//define('LOGIN_URL', RELATIVE_URL . '/?module=login&action=dispLoginPage');
 	define('LOGIN_URL', RELATIVE_URL . (USE_SHORT_URL ? '/login' : '/?module=login'));
 	
-	
+
+	/**
+	 * define sso process file url
+	 */
+	define('SSO_URL', RELATIVE_URL . '/');
+
+
 	/**
 	 * Define Document Type
 	 * html5, xhtml-t, xhtml-s, xhtml, html4-t, html4, none
