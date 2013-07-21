@@ -168,7 +168,7 @@
 		 */
 		static function getMenu($level) {
 			$menuHash = $level . ':' . self::getInstance()->selectedMenu;
-			if (self::$menuDatas->{$menuHash}) return self::$menuDatas->{$menuHash};
+			if (isset(self::$menuDatas->{$menuHash})) return self::$menuDatas->{$menuHash};
 
 			// current selected menu
 			$selectedMenuData = DBHandler::for_table('menu')
@@ -459,9 +459,9 @@
 					unset($_SESSION['pmc_sso_data']);
 					return false;
 				}
-				
+
 				$ssoData = json_decode($urlData);
-				
+
 				if (!$ssoData || $ssoData->result === 'fail') {
 					Context::printErrorPage(array(
 						'en' => 'fail loading sso data',

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 호스트: localhost
--- 처리한 시간: 13-07-21 16:30
+-- 처리한 시간: 13-07-21 20:53
 -- 서버 버전: 5.1.41-community
 -- PHP 버전: 5.2.12
 
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `pmc_login_log` (
   `auto_login` tinyint(1) NOT NULL,
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=42 ;
 
 --
 -- 테이블의 덤프 데이터 `pmc_login_log`
@@ -168,7 +168,16 @@ INSERT INTO `pmc_login_log` (`id`, `ip_address`, `input_id`, `succeed`, `auto_lo
 (29, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:03:22'),
 (30, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:04:37'),
 (31, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:08:38'),
-(32, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:10:17');
+(32, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:10:17'),
+(33, '127.0.0.1', 'tester', 1, 1, '2013-07-21 09:09:15'),
+(34, '127.0.0.1', 'tester', 1, 1, '2013-07-21 10:30:23'),
+(35, '127.0.0.1', 'tester', 1, 1, '2013-07-21 10:35:21'),
+(36, '127.0.0.1', 'tester', 1, 1, '2013-07-21 10:39:15'),
+(37, '127.0.0.1', 'tester', 1, 1, '2013-07-21 11:16:28'),
+(38, '127.0.0.1', 'tester', 1, 1, '2013-07-21 11:30:18'),
+(39, '127.0.0.1', 'tester', 1, 1, '2013-07-21 11:30:40'),
+(40, '127.0.0.1', 'tester', 1, 1, '2013-07-21 11:30:47'),
+(41, '127.0.0.1', 'tester', 1, 1, '2013-07-21 11:33:53');
 
 -- --------------------------------------------------------
 
@@ -228,7 +237,6 @@ CREATE TABLE IF NOT EXISTS `pmc_session` (
 --
 
 INSERT INTO `pmc_session` (`session_key`, `expire_time`, `ip_address`, `last_update`, `user_id`, `extra_vars`) VALUES
-('07248c4ebd6d5a7e27975dc97f236378e6766c98', '2013-07-28 14:10:17', '127.0.0.1', '2013-07-21 05:10:17', 1, NULL),
 ('5d0eb843cf5e9585da0b0dfd80c3bd818b9a60e4', '2013-07-28 13:19:22', '127.0.0.1', '2013-07-21 04:19:22', 1, NULL),
 ('62f298848a62db8696399a3e953e45a6696c1d52', '2013-07-28 12:59:23', '127.0.0.1', '2013-07-21 03:59:23', 1, NULL),
 ('71d60ee6726197fb4d6f36673667bd5ed733ec54', '2013-07-28 14:03:22', '127.0.0.1', '2013-07-21 05:03:22', 1, NULL),
@@ -258,19 +266,19 @@ CREATE TABLE IF NOT EXISTS `pmc_user` (
   `user_name` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `email_address` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `phone_number` varchar(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `permission` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `last_logined_ip` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `extra_vars` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`input_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 테이블의 덤프 데이터 `pmc_user`
 --
 
-INSERT INTO `pmc_user` (`id`, `input_id`, `password`, `password_salt`, `nick_name`, `user_name`, `email_address`, `phone_number`, `permission`, `last_logined_ip`, `extra_vars`) VALUES
-(1, 'tester', '875bdbdd2cdb7326981de9c27bf9d76d52c75cd9bb1299417b1135b69a748b69', 'f98c94ebb87dc80be2a26991e3d5cc62', 'Tester', '테스터', 'tester@parmeter.kr', '010-1234-5678', NULL, '127.0.0.1', NULL);
+INSERT INTO `pmc_user` (`id`, `input_id`, `password`, `password_salt`, `nick_name`, `user_name`, `email_address`, `phone_number`, `last_logined_ip`, `extra_vars`) VALUES
+(1, 'admin', '875bdbdd2cdb7326981de9c27bf9d76d52c75cd9bb1299417b1135b69a748b69', 'f98c94ebb87dc80be2a26991e3d5cc62', 'Admin', '어드민', 'admin@parmeter.kr', '010-1234-5678', '127.0.0.1', NULL),
+(2, 'tester', '2827e05770ec174da512daf5af4ce49f5e07209d82e2ed90b2ee565886e7b521', '8f4031bfc7640c5f267b11b6fe0c2507', '테스터', '테스터', 'tester@parameter.kr', '010-1234-5678', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -284,14 +292,15 @@ CREATE TABLE IF NOT EXISTS `pmc_user_group` (
   `name_locales` text NOT NULL,
   `is_default` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 테이블의 덤프 데이터 `pmc_user_group`
 --
 
 INSERT INTO `pmc_user_group` (`id`, `name`, `name_locales`, `is_default`) VALUES
-(1, 'admin', '{"en":"Admin Group", "kr":"관리그룹"}', 0);
+(1, 'admin', '{"en":"Admin Group", "kr":"관리그룹"}', 0),
+(2, 'general', '{"en":"General","kr":"일반회원"}', 1);
 
 -- --------------------------------------------------------
 
@@ -306,14 +315,15 @@ CREATE TABLE IF NOT EXISTS `pmc_user_group_user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`),
   KEY `group_id` (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 테이블의 덤프 데이터 `pmc_user_group_user`
 --
 
 INSERT INTO `pmc_user_group_user` (`id`, `group_id`, `user_id`) VALUES
-(1, 1, 1);
+(1, 1, 1),
+(2, 2, 2);
 
 --
 -- Constraints for dumped tables
