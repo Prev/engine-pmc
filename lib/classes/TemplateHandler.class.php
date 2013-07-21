@@ -65,6 +65,8 @@
 			$html = join('$_POST', explode('$__attr->_POST', $html));
 			$html = join('$_REQUEST', explode('$__attr->_REQUEST', $html));
 			
+			//$html = join('::$', explode('::$__attr->', $html));
+
 			if (ZIP_BLANK) $html = $this->deleteWhiteSpace($html);
 			return $html;
 		}
@@ -114,8 +116,8 @@
 			if (!$m[1]) return;
 			
 			$c = $m[1];
-			$c = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $c, -1);
-			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
+			$c = preg_replace('/([^:>])\$([\>a-zA-Z0-9_-]*)/', '$1\$__attr->$2', $c, -1);
+			$c = preg_replace('/([^:>])\${([\>a-zA-Z0-9_-]*)}/', '$1\${__attr->$2}', $c, -1);
 			
 			if (substr($c, 0, 1) != ' ') $c = ' ' . $c;
 			if (substr($c, strlen($c)+1, 1) != ' ')	$c .= '';

@@ -53,18 +53,23 @@
 
 		// @override
 		public function limit($args1, $args2=NULL) {
-            if (isset($args2)) {
-            	$this->_offset = $args1;
-            	$this->_limit = $args2;
-            }else
-            	$this->_limit = $args1;
+			if (isset($args2)) {
+				$this->_offset = $args1;
+				$this->_limit = $args2;
+			}else
+				$this->_limit = $args1;
 
-            return $this;
-        }
+			return $this;
+		}
 		public function getQuery() {
-			return parent::_build_select();
+			$query = parent::_build_select();
+			for ($i=0; $i < count($this->_values); $i++)
+				$query = preg_replace('/(\?)/', $this->_values[$i], $query, 1);
+			return $query;
 		}
 		public function getData() {
+			if (is_array($this->_data))
+				return (object) $this->_data;
 			return $this->_data;
 		}
 

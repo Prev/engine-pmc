@@ -1,10 +1,3 @@
-<ul>
-	{@ foreach(Context::getMenu(1) as $key => $menu): }
-	<li class="{$menu->className}">
-		<a href="/{@ if (!USE_SHORT_URL) echo '?menu='; }{$menu->title}" class="no-deco">{$menu->title_locale}</a>
-	</li>
-	{@ endforeach; }
-</ul>
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo

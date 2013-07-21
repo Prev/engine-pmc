@@ -8,6 +8,7 @@
 			"name":"dispDefault",
 			"model":"PageModel",
 			"view":"PageView",
+			"controller":"PageController",
 			"default":true
 		}
 	]

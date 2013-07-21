@@ -51,6 +51,13 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
+####v 0.1.9
++ SSO 처리 방법 수정
++ User 클래스 추가
++ 2단계 메뉴 지원
++ page module 추가
+
+
 ####v 0.1.8
 + lesscss 기능 개선
  + url() absolute path replace 처리

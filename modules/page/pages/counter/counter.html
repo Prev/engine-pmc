@@ -1,0 +1,10 @@
+<ul>
+	{@ foreach(Context::getMenu(2) as $key => $menu): }
+	<li class="{$menu->className}">
+		<a href="/{@ if (!USE_SHORT_URL) echo '?menu='; }{$menu->title}" class="no-deco">{$menu->title_locale}</a>
+	</li>
+	{@ endforeach; }
+</ul>
+
+<h1>Counter</h1>
+준비중입니다.

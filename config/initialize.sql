@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 호스트: localhost
--- 처리한 시간: 13-07-18 20:27
+-- 처리한 시간: 13-07-21 16:30
 -- 서버 버전: 5.1.41-community
 -- PHP 버전: 5.2.12
 
@@ -130,7 +130,45 @@ CREATE TABLE IF NOT EXISTS `pmc_login_log` (
   `auto_login` tinyint(1) NOT NULL,
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33 ;
+
+--
+-- 테이블의 덤프 데이터 `pmc_login_log`
+--
+
+INSERT INTO `pmc_login_log` (`id`, `ip_address`, `input_id`, `succeed`, `auto_login`, `login_time`) VALUES
+(1, '127.0.0.1', 'tester', 1, 1, '2013-07-18 15:46:22'),
+(2, '127.0.0.1', 'tester', 1, 1, '2013-07-18 18:23:14'),
+(3, '127.0.0.1', 'tester', 1, 1, '2013-07-18 18:30:56'),
+(4, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:06:07'),
+(5, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:23:08'),
+(6, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:30:12'),
+(7, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:30:45'),
+(8, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:31:03'),
+(9, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:31:55'),
+(10, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:32:32'),
+(11, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:33:09'),
+(12, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:36:57'),
+(13, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:44:10'),
+(14, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:45:07'),
+(15, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:45:24'),
+(16, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:45:52'),
+(17, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:49:05'),
+(18, '127.0.0.1', 'tester', 1, 1, '2013-07-21 03:59:23'),
+(19, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:14:51'),
+(20, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:16:33'),
+(21, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:16:45'),
+(22, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:17:14'),
+(23, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:17:39'),
+(24, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:18:00'),
+(25, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:19:22'),
+(26, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:19:41'),
+(27, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:21:32'),
+(28, '127.0.0.1', 'tester', 1, 1, '2013-07-21 04:53:43'),
+(29, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:03:22'),
+(30, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:04:37'),
+(31, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:08:38'),
+(32, '127.0.0.1', 'tester', 1, 1, '2013-07-21 05:10:17');
 
 -- --------------------------------------------------------
 
@@ -144,23 +182,29 @@ CREATE TABLE IF NOT EXISTS `pmc_menu` (
   `title_locales` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `level` tinyint(1) unsigned NOT NULL,
   `is_index` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `parent_id` int(10) unsigned DEFAULT NULL,
   `css_property` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `css_hover_property` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `css_active_property` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `module` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `action` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `extra_vars` tinytext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `title` (`title`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- 테이블의 덤프 데이터 `pmc_menu`
 --
 
-INSERT INTO `pmc_menu` (`id`, `title`, `title_locales`, `level`, `is_index`, `css_property`, `css_hover_property`, `css_active_property`, `module`, `action`, `extra_vars`) VALUES
-(1, 'home', '{"en":"Home", "kr":"홈"}', 1, 1, NULL, NULL, NULL, 'index', NULL, NULL),
-(2, 'notice', '{"en":"Notice", "kr":"공지사항"}', 1, 0, NULL, NULL, NULL, 'board', NULL, NULL),
-(3, 'freeboard', '{"en":"Free Board", "kr":"자유게시판"}', 1, 0, NULL, NULL, NULL, 'board', NULL, NULL);
+INSERT INTO `pmc_menu` (`id`, `title`, `title_locales`, `level`, `is_index`, `parent_id`, `css_property`, `css_hover_property`, `css_active_property`, `module`, `action`, `extra_vars`) VALUES
+(1, 'home', '{"en":"Home", "kr":"홈"}', 1, 1, NULL, NULL, NULL, NULL, 'index', NULL, NULL),
+(2, 'notice', '{"en":"Notice", "kr":"공지사항"}', 1, 0, NULL, NULL, NULL, NULL, 'board', NULL, NULL),
+(3, 'freeboard', '{"en":"Free Board", "kr":"자유게시판"}', 1, 0, NULL, NULL, NULL, NULL, 'board', NULL, NULL),
+(4, 'others', '{"en":"Others", "kr":"기타"}', 1, 0, NULL, NULL, NULL, NULL, 'page', NULL, NULL),
+(5, 'about', '{"en":"About", "kr":"About"}', 2, 0, 4, NULL, NULL, NULL, 'page', NULL, NULL),
+(6, 'counter', '{"en":"counter", "kr":"카운터"}', 2, 0, 4, NULL, NULL, NULL, 'page', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -178,6 +222,26 @@ CREATE TABLE IF NOT EXISTS `pmc_session` (
   PRIMARY KEY (`session_key`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `pmc_session`
+--
+
+INSERT INTO `pmc_session` (`session_key`, `expire_time`, `ip_address`, `last_update`, `user_id`, `extra_vars`) VALUES
+('07248c4ebd6d5a7e27975dc97f236378e6766c98', '2013-07-28 14:10:17', '127.0.0.1', '2013-07-21 05:10:17', 1, NULL),
+('5d0eb843cf5e9585da0b0dfd80c3bd818b9a60e4', '2013-07-28 13:19:22', '127.0.0.1', '2013-07-21 04:19:22', 1, NULL),
+('62f298848a62db8696399a3e953e45a6696c1d52', '2013-07-28 12:59:23', '127.0.0.1', '2013-07-21 03:59:23', 1, NULL),
+('71d60ee6726197fb4d6f36673667bd5ed733ec54', '2013-07-28 14:03:22', '127.0.0.1', '2013-07-21 05:03:22', 1, NULL),
+('89660b0720a7b83db7d6469fe5c6ecfdfa5b499d', '2013-07-28 13:16:45', '127.0.0.1', '2013-07-21 04:16:45', 1, NULL),
+('89b2bd27cb754f9f23d47db8cd4d6719d995694c', '2013-07-28 13:53:43', '127.0.0.1', '2013-07-21 04:53:43', 1, NULL),
+('8ca4f864af8616fb1a7b32c73d4976acaae1ba27', '2013-07-28 13:17:39', '127.0.0.1', '2013-07-21 04:17:39', 1, NULL),
+('8e3e88e7b66bbc89ca3749eadb92ce9659729fad', '2013-07-28 13:21:32', '127.0.0.1', '2013-07-21 04:21:32', 1, NULL),
+('8fa6ae04b486011c997fd807a7b6220a3629f66b', '2013-07-26 03:30:56', '127.0.0.1', '2013-07-18 18:30:56', 1, NULL),
+('996df65f83663ff256e6a1618bc1788f79b4a6f0', '2013-07-28 13:18:00', '127.0.0.1', '2013-07-21 04:18:00', 1, NULL),
+('a9156d598c06f8685c69437744868fb2a560d640', '2013-07-28 13:14:51', '127.0.0.1', '2013-07-21 04:14:51', 1, NULL),
+('dd9aadd1286b9167d6cc0f854b515c71521ae0fc', '2013-07-28 13:17:14', '127.0.0.1', '2013-07-21 04:17:14', 1, NULL),
+('e4cc72d2f6cbdb70a1f8ddbb42fbbcb515b60ab6', '2013-07-28 13:16:33', '127.0.0.1', '2013-07-21 04:16:33', 1, NULL),
+('e73589952b1446996adea4af73037d6dd4c486a1', '2013-07-28 13:19:41', '127.0.0.1', '2013-07-21 04:19:41', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -227,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `pmc_user_group` (
 --
 
 INSERT INTO `pmc_user_group` (`id`, `name`, `name_locales`, `is_default`) VALUES
-(1, 'admins', '{"en":"Admin Group", "kr":"관리그룹"}', 0);
+(1, 'admin', '{"en":"Admin Group", "kr":"관리그룹"}', 0);
 
 -- --------------------------------------------------------
 
@@ -271,11 +335,17 @@ ALTER TABLE `pmc_article_comment`
   ADD CONSTRAINT `pmc_article_comment_ibfk_2` FOREIGN KEY (`writer_id`) REFERENCES `pmc_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `pmc_menu`
+--
+ALTER TABLE `pmc_menu`
+  ADD CONSTRAINT `pmc_menu_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `pmc_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `pmc_user_group_user`
 --
 ALTER TABLE `pmc_user_group_user`
-  ADD CONSTRAINT `pmc_user_group_user_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `pmc_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `pmc_user_group_user_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `pmc_user_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `pmc_user_group_user_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `pmc_user_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pmc_user_group_user_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `pmc_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

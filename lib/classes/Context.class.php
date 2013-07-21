@@ -28,25 +28,27 @@
 		 */
 		public $moduleAction;
 		
+
+		/**
+		 * selected menu
+		 * first set by $_GET['menu']
+		 * in board or page module, can modify it
+		 */
+		public $selectedMenu;
+
+
 		/**
 		 * headerTagHandler obj
 		 * HeaderTagHandler Class
 		 */
-		var $headerTagHandler;
+		private $headerTagHandler;
 		
 		
 		/**
 		 * layout name
 		 * default value is defined in config/config.php
 		 */
-		var $layout;
-		
-		
-		/**
-		 * menu data
-		 */
-		var $selectedMenu;
-		
+		private $layout;
 		
 		/**
 		 * set content printable
@@ -54,6 +56,13 @@
 		 */
 		private $contentPrintable = true;
 		
+
+		/**
+		 * menu datas
+		 */
+		static private $menuDatas;
+
+
 		/**
 		 * Get Context instance
 		 */
@@ -69,8 +78,8 @@
 		 * Initalize Context instance
 		 */
 		public function init($db_info) {
-			ob_start();
 			self::$attr = new StdClass();
+			self::$menuDatas = new StdClass();
 			$this->headerTagHandler = new HeaderTagHandler();
 			$this->setLayout(LAYOUT_NAME);
 
@@ -157,13 +166,43 @@
 		 * Get menu data
 		 * Add cached CSS
 		 */
-		static function getMenu($level) {
-			$arr = DBHandler::for_table('menu')
-				->where('level', $level)
-				->find_many();
+		static function getMenu($level, $parentMenu=NULL) {
+			$menuHash = md5($level . '/' . $parentMenu);
+			
+			if (self::$menuDatas->{$menuHash}) return self::$menuDatas->{$menuHash};
+			if ($level == 1) {
+				$arr = DBHandler::for_table('menu')
+					->where('level', $level)
+					->find_many();
+			}else {
+				$menuData = DBHandler::for_table('menu')
+					->select('*')
+					->where('title', self::getInstance()->selectedMenu)
+					->find_one();
+
+				if (empty($menuData)) {
+					self::printErrorPage(array('en' => 'fail parsing menu', 'kr' => '메뉴 파싱에 실패했습니다.'));
+					return;
+				}
 				
+				if ($level == $menuData->level) {
+					$arr = DBHandler::for_table('menu')
+						->where('level', $level)
+						->where('parent_id', $menuData->parent_id)
+						->find_many();
+				}else {
+					$arr = DBHandler::for_table('menu')
+						->where('level', $level)
+						->where('parent_id', $menuData->id)
+						->find_many();
+					}
+			}
+
+			
 			for ($i=0; $i<count($arr); $i++) {
+				$arr[$i] = $arr[$i]->getData();
 				$arr[$i]->className = 'pmc-menu' . $level . '-' . $arr[$i]->title;
+				
 				if ($arr[$i]->title == self::getInstance()->selectedMenu) {
 					$arr[$i]->selected = true;
 					$arr[$i]->className .= ' pmc-menu' . $level . '-selected';
@@ -177,6 +216,7 @@
 			$menuCSSPath = CacheHandler::getMenuCachePath($arr, $level);
 			self::getInstance()->addHeaderFile($menuCSSPath);
 			
+			self::$menuDatas->{$menuHash} = $arr;
 			return $arr;
 		}
 
@@ -477,6 +517,8 @@
 		 */
 		public function procLayout() {
 			if (!$this->contentPrintable) return; // if error printed, return
+
+			OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
 
 			CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
 			
