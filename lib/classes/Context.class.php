@@ -166,44 +166,56 @@
 		 * Get menu data
 		 * Add cached CSS
 		 */
-		static function getMenu($level, $parentMenu=NULL) {
-			$menuHash = md5($level . '/' . $parentMenu);
-			
+		static function getMenu($level) {
+			$menuHash = $level . ':' . self::getInstance()->selectedMenu;
 			if (self::$menuDatas->{$menuHash}) return self::$menuDatas->{$menuHash};
+
+			// current selected menu
+			$selectedMenuData = DBHandler::for_table('menu')
+				->where('title', self::getInstance()->selectedMenu)
+				->find_one();
+
 			if ($level == 1) {
 				$arr = DBHandler::for_table('menu')
-					->where('level', $level)
+					->where('level', 1)
 					->find_many();
 			}else {
-				$menuData = DBHandler::for_table('menu')
-					->select('*')
-					->where('title', self::getInstance()->selectedMenu)
-					->find_one();
-
-				if (empty($menuData)) {
+				if (empty($selectedMenuData)) {
 					self::printErrorPage(array('en' => 'fail parsing menu', 'kr' => '메뉴 파싱에 실패했습니다.'));
 					return;
 				}
+				// current selected menu's level is equal with requested menu's level
+				if ($level == $selectedMenuData->level)
+					$parent_id = $selectedMenuData->parent_id;
 				
-				if ($level == $menuData->level) {
-					$arr = DBHandler::for_table('menu')
+				// request low level menu data than selected menu's level
+				else if ($level > $selectedMenuData->level)
+					$parent_id = $selectedMenuData->id;
+
+				// request high level menu data than selected menu's level
+				else {
+					$parentMenuData = DBHandler::for_table('menu')
 						->where('level', $level)
-						->where('parent_id', $menuData->parent_id)
-						->find_many();
-				}else {
-					$arr = DBHandler::for_table('menu')
+						->where('id', $selectedMenuData->parent_id)
+						->find_one();
+
+					$parent_id = $parentMenuData->parent_id;
+				}
+				$arr = DBHandler::for_table('menu')
 						->where('level', $level)
-						->where('parent_id', $menuData->id)
+						->where('parent_id', $parent_id)
 						->find_many();
-					}
 			}
 
-			
+			static $topMenus;
+			if ($selectedMenuData->level == 1) $topMenus = array($selectedMenuData->id);
+			else if (!$topMenus) $topMenus = explode(',', self::getParentMenus($selectedMenuData->id));
+
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i] = $arr[$i]->getData();
 				$arr[$i]->className = 'pmc-menu' . $level . '-' . $arr[$i]->title;
 				
-				if ($arr[$i]->title == self::getInstance()->selectedMenu) {
+				if (array_search($arr[$i]->id, $topMenus) !== false) {
 					$arr[$i]->selected = true;
 					$arr[$i]->className .= ' pmc-menu' . $level . '-selected';
 				}
@@ -218,6 +230,20 @@
 			
 			self::$menuDatas->{$menuHash} = $arr;
 			return $arr;
+		}
+
+		static private function getParentMenus($menuId) {
+			$row = DBHandler::for_table('menu')
+				->select_many('id', 'parent_id')
+				->where('id', $menuId)
+				->find_one();
+			
+			if (empty($row))
+				return NULL;
+			else if ($row->parent_id === NULL)
+				return $row->id;
+			else
+				return $row->id . ',' . self::getParentMenus($row->parent_id);
 		}
 
 		/**
