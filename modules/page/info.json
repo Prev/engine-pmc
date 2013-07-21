@@ -1,0 +1,14 @@
+{	
+	"name":"page module",
+	"version":"1.0.0",
+	"author":"prevdev@gmail.com",
+
+	"actions":[
+		{
+			"name":"dispDefault",
+			"model":"PageModel",
+			"view":"PageView",
+			"default":true
+		}
+	]
+}

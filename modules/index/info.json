@@ -12,7 +12,8 @@
 		},
 		{
 			"name":"dispCredit",
-			"view":"IndexCreditView"
+			"view":"IndexCreditView",
+			"allow_web_access":false
 		}
 	]
 }

@@ -49,6 +49,21 @@ CREATE TABLE IF NOT EXISTS `pmc_article` (
   KEY `top_no` (`top_no`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
+--
+-- 테이블의 덤프 데이터 `pmc_article`
+--
+
+INSERT INTO `pmc_article` (`no`, `board_id`, `category`, `title`, `content`, `writer_id`, `top_no`, `order_key`, `is_secret`, `is_notice`, `allow_comment`, `upload_time`, `hits`, `files`) VALUES
+(1, 1, NULL, '안녕하세요. 게시판을 오픈했습니다', '컨텐츠', 1, 1, NULL, 0, 1, 1, '2013-03-06 08:40:14', 0, NULL),
+(2, 1, NULL, '알려드립니다', 'ㅇㅇ', 1, 2, NULL, 0, 0, 1, '2013-03-20 12:51:29', 0, NULL),
+(3, 1, NULL, '질문있습니다.', 'ㅇㅁㄴㅇ', 1, 2, 'AA', 0, 0, 1, '2013-03-20 12:52:47', 0, NULL),
+(4, 1, NULL, '저도있습니다!', 'ㅇㅁㄴ', 1, 2, 'AAAA', 0, 0, 1, '2013-03-24 12:36:57', 0, NULL),
+(6, 1, '안내', '게시판 안내', 'ㅇㅁㄴㅇㅁ', 1, 6, NULL, 0, 0, 1, '2013-03-24 12:41:40', 0, NULL),
+(9, 1, NULL, '운영진이 알립니다', 'dasdasd', 1, 9, NULL, 0, 0, 1, '2013-03-24 14:04:09', 0, NULL),
+(12, 1, NULL, 'ㅁㄴㅇㅁㄴㅇㅁㄴㅇ', 'ㅁㄴ', 1, 12, NULL, 0, 0, 1, '2013-03-24 14:25:35', 0, NULL),
+(13, 1, NULL, 'ㅇㅁㅇㅁㄴㅁㅇ2', 'ㅇㅇㅁ', 1, 13, NULL, 0, 0, 1, '2013-03-24 14:28:44', 0, NULL),
+(14, 1, NULL, 'ㅇㅁㄴㅇㅁㄴㅇㅁㅇ2', '', 1, 14, NULL, 0, 0, 1, '2013-03-24 14:30:18', 0, NULL),
+(15, 1, NULL, 'ㅇㅁㅇㅁㄴㅇㅁㄴㅇㅁ3', '', 1, 15, NULL, 0, 0, 1, '2013-06-21 13:59:28', 0, NULL);
 
 -- --------------------------------------------------------
 

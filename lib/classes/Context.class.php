@@ -157,7 +157,7 @@
 		 * Get menu data
 		 * Add cached CSS
 		 */
-		static function getMenu($level, $printBlankInIndex=false) {
+		static function getMenu($level) {
 			$arr = DBHandler::for_table('menu')
 				->where('level', $level)
 				->find_many();
@@ -168,9 +168,9 @@
 					$arr[$i]->selected = true;
 					$arr[$i]->className .= ' pmc-menu' . $level . '-selected';
 				}
-				if ($arr[$i]->is_index && $printBlankInIndex && USE_SHORT_URL)
+				if ($arr[$i]->is_index && USE_SHORT_URL)
 					$arr[$i]->title = '';
-				
+
 				$arr[$i]->title_locales = json_decode($arr[$i]->title_locales);
 				$arr[$i]->title_locale = fetchLocale($arr[$i]->title_locales);
 			}

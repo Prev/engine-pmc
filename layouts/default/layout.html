@@ -12,7 +12,7 @@
 			</a>
 		</div>
 		<ul id="gnb" class="fl clearfix">
-			{@ foreach(Context::getMenu(1, true) as $key => $menu): }
+			{@ foreach(Context::getMenu(1) as $key => $menu): }
 			<li class="{$menu->className}">
 				<a href="/{@ if (!USE_SHORT_URL) echo '?menu='; }{$menu->title}" class="no-deco">{$menu->title_locale}</a>
 			</li>

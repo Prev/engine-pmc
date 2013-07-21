@@ -138,6 +138,13 @@
 						$action = $actions[$i]->name;
 					
 					if ($action == $actions[$i]->name) {
+						if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && isset(Context::getInstance()->moduleAction) &&Context::getInstance()->moduleAction == $action){
+							Context::printErrorPage(array(
+								'en' => 'Cannot execute module action - web access is not allowed',
+								'kr' => '모듈 액션을 실행할 수 없습니다 - 웹 접근이 허용되지않음'
+							));
+							return NULL;
+						}
 						if (isset($actions[$i]->layout))
 							Context::getInstance()->setLayout($actions[$i]->layout);
 						return $actions[$i];
