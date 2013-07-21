@@ -61,13 +61,18 @@
 
 		public function checkGroup($groups) {
 			if (is_array($groups)) {
-				for ($i=0; $i<count($groups); $i++) { 
-					$p = array_search($this->groups, $groups[$i]);
-					if ($p !== false) return true;
+				for ($i=0; $i<count($groups); $i++) {
+					for ($j=0; $j<count($this->groups); $j++) { 
+						if ($groups[$i] == $this->groups[$j]->name)
+							return true;
+					}
 				}
-			}else
-				$p = array_search($this->groups, $groups);
-				if ($p !== false) return true;
+			}else {
+				for ($j=0; $j<count($this->groups); $j++) { 
+					if ($groups == $this->groups[$j]->name)
+						return true;
+				}
+			}
 			return false;
 		}
 	}

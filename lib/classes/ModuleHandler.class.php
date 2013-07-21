@@ -103,14 +103,6 @@
 						'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일 파싱에 실패했습니다'
 					));
 				}
-				else if (isset($moduleInfo->accessible_group)) {
-					if (is_null(User::getCurrent()) || User::getCurrent()->checkGroup($moduleInfo->accessible_group)) {
-						Context::printErrorPage(array(
-							'en' => 'Cannot initialize module - Operation not permitted',
-							'kr' => '모듈을 초기화 할 수 없습니다 - 권한이 없습니다'
-						));
-					}
-				}
 
 				if (isset($moduleInfo->layout))
 					Context::getInstance()->setLayout($moduleInfo->layout);
@@ -154,12 +146,21 @@
 						$action = $actions[$i]->name;
 					
 					if ($action == $actions[$i]->name) {
-						if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && isset(Context::getInstance()->moduleAction) &&Context::getInstance()->moduleAction == $action){
+						if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && isset(Context::getInstance()->moduleAction) && Context::getInstance()->moduleAction == $action){
 							Context::printErrorPage(array(
 								'en' => 'Cannot execute module action - web access is not allowed',
 								'kr' => '모듈 액션을 실행할 수 없습니다 - 웹 접근이 허용되지않음'
 							));
 							return NULL;
+						}
+						if (isset($actions[$i]->accessible_group)) {
+							if (is_null(User::getCurrent()) || !User::getCurrent()->checkGroup($actions[$i]->accessible_group)) {
+								Context::printErrorPage(array(
+									'en' => 'Cannot initialize module - Operation not permitted',
+									'kr' => '모듈을 초기화 할 수 없습니다 - 권한이 없습니다'
+								));
+								return NULL;
+							}
 						}
 						if (isset($actions[$i]->layout))
 							Context::getInstance()->setLayout($actions[$i]->layout);

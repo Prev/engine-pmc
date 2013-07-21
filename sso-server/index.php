@@ -72,6 +72,8 @@
 	for ($i=0; $i < count($groupDatas); $i++) {
 		$tmp = $groupDatas[$i];
 		$tmp->name_locales = json_decode($tmp->name_locales);
+		unset($tmp->id);
+		unset($tmp->user_id);
 
 		array_push($obj->userData->groups, $tmp);
 	}
