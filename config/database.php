@@ -2,8 +2,7 @@
 	
 	function getDBInfo() {
 		$dt = debug_backtrace();
-		
-		if ((ROOT_DIR . DIRECTORY_SEPARATOR . 'index.php' != $dt[0]['file']) && (ROOT_DIR . DIRECTORY_SEPARATOR . 'pmc.sso.php' != $dt[0]['file']) ) {
+		if ((ROOT_DIR . DIRECTORY_SEPARATOR . 'index.php' != $dt[0]['file']) && (SSO_DIR . DIRECTORY_SEPARATOR . 'conf.database.php' != $dt[0]['file']) ) {
 			if (class_exists(Context))
 				Context::printWarning('SandBox error : call getDBInfo in other file');
 			else

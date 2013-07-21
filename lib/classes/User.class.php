@@ -26,13 +26,21 @@
 			return self::$userSingleTon;
 		}
 
-		static public function initCurrent($data = NULL) {
-			if (!isset($data))
-				self::$userSingleTon = isset($_SESSION['pmc_user']) ?
-					new User((object)$_SESSION['pmc_user']) :
-					NULL;
-			else
-				self::$userSingleTon = new User($data);
+		static public function initCurrent() {
+			if (isset($_SESSION['pmc_sso_data'])) {
+				$ssoData = (object)$_SESSION['pmc_sso_data'];
+				
+				// expired
+				if (strtotime($ssoData->expireTime) < time()) {
+					unset($_SESSION['pmc_sso_data']);
+					self::$userSingleTon = NULL;
+					return;
+				}
+				
+				$userData = $ssoData->userData;
+				self::$userSingleTon = new User($userData);
+			}else
+				self::$userSingleTon = NULL;
 		}
 
 		public function __construct($data) {
@@ -49,14 +57,5 @@
 			else {
 				Context::printWarning('User class is not initialize with User record data');
 			}
-		}
-
-		public function __get($name) {			
-			$ret = $this->user->{$name};
-			return isset($ret) ? $ret : $this->group->{$name};
-		}
-
-		public function __isset($name) {
-			return isset($this->user{$name}) || isset($this->group->{$name});
 		}
 	}

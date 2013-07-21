@@ -448,88 +448,40 @@
 		}
 		
 		public function checkSSO() {
-			if (isset($_GET['sses_key']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PMC-SSO') !== false) {
-
-				$session_key = $_GET['sses_key'];
-
-				$queryResult = DBHandler::for_table('session')
-						->select('*')
-						->where('session_key', $session_key)
-						->where_lt('expire_time', 'now()')->find_one();
-
-				$ret = new stdClass();
-				$ret->result = 'success';
-				$ret->expire_time = $queryResult->expire_time;
-
-				$userData = DBHandler::for_table('user')
-					->select('*')
-					->where('id', $queryResult->user_id)
-					->find_one();
-
-				if (empty($userData)) {
-					$ret->result = 'fail';
-					echo json_encode2($ret);
-					return false;
-				}
-
-				$userData = $userData->getData();
-
-				foreach ($userData as $key => $value) {
-					if ($key === 'password' || $key === 'password_salt') continue;
-					if ($key == 'input_id') $ret->user_id = $value;
-					
-					$ret->{$key} = $value;
-				}
-
-				$groupDatas = DBHandler::for_table('user_group')
-						->select_many('name', 'name_locales')
-						->join('user_group_user', array('user_group_user.group_id', '=', 'user_group.id'))
-						->where('user_group_user.user_id', $queryResult->user_id)
-						->find_many();
+			if (isset($_COOKIE['pmc_sess_key']) && !isset($_SESSION['pmc_sso_data'])) {
+				$urlData = getURLData(SSO_URL . '?sess_key=' . $_COOKIE['pmc_sess_key'], SSO_AGENT_KEY);
 				
-				if (empty($groupDatas)) {
-					$ret->result = 'fail';
-					echo json_encode2($ret);
+				if (!$urlData) {
+					Context::printErrorPage(array(
+						'en' => 'cannot load sso data',
+						'kr' => 'SSO 데이터를 불러올 수 없습니다'
+					));
+					unset($_SESSION['pmc_sso_data']);
 					return false;
 				}
-				$ret->groups = array();	
-				for ($i=0; $i < count($groupDatas); $i++) { 
-					array_push($ret->groups, $groupDatas[$i]->getData());
+				
+				$ssoData = json_decode($urlData);
+				
+				if (!$ssoData || $ssoData->result === 'fail') {
+					Context::printErrorPage(array(
+						'en' => 'fail loading sso data',
+						'kr' => 'SSO 데이터를 불러오는데 실패하였습니다.'
+					));
+					unset($_SESSION['pmc_sso_data']);
+					return false;
 				}
+				$userData = $ssoData->userData;
+				if (isset($userData->groups)) {
+					for ($i=0; $i<count($userData->groups); $i++) { 
+						$group = $userData->groups[$i];
+						$group->name_locale = fetchLocale($group->name_locales);
+					}
+				}
+				$_SESSION['pmc_sso_data'] = $ssoData;
 
-				echo json_encode2($ret);
-				return false;
+				User::initCurrent();
+				return true;
 			}
-			else if (isset($_COOKIE['pmc_sess_key']) &&
-					!isset($_SESSION['pmc_user'])) { // TODO : expire check;
-
-					$urlData = getURLData(SSO_URL . '?sses_key=' . $_COOKIE['pmc_sess_key'], 'PMC-SSO Connection');
-					
-					if (!$urlData) {
-						Context::printErrorPage(array(
-							'en' => 'cannot load sso data',
-							'kr' => 'SSO 데이터를 불러올 수 없습니다'
-						));
-						unset($_SESSION['pmc_user']);
-						return NULL;
-					}
-
-					$urlData = json_decode($urlData);
-
-					if (!$urlData || $urlData->result === 'fail') {
-						Context::printErrorPage(array(
-							'en' => 'cannot load sso data',
-							'kr' => 'SSO 데이터를 불러올 수 없습니다'
-						));
-						unset($_SESSION['pmc_user']);
-						return NULL;
-					}
-
-					$_SESSION['pmc_user'] = $urlData;
-					
-					User::initCurrent($urlData);
-					return true;
-				}
 			else {
 				User::initCurrent();
 				return true;

@@ -218,10 +218,10 @@
 			$queryObj = new StdClass();
 
 			if (isset($parsedUrl['query'])) {
-				$tempArr = split2('&', $parsedUrl['query']);
+				$tempArr = explode('&', $parsedUrl['query']);
 
 				for ($i=0; $i<count($tempArr); $i++) {
-					$tempArr2 = split2('=', $tempArr[$i]);
+					$tempArr2 = explode('=', $tempArr[$i]);
 					if ($tempArr2[0])
 						$queryObj->{$tempArr2[0]} = $tempArr2[1];
 				}
@@ -271,7 +271,7 @@
 	}
 	function urlQueryToArray($query) {
 		$arr = array();
-		 $tempArr = split2('&', $query);
+		 $tempArr = explode('&', $query);
 
 		for ($i=0; $i<count($tempArr); $i++) {
 			if (strpos('=', $tempArr[$i]) == false)

@@ -16,12 +16,8 @@
 
 	$oContext = Context::getInstance();
 	$oContext->init(getDBInfo());
-
-	if($oContext->checkSSO()) {
-		ModuleHandler::initModule(
-			$oContext->moduleID,
-			$oContext->moduleAction
-		);
-		
+	
+	if ($oContext->checkSSO()) {
+		ModuleHandler::initModule($oContext->moduleID, $oContext->moduleAction);
 		$oContext->procLayout();
 	}

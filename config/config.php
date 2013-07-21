@@ -10,7 +10,6 @@
 	}
 	
 	session_start();
-	
 	date_default_timezone_set('Asia/Seoul');
 
 
@@ -20,7 +19,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.1.9');
+	define('PMC_VERSION', '0.2.0');
 	
 	
 	/**
@@ -77,14 +76,6 @@
 	
 
 	/**
-	 * define login rsa keys (hex)
-	 */
-	define('RSA_PUBLIC_KEY', '10001');
-	define('RSA_PRIVATE_KEY', '3c6c9ac18899b33cdfb03503eb81fc9');
-	define('RSA_MODULUS', '801d5852519f4382e8faa29ae15222d');
-
-	
-	/**
 	 * Define Debugging mode
 	 * if do not define this, it will be defined automatically
 	 */
@@ -139,7 +130,7 @@
 	/**
 	 * define sso process file url
 	 */
-	define('SSO_URL', RELATIVE_URL . '/');
+	define('SSO_URL', RELATIVE_URL . '/sso-server/');
 
 
 	/**
@@ -154,6 +145,7 @@
 	
 	
 	require ROOT_DIR . '/config/database.php';
+	require ROOT_DIR . '/config/secure-keys.php';
 	require ROOT_DIR . '/lib/others/lib.idiorm.php';
 
 	require ROOT_DIR . '/lib/classes/Handler.class.php';

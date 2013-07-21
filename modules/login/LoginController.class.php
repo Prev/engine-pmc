@@ -46,7 +46,7 @@
 				->delete_many();
 
 			setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
-			unset($_SESSION['pmc_user']);
+			unset($_SESSION['pmc_sso_data']);
 			
 			$next = (isset($_REQUEST['next']) ? $_REQUEST['next'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : getUrl()));
 			redirect($next);

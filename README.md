@@ -51,6 +51,9 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
+####v 0.2.0
++ SSO 처리 방법 수정 > /sso-server 로 분리
+
 ####v 0.1.9
 + SSO 처리 방법 수정
 + User 클래스 추가
