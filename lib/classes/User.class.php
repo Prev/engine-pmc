@@ -20,7 +20,7 @@
 		public $permission;
 		public $last_logined_ip;
 		public $extra_vars;
-		public $group;
+		public $groups;
 
 		static public function getCurrent() {
 			return self::$userSingleTon;
@@ -57,5 +57,17 @@
 			else {
 				Context::printWarning('User class is not initialize with User record data');
 			}
+		}
+
+		public function checkGroup($groups) {
+			if (is_array($groups)) {
+				for ($i=0; $i<count($groups); $i++) { 
+					$p = array_search($this->groups, $groups[$i]);
+					if ($p !== false) return true;
+				}
+			}else
+				$p = array_search($this->groups, $groups);
+				if ($p !== false) return true;
+			return false;
 		}
 	}

@@ -6,7 +6,7 @@
 	 * @ 2013.05
 	 *
 	 *
-	 * ModuleHandler Class
+	 * self Class
 	 * Load and handling modules
 	 */
 	
@@ -20,8 +20,11 @@
 			self::$moduleInfos = new stdClass();
 		}
 
-		static public function isModule($moduleID) {
-			$path = self::getModuleDir($moduleID) . '/__' . ucfirst($moduleID) . 'Module.class.php';
+		static public function moduleExists($moduleID) {
+			return is_dir(self::getModuleDir($moduleID));
+		}
+		static public function customModuleExists($moduleID) {
+			$path = self::getModuleDir($moduleID) . '/' . ucfirst($moduleID) . 'Module.class.php';
 			return (is_file($path) && is_readable($path)) ? true : false;
 		}
 
@@ -45,7 +48,7 @@
 				));
 				return;
 				
-			}else if (!ModuleHandler::isModule($moduleID)) {
+			}else if (!self::moduleExists($moduleID)) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot load module - module not found',
 					'kr' => '모듈을 불러올 수 없습니다 - 모듈을 찾을 수 없음'
@@ -56,8 +59,8 @@
 			$_module = self::loadModule($moduleID);
 			if ($_module === NULL) {
 				Context::printErrorPage(array(
-					'en' => 'Cannot load module in ModuleHandler::procModule',
-					'kr' => '모듈을 불러올 수 없습니다 - ModuleHandler::procModule'
+					'en' => 'Cannot load module in self::procModule',
+					'kr' => '모듈을 불러올 수 없습니다 - self::procModule'
 				));
 				return;
 			}
@@ -77,49 +80,62 @@
 
 		
 		static private function loadModule($moduleID) {
-			if (!ModuleHandler::isModule($moduleID)) return NULL;
-			
+			if (!self::moduleExists($moduleID)) return NULL;
+
 			$moduleDir = self::getModuleDir($moduleID);
-			$filePath = $moduleDir . '/__' . ucfirst($moduleID) . 'Module.class.php';
-			$classID = ucfirst(strtolower($moduleID)) . 'Module';
+			
+			
+			// if (ModuleName)Module.class.php exists, load it
+			// else, default Module class
+			if (self::customModuleExists($moduleID)) {
+				require $moduleDir . '/' . ucfirst($moduleID) . 'Module.class.php';
+				$classID = ucfirst(strtolower($moduleID)) . 'Module';
+
+			}else
+				$classID = 'Module';
+
 
 			if (is_file($moduleDir . '/info.json')) {
-				self::$moduleInfos->{$moduleID} = json_decode(readFileContent($moduleDir . '/info.json'));
-				if (self::$moduleInfos->{$moduleID} === NULL) {
+				$moduleInfo = json_decode(readFileContent($moduleDir . '/info.json'));
+				if ($moduleInfo === NULL) {
 					Context::printWarning(array(
-						'en' => 'Unexpected token ILLEGAL in info.json',
-						'kr' => 'info.json 파일 파싱에 실패했습니다'
+						'en' => 'Cannot initialize module - Unexpected token ILLEGAL in info.json',
+						'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일 파싱에 실패했습니다'
 					));
 				}
-				else if(isset(self::$moduleInfos->{$moduleID}->group)) {
-					if(
-						is_null(User::getCurrent()) &&
-						User::getCurrent()->group_name != self::$moduleInfos->{$moduleID}->group) {
+				else if (isset($moduleInfo->accessible_group)) {
+					if (is_null(User::getCurrent()) || User::getCurrent()->checkGroup($moduleInfo->accessible_group)) {
 						Context::printErrorPage(array(
-							'en' => 'Operation not permitted',
-							'kr' => '권한이 없습니다.'
+							'en' => 'Cannot initialize module - Operation not permitted',
+							'kr' => '모듈을 초기화 할 수 없습니다 - 권한이 없습니다'
 						));
 					}
 				}
 
-				if (isset(self::$moduleInfos->{$moduleID}->layout))
-					Context::getInstance()->setLayout(self::$moduleInfos->{$moduleID}->layout);
+				if (isset($moduleInfo->layout))
+					Context::getInstance()->setLayout($moduleInfo->layout);
+			}else {
+				Context::printErrorPage(array(
+					'en' => 'Cannot initialize module - info.json file not exists',
+					'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않습니다'
+				));
 			}
 
-			if(is_file($filePath)) {
-				require $filePath;
-
-				if(class_exists($classID)) {
-					$_loader = create_function('', 'return new ' . $classID . '();');
-					self::$modules->{$moduleID} = $_loader();
-					self::$modules->{$moduleID}->moduleInfo = self::$moduleInfos->{$moduleID};
-					return self::$modules->{$moduleID};
-				}
+			if (!class_exists($classID)) {
+				Context::printErrorPage(array(
+					'en' => 'Cannot initialize module - info.json file not exists',
+					'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않습니다'
+				));
 			}
-			$_loader = create_function('', 'return new Module();');
-			self::$modules->{$moduleID} = $_loader();
-			self::$modules->{$moduleID}->moduleInfo = self::$moduleInfos->{$moduleID};
-			return self::$modules->{$moduleID};
+
+			$_loader = create_function('', 'return new ' . $classID . '(\''.$moduleID.'\');');
+			$module = $_loader();
+			$module->moduleInfo = $moduleInfo;
+
+			self::$modules->{$moduleID} = $module;
+			self::$moduleInfos->{$moduleID} = $moduleInfo;
+
+			return $module;
 		}
 		
 		static private function loadModuleAction($action, $module) {

@@ -1,12 +1,16 @@
 <?php
 	
-	/*
-	 * @ author prevdev@gmail.com
+	/**
+	 * @ proj P.M.C
+	 *	(Parameter MVC Core)
+	 *
+	 * @ author
+	 *	  prevdev@gmail.com,
+	 *	  luaviskang@gmail.com
+	 *
 	 * @ https://github.com/Prev/engine-pmc
-	 *
-	 * @ 2013.05 - 2013.07
-	 *
-	 * @ proj P.M.C (Parameter MVC Core)
+	 * @ 2013.05 ~07
+	 * @ MIT LICENSE
 	 */
 
 	define('PMC', true);

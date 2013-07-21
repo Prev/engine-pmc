@@ -51,6 +51,12 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
+####v 0.2.1
++ 모듈 관련 기능 변경
+ + default 모듈 작성규칙 (ModuleName)Module.class.php 로 변경
+ + 모듈 폴더에 default 모듈 php가 없을시 기본 Module 클래스 불러옴
++ User 클래스 checkGroup 메소드 추가
+
 ####v 0.2.0
 + SSO 처리 방법 수정 > /sso-server 로 분리
 

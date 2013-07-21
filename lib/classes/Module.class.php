@@ -22,9 +22,8 @@
 		public $view;
 		public $model;
 		
-		final public function __construct() {
-			$this->moduleID = substr(get_class($this), 0, strrpos(get_class($this), 'Module'));
-			$this->moduleID = strtolower($this->moduleID);	
+		final public function __construct($moduleID) {
+			$this->moduleID = $moduleID;	
 		}
 
 		final public function __initBase() {
@@ -61,7 +60,6 @@
 				return $_loader();
 			}else {
 				$classPath = ModuleHandler::getModuleDir($this->moduleID) . '/' . $className . '.class.php';
-				
 				if (!is_file($classPath)) {
 					Context::printErrorPage(array(
 						'en'=>'Cannot load lass "'. $className . '" - cannot load file',
