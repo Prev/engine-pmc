@@ -87,8 +87,8 @@
 
 			if (!isset($GLOBALS['serverInfo'])) {
 				Context::printErrorPage(array(
-					'en' => 'Cannot find connected server with the server defined in conf/server_info.json',
-					'kr' => 'conf/server_info.json 파일에서 현재 서버와 연결된 서버를 찾을 수 없습니다'
+					'en' => 'Cannot find connected server with the server defined in config/server_info.json',
+					'kr' => 'config/server_info.json 파일에서 현재 서버와 연결된 서버를 찾을 수 없습니다'
 				));
 				return;
 			}
