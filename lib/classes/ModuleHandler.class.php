@@ -93,8 +93,8 @@
 				}
 				else if(isset(self::$moduleInfos->{$moduleID}->group)) {
 					if(
-						is_null(User::getCurrentUser()) &&
-						User::getCurrentUser()->group_name != self::$moduleInfos->{$moduleID}->group) {
+						is_null(User::getCurrent()) &&
+						User::getCurrent()->group_name != self::$moduleInfos->{$moduleID}->group) {
 						Context::printErrorPage(array(
 							'en' => 'Operation not permitted',
 							'kr' => '권한이 없습니다.'
@@ -163,8 +163,8 @@
 					));
 				}
 				else if(isset($action->group)) {
-					if(!is_null(User::getCurrentUser())) {
-						if(User::getCurrentUser()->group_name === $action->group) {
+					if(!is_null(User::getCurrent())) {
+						if(User::getCurrent()->group_name === $action->group) {
 							return NULL;
 						}
 					}

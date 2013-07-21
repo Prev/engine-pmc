@@ -77,7 +77,7 @@
 			$next = !empty($_REQUEST['next']) ? $_REQUEST['next'] : getUrl();
 
 			$r = DBHandler::for_table('user')
-				->select('id')->select('input_id')->select('password')->select('password_salt')
+				->select_many('id', 'input_id', 'password', 'password_salt')
 				->where('input_id', $id)
 				->find_one();
 

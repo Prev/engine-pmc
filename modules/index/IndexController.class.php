@@ -3,7 +3,7 @@
 	class IndexController extends Controller {
 		
 		public function init() {
-			$user = User::getCurrentUser();
+			$user = User::getCurrent();
 
 			$this->view->setProperties(array(
 				'user' => $user,

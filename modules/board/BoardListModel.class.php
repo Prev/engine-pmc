@@ -16,7 +16,7 @@
 			$limitNum = ($this->nowPage - 1) * $this->aop;
 
 			$data = DBHandler::for_table('article')
-				->select('article.*')->select('user.user_name')
+				->select_many('article.*', 'user.user_name')
 				->where('article.board_id', $this->boardId)
 				->join('user', array(
 					'user.id','=','article.writer_id'
@@ -35,7 +35,7 @@
 		
 		function getNoticeArticles() {
 			$data = DBHandler::for_table('article')
-				->select('article.*')->select('user.user_name')
+				->select_many('article.*', 'user.user_name')
 				->where('article.board_id', $this->boardId)
 				->where('article.is_notice', 1)
 				->join('user', array(

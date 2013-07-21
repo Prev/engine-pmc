@@ -382,24 +382,25 @@
 		}
 		
 		public function checkSSO() {
-			if(isset($_GET['sses_key']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PMC-SSO') !== false) {
+			if (isset($_GET['sses_key']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PMC-SSO') !== false) {
 
 				$session_key = $_GET['sses_key'];
 
 				$queryResult = DBHandler::for_table('session')
 						->select('*')
 						->where('session_key', $session_key)
-						->where_gt('expire_time', 'now()')->find_one();
+						->where_lt('expire_time', 'now()')->find_one();
 
 				$ret = new stdClass();
 				$ret->result = 'success';
 				$ret->expire_time = $queryResult->expire_time;
-				$ret->userData = null;
-				$ret->groupData = null;
 
-				$userData = DBHandler::for_table('user')->select('*')->where('id', $queryResult->user_id)->find_one();
+				$userData = DBHandler::for_table('user')
+					->select('*')
+					->where('id', $queryResult->user_id)
+					->find_one();
 
-				if(empty($userData)) {
+				if (empty($userData)) {
 					$ret->result = 'fail';
 					echo json_encode2($ret);
 					return false;
@@ -408,10 +409,10 @@
 				$userData = $userData->getData();
 
 				foreach ($userData as $key => $value) {
-					if ($key === 'id' || $key === 'password' || $key === 'password_salt') continue;
-					if ($key == 'input_id') $ret->userData->user_id = $value;
+					if ($key === 'password' || $key === 'password_salt') continue;
+					if ($key == 'input_id') $ret->user_id = $value;
 					
-					$ret->userData->{$key} = $value;
+					$ret->{$key} = $value;
 				}
 
 				$groupData = DBHandler::for_table('user_group')
@@ -420,25 +421,24 @@
 						->where('user_group_user.user_id', $queryResult->user_id)
 						->find_one();
 				
-				if(empty($groupData)) {
+				if (empty($groupData)) {
 					$ret->result = 'fail';
 					echo json_encode2($ret);
 					return false;
-				}
-
-				$groupData = $groupData->getData();	
-
-				foreach($groupData as $key => $value) {
-					$ret->groupData->{'group_' . $key} = $value;
+				}	
+				
+				foreach($groupData->getData() as $key => $value) {
+					$ret->group->$key = $value;
 				}
 
 				echo json_encode2($ret);
 				return false;
 			}
-			else if(isset($_COOKIE['pmc_sess_key']) &&
-					!isset($_SESSION['pmc_user'])){ // TODO : expire check;
+			else if (isset($_COOKIE['pmc_sess_key']) &&
+					!isset($_SESSION['pmc_user'])) { // TODO : expire check;
 
 					$urlData = getURLData(SSO_URL . '?sses_key=' . $_COOKIE['pmc_sess_key'], 'PMC-SSO Connection');
+
 					if (!$urlData) {
 						Context::printErrorPage(array(
 							'en' => 'cannot load sso data',
@@ -458,13 +458,14 @@
 						unset($_SESSION['pmc_user']);
 						return NULL;
 					}
-					User::init($urlData->userData, $urlData->groupData);
 
-					$_SESSION['pmc_user'] = User::getCurrentUser();
+					$_SESSION['pmc_user'] = $urlData;
+					
+					User::initCurrent($urlData);
 					return true;
 				}
 			else {
-				User::init();
+				User::initCurrent();
 				return true;
 			} 
 		}

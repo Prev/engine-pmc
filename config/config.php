@@ -20,7 +20,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.1.5');
+	define('PMC_VERSION', '0.1.9');
 	
 	
 	/**
@@ -138,11 +138,6 @@
 	 */
 	//define('LOGIN_URL', RELATIVE_URL . '/?module=login&action=dispLoginPage');
 	define('LOGIN_URL', RELATIVE_URL . (USE_SHORT_URL ? '/login' : '/?module=login'));
-	
-	/**
-	 * define sso process file url
-	 */
-	define('SSO_URL', RELATIVE_URL . '/');
 	
 	
 	/**

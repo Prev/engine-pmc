@@ -6,7 +6,7 @@
 		var $next;
 
 		function dispLoginPage() {
-			if (!is_null(User::getCurrentUser())) {
+			if (!is_null(User::getCurrent())) {
 				redirect(getUrl());
 				return;
 			}
