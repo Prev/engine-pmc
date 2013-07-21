@@ -26,7 +26,7 @@
 	}
 
 	function execQueryOne($query) {
-		$result = execQuery($query, $fetchType);
+		$result = execQuery($query);
 		if (is_array($result) && count($result) !== 0)
 			return $result[0];
 		else

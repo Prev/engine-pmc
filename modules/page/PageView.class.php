@@ -10,12 +10,7 @@
 		}
 
 		private function loadPage($page) {
-			CacheHandler::execTemplate(
-				(substr($templateName, 0, 1) == '/') ?
-					ROOT_DIR . $templateName :
-					$this->model->getPagePath($page)
-			, $this->module);
-			
+			CacheHandler::execTemplate($this->model->getPagePath($page), $this->module);
 		}
 
 	}

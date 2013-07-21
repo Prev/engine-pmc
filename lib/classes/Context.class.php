@@ -208,14 +208,16 @@
 			}
 
 			static $topMenus;
-			if ($selectedMenuData->level == 1) $topMenus = array($selectedMenuData->id);
-			else if (!$topMenus) $topMenus = explode(',', self::getParentMenus($selectedMenuData->id));
+			if ($selectedMenuData !== false) {
+				if ($selectedMenuData->level == 1) $topMenus = array($selectedMenuData->id);
+				else if (!$topMenus) $topMenus = explode(',', self::getParentMenus($selectedMenuData->id));
+			}
 
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i] = $arr[$i]->getData();
 				$arr[$i]->className = 'pmc-menu' . $level . '-' . $arr[$i]->title;
 				
-				if (array_search($arr[$i]->id, $topMenus) !== false) {
+				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false) {
 					$arr[$i]->selected = true;
 					$arr[$i]->className .= ' pmc-menu' . $level . '-selected';
 				}
@@ -461,7 +463,6 @@
 				}
 
 				$ssoData = json_decode($urlData);
-
 				if (!$ssoData || $ssoData->result === 'fail') {
 					Context::printErrorPage(array(
 						'en' => 'fail loading sso data',

@@ -2,7 +2,9 @@
 	
 	function getDBInfo() {
 		$dt = debug_backtrace();
-		if ((ROOT_DIR . DIRECTORY_SEPARATOR . 'index.php' != $dt[0]['file']) && (SSO_DIR . DIRECTORY_SEPARATOR . 'conf.database.php' != $dt[0]['file']) ) {
+		$allow = (defined('ROOT_DIR') && ROOT_DIR . DIRECTORY_SEPARATOR . 'index.php' == $dt[0]['file']) ||
+					(defined('SSO_DIR') && SSO_DIR . DIRECTORY_SEPARATOR . 'conf.database.php' == $dt[0]['file']);
+		if (!$allow) {		
 			if (class_exists(Context))
 				Context::printWarning('SandBox error : call getDBInfo in other file');
 			else

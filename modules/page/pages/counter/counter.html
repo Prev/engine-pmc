@@ -1,7 +1,7 @@
 <ul>
 	{@ foreach(Context::getMenu(2) as $key => $menu): }
 	<li class="{$menu->className}">
-		<condition do="$menu->selected">*</condition>
+		<condition do="isset($menu->selected)">*</condition>
 		<a href="/{@ if (!USE_SHORT_URL) echo '?menu='; }{$menu->title}" class="no-deco">{$menu->title_locale}</a>
 	</li>
 	{@ endforeach; }
