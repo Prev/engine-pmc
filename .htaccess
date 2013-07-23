@@ -12,11 +12,12 @@ RewriteRule ^([a-zA-Z0-9]+)$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]
 
 
 
-# sub-directory php access denied
+# sub-directory php access denied (sso-server/index.php is allowed)
+RewriteRule ^sso-server/index.php$ - [L]
 RewriteRule ^(.+)/(.+)\.php$ - [L,F]
 
 # sub-directory php access denied
-RewriteRule ^cache/(.+)$ - [L,F]
+RewriteRule ^cache/(.+)\.php$ - [L,F]
 
 # module.xml access denied
 RewriteRule ^(modules)/(.+)/info.json$ - [L,F]

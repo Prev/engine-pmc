@@ -461,7 +461,6 @@
 					unset($_SESSION['pmc_sso_data']);
 					return false;
 				}
-
 				$ssoData = json_decode($urlData);
 				if (!$ssoData || $ssoData->result === 'fail') {
 					Context::printErrorPage(array(

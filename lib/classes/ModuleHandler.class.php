@@ -95,30 +95,49 @@
 				$classID = 'Module';
 
 
-			if (is_file($moduleDir . '/info.json')) {
-				$moduleInfo = json_decode(readFileContent($moduleDir . '/info.json'));
-				if ($moduleInfo === NULL) {
-					Context::printWarning(array(
-						'en' => 'Cannot initialize module - Unexpected token ILLEGAL in info.json',
-						'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일 파싱에 실패했습니다'
-					));
-				}
-
-				if (isset($moduleInfo->layout))
-					Context::getInstance()->setLayout($moduleInfo->layout);
-			}else {
-				Context::printErrorPage(array(
-					'en' => 'Cannot initialize module - info.json file not exists',
-					'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않습니다'
-				));
-			}
-
 			if (!class_exists($classID)) {
 				Context::printErrorPage(array(
+					'en' => 'Cannot initialize module - Cannot find module class',
+					'kr' => '모듈을 초기화 할 수 없습니다 - 클래스를 찾을 수 없습니다.'
+				));
+			}
+			if (!is_file($moduleDir . '/info.json')) {
+				Context::printErrorPage(array(
 					'en' => 'Cannot initialize module - info.json file not exists',
 					'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않습니다'
 				));
+				return;
 			}
+
+
+			$moduleInfo = json_decode(readFileContent($moduleDir . '/info.json'));
+			
+			if ($moduleInfo === NULL) {
+				Context::printWarning(array(
+					'en' => 'Cannot initialize module - Unexpected token ILLEGAL in info.json',
+					'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일 파싱에 실패했습니다'
+				));
+			}
+			
+			if (isset($moduleInfo->allow_web_access) && $moduleInfo->allow_web_access == false && isset(Context::getInstance()->moduleID) && Context::getInstance()->moduleID == $moduleID){
+				Context::printErrorPage(array(
+					'en' => 'Cannot initialize module - web access is not allowed',
+					'kr' => '모듈을 초기화 할 수 없습니다 - 웹 접근이 허용되지않음'
+				));
+				return NULL;
+			}
+			if (isset($moduleInfo->accessible_group) && (is_null(User::getCurrent()) || !User::getCurrent()->checkGroup($moduleInfo->accessible_group))) {
+				Context::printErrorPage(array(
+					'en' => 'Cannot initialize module - Operation not permitted',
+					'kr' => '모듈을 초기화 할 수 없습니다 - 권한이 없습니다'
+				));
+				return NULL;
+			}
+
+			if (isset($moduleInfo->layout))
+				Context::getInstance()->setLayout($moduleInfo->layout);
+
+
 
 			$_loader = create_function('', 'return new ' . $classID . '(\''.$moduleID.'\');');
 			$module = $_loader();
@@ -146,6 +165,7 @@
 						$action = $actions[$i]->name;
 					
 					if ($action == $actions[$i]->name) {
+						
 						if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && isset(Context::getInstance()->moduleAction) && Context::getInstance()->moduleAction == $action){
 							Context::printErrorPage(array(
 								'en' => 'Cannot execute module action - web access is not allowed',
@@ -153,17 +173,16 @@
 							));
 							return NULL;
 						}
-						if (isset($actions[$i]->accessible_group)) {
-							if (is_null(User::getCurrent()) || !User::getCurrent()->checkGroup($actions[$i]->accessible_group)) {
-								Context::printErrorPage(array(
-									'en' => 'Cannot initialize module - Operation not permitted',
-									'kr' => '모듈을 초기화 할 수 없습니다 - 권한이 없습니다'
-								));
-								return NULL;
-							}
+						if (isset($actions[$i]->accessible_group) && (is_null(User::getCurrent()) || !User::getCurrent()->checkGroup($actions[$i]->accessible_group))) {
+							Context::printErrorPage(array(
+								'en' => 'Cannot execute module action - Operation not permitted',
+								'kr' => '모듈 액션을 실행할 수 없습니다 - 권한이 없습니다'
+							));
+							return NULL;
 						}
 						if (isset($actions[$i]->layout))
 							Context::getInstance()->setLayout($actions[$i]->layout);
+
 						return $actions[$i];
 					}
 				}
@@ -171,23 +190,6 @@
 					Context::printErrorPage(array(
 						'en' => 'Module action is not defined',
 						'kr' => '모듈 액션이 정의되지 않았습니다.'
-					));
-				}
-				else if(isset($action->private) && $action->private === true) {
-					Context::printErrorPage(array(
-						'en' => 'Module action is not opened',
-						'kr' => '모듈 액션이 공개되어 있지 않습니다'
-					));
-				}
-				else if(isset($action->group)) {
-					if(!is_null(User::getCurrent())) {
-						if(User::getCurrent()->group_name === $action->group) {
-							return NULL;
-						}
-					}
-					Context::printErrorPage(array(
-						'en' => 'Operation not permitted',
-						'kr' => '권한이 없습니다.'
 					));
 				}
 
