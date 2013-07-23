@@ -1,8 +1,8 @@
 <?php
 	
 	/**
-	 * @ author prevdev@gmail.com
-	 * @ 2013.05
+	 * @author prevdev@gmail.com
+	 * @2013.05
 	 *
 	 *
 	 * CacheHandler Class
@@ -34,7 +34,7 @@
 		 * if there is no cache, make it first
 		 * if cache and origin file is diff, update cache
 		 *
-		 * argument '$filePath' is like '/layouts/default/layout.html'
+		 * @param $filePath is like '/layouts/default/layout.html'
 		 */
 		static public function execTemplate($filePath, $module=NULL) {
 			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR) $filePath = substr($filePath, strlen(ROOT_DIR));

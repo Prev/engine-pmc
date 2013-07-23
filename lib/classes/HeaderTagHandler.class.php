@@ -1,8 +1,8 @@
 <?php
 	
 	/**
-	 * @ author prevdev@gmail.com
-	 * @ 2013.05
+	 * @author prevdev@gmail.com
+	 * @2013.05
 	 *
 	 *
 	 * HeaderTagHandler class

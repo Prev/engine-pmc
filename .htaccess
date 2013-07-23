@@ -26,4 +26,7 @@ RewriteRule ^(modules)/(.+)/info.json$ - [L,F]
 RewriteRule ^(modules)/(.+)/template/(.+)\.html$ - [L,F]
 
 # layout html access denied
-RewriteRule ^(layouts)/(.+)\.html$ - [L,F] 
+RewriteRule ^(layouts)/(.+)\.html$ - [L,F]
+
+# pmc_error.log
+RewriteRule ^pmc_error.log$ - [L,F]

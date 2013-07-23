@@ -1,8 +1,8 @@
 <?php
 	
 	/**
-	 * @ author prevdev@gmail.com
-	 * @ 2013.07
+	 * @author prevdev@gmail.com
+	 * @2013.07
 	 *
 	 *
 	 * (abstract) Controller Class

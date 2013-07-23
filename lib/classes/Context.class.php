@@ -1,8 +1,8 @@
 <?php
 
 	/**
-	 * @ author prevdev@gmail.com
-	 * @ 2013.05 ~ 07
+	 * @author prevdev@gmail.com
+	 * @2013.05 ~ 07
 	 *
 	 *
 	 * Context Class

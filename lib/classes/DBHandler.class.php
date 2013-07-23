@@ -1,8 +1,8 @@
 <?php
 	
 	/**
-	 * @ author prevdev@gmail.com
-	 * @ 2013.06
+	 * @author prevdev@gmail.com
+	 * @2013.06
 	 *
 	 *
 	 * DBHandler Class

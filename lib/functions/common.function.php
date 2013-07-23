@@ -1,6 +1,15 @@
 <?php
 	
 	/**
+	 * @author prevdev@gmail.com
+	 * @2013.05 ~ 07
+	 *
+	 * common functions
+	 */
+
+
+	
+	/**
 	 * 디버깅을 위한 함수
 	 * 출력 내용은 var_dump와 같으나 DEBUG_MODE=true 에서 예쁘게 하이라이팅됨 
 	 */
@@ -29,7 +38,7 @@
 	 * @param $level 은 가져올 메뉴의 level을 정의함
 	 * @param $noDeco 는 <li> 태그 밑 <a> 태그에서 class="no-deco" 를 사용할지 말지 결정
 	 */
-	function getMenuliTag($level, $noDeco=true) {
+	function getMenuTag($level, $noDeco=true) {
 		$html = '';
 		foreach(Context::getMenu($level) as $key => $menu) {
 			$html .= 

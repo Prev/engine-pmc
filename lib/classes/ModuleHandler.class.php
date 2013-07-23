@@ -1,9 +1,8 @@
 <?php
 	
 	/**
-	 * @ author prevdev@gmail.com
-	 * @ author luaviskang@gmail.com
-	 * @ 2013.05
+	 * @author prevdev@gmail.com, luaviskang@gmail.com
+	 * @2013.05
 	 *
 	 *
 	 * self Class

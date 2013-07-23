@@ -1,7 +1,7 @@
 <?php
 	
 	/**
-	 * @ author prevdev@gmail.com
+	 * @author prevdev@gmail.com
 	 *
 	 * Empty Handler Class
 	 */

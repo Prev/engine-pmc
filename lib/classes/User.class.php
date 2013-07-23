@@ -1,8 +1,8 @@
 <?php
 	
 	/**
-	 * @ author luaviskang@gmail.com, prevdev@gmail.com
-	 * @ 2013.07
+	 * @author luaviskang@gmail.com, prevdev@gmail.com
+	 * @2013.07
 	 *
 	 *
 	 * User Class
