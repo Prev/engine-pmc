@@ -58,13 +58,17 @@
 			$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>/', array($this, 'parseConditions'), $html);
 			$html = str_replace('</condition>', '<?php } ?>', $html);
 			
+			// <link>http://google.com</link> -> <a href="http://google.com">http://google.com</a>
+			$html = preg_replace('`<link(.*?)>(.*?)</link>`', '<a href="$2"$1>$2</a>', $html);
+
+
 			$html = join('$_SERVER', explode('$__attr->_SERVER', $html));
 			$html = join('$_COOKIE', explode('$__attr->_COOKIE', $html));
 			$html = join('$GLOBALS', explode('$__attr->GLOBALS', $html));
 			$html = join('$_GET', explode('$__attr->_GET', $html));
 			$html = join('$_POST', explode('$__attr->_POST', $html));
 			$html = join('$_REQUEST', explode('$__attr->_REQUEST', $html));
-			
+
 			//$html = join('::$', explode('::$__attr->', $html));
 
 			if (ZIP_BLANK) $html = $this->deleteWhiteSpace($html);

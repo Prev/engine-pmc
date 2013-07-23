@@ -1,5 +1,9 @@
 <?php
 	
+	/**
+	 * 디버깅을 위한 함수
+	 * 출력 내용은 var_dump와 같으나 DEBUG_MODE=true 에서 예쁘게 하이라이팅됨 
+	 */
 	function var_dump2($obj) {
 		$bt = debug_backtrace();
 		
@@ -10,33 +14,69 @@
 	}
 
 
+	/**
+	 * 모듈의 내용을 불러오는 함수
+	 * 다중 모듈 이용시 사용
+	 * @param $moduleID의 값이 null일시 default 모듈의 내용을 불러옴
+	 */
 	function getContent($moduleID=NULL, $moduleAction=NULL) {
 		Context::getInstance()->getModuleContent($moduleID, $moduleAction);
 	}
 
+
+	/**
+	 * menu의 내용을 html <li> 로 가공한 내용을 반환함
+	 * @param $level 은 가져올 메뉴의 level을 정의함
+	 * @param $noDeco 는 <li> 태그 밑 <a> 태그에서 class="no-deco" 를 사용할지 말지 결정
+	 */
+	function getMenuliTag($level, $noDeco=true) {
+		$html = '';
+		foreach(Context::getMenu($level) as $key => $menu) {
+			$html .= 
+				'<li class="'.$menu->className.'">' .
+					'<a href="' . RELATIVE_URL . (USE_SHORT_URL ? '' : '?menu=') . $menu->title . '" class="'.($noDeco == true ? 'no-deco' : '').'">' .
+						$menu->title_locale .
+					'</a>' .
+				'</li>';
+		}
+		return $html;
+	}
 	
+	/**
+	 * 파일 경로를 깨끗하게 출력함
+	 * ex) C:\APM_Setup\htdocs\pmc\index.php -> /index.php
+	 */
 	function getFilePathClear($path) {
 		return str_replace("\\", '/', str_replace(ROOT_DIR, '', $path));
 	}
 	
+
+	/**
+	 * 문자의 길이만큼 빈곳에 0을 집어넣음
+	 * 시간표시시 주로 사용
+	 * @param $length는 0을 채워넣을 길이를 정의함
+	 * ex) 11:57:02
+	 */
 	function set0($str, $length=2) {
 		for ($i=0; $i<$length-strlen($str); $i++)
 			$str = '0' . $str;
 		return $str;
 	}
-
-	function split2($hashhack, $string) {
-		if (strpos($hashhack, $string) === false)
-			return array(0 => $string, 1 => NULL);
-		else
-			return split($hashhack, $string);
-	}
 	
+	/**
+	 * form 데이터 수신시 checkbox 내용 체크
+	 * 값이 true 이거나 on 일시 true 반환
+	 */
 	function evalCheckbox($formData) {
 		return isset($formData) && 
 			($formData == true || strtolower($formData) == 'on');
 	}
 
+	/**
+	 * 상대적 시간 출력
+	 * @param $time은 timestamp 값임
+	 * ex) 2013-06-23 11:32:12 -> 13분 전
+	*/
 	function getRelativeTime($time) {
 		if ($time + 60 > time())
 			return '방금 전';
@@ -48,6 +88,10 @@
 			return date('Y.m.d', $time);	
 	}
 	
+	/**
+	 * 현재 설정 언어 정보를 출력
+	 * @param $compareLocal에 값을 지정시 현재 언어정보와 같은지 비교한 값을 반환 (bool type)
+	 */
 	function getLocale($compareLocale=NULL) {
 		if (isset($_GET['locale']))
 			$locale = $_GET['locale'];
@@ -61,39 +105,57 @@
 		else
 			return strtolower($locale);
 	}
-	
-	
-	function fetchLocale($object) {
+	/**
+	 * 언어를 파싱함
+	 * @param $data 에는 object, array, string(json), string(raw) 등이 올 수 있음
+	 * @param $data 에 raw string 값이 올 시 그대로 출력함
+	 * 
+	 * object: (object) array('en' => 'Freeboard', 'kr' => '자유게시판')
+	 * array: array('en' => 'Freeboard', 'kr' => '자유게시판')
+	 * string(json): {"en":"Freeboard", "kr":"자유게시판"}
+	 * string(raw): "자유게시판"
+	 */
+	function fetchLocale($data) {
 		$locale = getLocale();
-		switch (gettype($object)) {
+		switch (gettype($data)) {
 			case 'object' :
-				if (isset($object->{$locale}))
-					return $object->{$locale};
-				else if (isset($object->en))
-					return $object->en;
+				if (isset($data->{$locale}))
+					return $data->{$locale};
+				else if (isset($data->en))
+					return $data->en;
 				else {
-					foreach ($key as $object => $value)
+					foreach ($key as $data => $value)
 						return $value;
 				}
 			break;
 			
 			case 'array' :
-				if (isset($object[$locale]))
-					return $object[$locale];
-				else if (isset($object['en']))
-					return $object['en'];
+				if (isset($data[$locale]))
+					return $data[$locale];
+				else if (isset($data['en']))
+					return $data['en'];
 				else {
-					foreach ($key as $object => $value)
+					foreach ($key as $data => $value)
 						return $value;
 				}
 			break;
 			
+			case 'string' :
+				if (json_decode($data) !== NULL)
+					return fetchLocale(json_decode($data));
+				else
+					return $data;
+				break;
+			
 			default :
-				return $object;
+				return $data;
 		}
 			
 	}
 	
+	/**
+	 * 파일 내용을 모두 읽어서 출력함
+	 */
 	function readFileContent($filePath) {
 		if (!is_file($filePath) || !is_readable(dirname($filePath))) return;
 		
@@ -104,6 +166,10 @@
 		return $content;
 	}
 	
+	/**
+	 * json_encode와 비슷
+	 * 유니코드 값을 \ucXXX 로 치환하지 않으며 json_encode가 구현되지 않은서버에서도 사용할 수 있음
+	 */
 	function json_encode2($data) {
 		switch(gettype($data)) {
 			case 'boolean':
@@ -135,10 +201,21 @@
 		}
 	}
 	
+	/**
+	 * 쿼리 데이터 이스케이프 함수
+	 * mysql_real_ecape_string과 비슷함
+	 */
 	function escape($string) {
 		return DBHandler::escapeString($string);
 	}
 	
+	/**
+	 * @param $url 로 정의된 url으로 http 통신을 한 뒤 결과값을 반환함
+	 * @param $userAgent 설정시 해당 userAgent를 첨가하여 송신
+	 *
+	 * @return 해당 url에서 반환한 값에서 헤더를 잘라낸뒤 출력
+	 *		   데이터 로딩에 실패할시 NULL 반환
+	 */
 	function getURLData($url, $userAgent=NULL) {
 		$temp = explode('://', $url);
 		$temp = explode('/', $temp[1]);
@@ -157,12 +234,16 @@
 		while(!feof($fp))
 			$output .= fgets($fp, 1024);    
 		
+		// 헤더 정보 잘라내기
 		$output = substr($output, strpos($output, "\r\n\r\n")+4);
 		
 		fclose($fp);
 		return $output; 
 	}
 	
+	/**
+	 * config/server-info.json에서 정의된 현재 서버의 정보를 반환
+	 */
 	function getServerInfo() {
 		if (!empty($GLOBALS['serverInfo'])) return $GLOBALS['serverInfo'];
 		
@@ -182,11 +263,10 @@
 		return NULL;
 	}
 	
+	/**
+	 * config/server-info.json 를 기반으로 pmc 엔진의 절대 경로를 반환
+	 */
 	function getRelativeUrl() {
-		/**
-		 * Get server info in server info file and set relative url
-		 * server info file is JSON format
-		 */
 		if (defined('RELATIVE_URL')) return RELATIVE_URL;
 		
 		return ($serverInfo = getServerInfo()) ?
@@ -194,6 +274,10 @@
 			PROTOCOL . '://' . $_SERVER['HTTP_HOST'];
 	}
 	
+	/**
+	 * config/server-info.json 에서 정의된 session_domain을 반환
+	 * config/server-info.json 에서 정의되지 않을 시 현재의 http_host를 반환
+	 */
 	function getSessionDomain() {
 		if (defined('SESSION_DOMAIN')) return SESSION_DOMAIN;
 		
@@ -202,45 +286,62 @@
 			$_SERVER['HTTP_HOST'];
 	}
 	
+	/**
+	 * url 관련 정보를 반환
+	 *
+	 * @param $module 정의시 해당 모듈의 절대경로를 반환함
+ 	 * @param $action 까지 정의시 action이 포함된 모듈의 절대경로 반환
+	 * @param $queryParame 까지 정의시 module, action 파라미터 뒤에 추가 파라미터값을 넣어 반환
+	 * @param $url 까지 정의시 RELAVITE_URL이 아닌 $url을 기반으로 파라미터값을 더해서 반환
+	 *		* $url에서 미리 정의된 파라미터 이름과 $queryParam 등에서 정의된 파라미터 이름이 겹칠 시 $queryParam 등에서 정의된 파라미터 값이 우선
+	 *		* 우선 순위는 module==action > queryParam > url
+	 * @param $module이 NULL일시 @param $action은 무시됨
+	 */
 	function getUrl($module=NULL, $action=NULL, $queryParam=NULL, $url=NULL) {
 		if (!$url) $url = RELATIVE_URL;
-		if (isset($module)) {
-			if (is_array($queryParam)) $queryParam = arrayToUrlQuery($queryParam);
+		
+		$parsedUrl = parse_url($url);
+		$queryObj = new StdClass();
 
-			return $url .
-				('?module=' . $module) .
-				(isset($action) ? '&action=' . $action : '') .
-				(isset($queryParam) ? '&' . $queryParam : '');
-		}else {
-			if (is_string($queryParam)) $queryParam = urlQueryToArray($queryParam);
+		if (isset($parsedUrl['query'])) {
+			$tempArr = explode('&', $parsedUrl['query']);
 
-			$parsedUrl = parse_url($url);
-			$queryObj = new StdClass();
-
-			if (isset($parsedUrl['query'])) {
-				$tempArr = explode('&', $parsedUrl['query']);
-
-				for ($i=0; $i<count($tempArr); $i++) {
-					$tempArr2 = explode('=', $tempArr[$i]);
-					if ($tempArr2[0])
-						$queryObj->{$tempArr2[0]} = $tempArr2[1];
-				}
+			for ($i=0; $i<count($tempArr); $i++) {
+				$tempArr2 = explode('=', $tempArr[$i]);
+				if ($tempArr2[0])
+					$queryObj->{$tempArr2[0]} = $tempArr2[1];
 			}
-			if ($queryParam) {
-				foreach ($queryParam as $key => $value) {
-					if ($key) $queryObj->{$key} = $value;
-				}
-			}
-			
-			$parsedUrl['query'] = arrayToUrlQuery($queryObj);
-			return unparse_url($parsedUrl);
 		}
+
+		if ($queryParam) {
+			foreach ($queryParam as $key => $value) {
+				if ($key) $queryObj->{$key} = $value;
+			}
+		}
+
+		if (isset($module)) {
+			$queryObj->module = $module;
+			if (isset($action))
+				$queryObj->action = $action;
+		}
+		
+		$parsedUrl['query'] = arrayToUrlQuery($queryObj);
+		return unparse_url($parsedUrl);
+	
 	}
 
+	/**
+	 * getUrl함수에서 @param $module, @param $action이 빠진 하수
+	 */
 	function getUrlA($queryParam, $url) {
 		return getUrl(NULL, NULL, $queryParam, $url);
 	}
 	
+
+	/**
+	 * parse_url()의 역함수
+	 * getUrlA 함수에서 쓰임
+	 */
 	function unparse_url($parsed_url) { 
 		$scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : ''; 
 		$host     = isset($parsed_url['host']) ? $parsed_url['host'] : ''; 
@@ -254,6 +355,9 @@
 		return $scheme . $user . $pass . $host . $port . $path . $query . $fragment; 
 	}
 	
+	/**
+	 * array('param1' => 'val1', 'param2' => 'val2') 같은 배열을 'param1=val1&param2=val2' 의 string값으로 변환함
+	 */
 	function arrayToUrlQuery($array) {
 		if (!$array) return NULL;
 		else {
@@ -269,15 +373,20 @@
 			return join('&', $tempArr);
 		}
 	}
+
+	/**
+	 * arrayToUrlQuery() 의 역함수
+	 * 'param1=val1&param2=val2' 같은 문자열을 array('param1' => 'val1', 'param2' => 'val2') 같은 배열 값으로 변환함
+	 */
 	function urlQueryToArray($query) {
 		$arr = array();
-		 $tempArr = explode('&', $query);
+		$tempArr = explode('&', $query);
 
 		for ($i=0; $i<count($tempArr); $i++) {
-			if (strpos('=', $tempArr[$i]) == false)
+			if (strpos($tempArr[$i], '=') === false)
 				$arr[$tempArr[$i]] = NULL;
 			else {
-				$tempArr2 = split('=', $tempArr[$i]);
+				$tempArr2 = explode('=', $tempArr[$i]);
 				if ($tempArr2[0])
 					$arr[$tempArr2[0]] = $tempArr2[1];
 			}
@@ -285,6 +394,9 @@
 		return $arr;
 	}
 
+	/**
+	 * 뒤로가기등으로 사용할 이전 url을 불러옴
+	 */
 	function getBackUrl() {
 		if ($_GET['next'])
 			return $_GET['next'];
@@ -294,6 +406,9 @@
 			return RELATIVE_URL;
 	}
 	
+	/**
+	 * url 리다이렉트
+	 */
 	function redirect($url) {
 		echo Context::getInstance()->getDoctype() .
 				'<html><head>' .

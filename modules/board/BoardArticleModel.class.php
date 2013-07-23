@@ -16,7 +16,7 @@
 
 			if ($data) {
 				$data->boardName = $data->name;
-				$data->boardName_kr = $data->name_kr;
+				$data->boardName_locale = fetchLocale($data->name_locales);
 				$data->writerNick = $data->nick_name;
 			}
 			return $data;

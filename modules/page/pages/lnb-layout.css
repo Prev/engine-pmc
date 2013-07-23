@@ -1,0 +1,8 @@
+#lnb{ margin:0; width: 173px; }
+#lnb li{ font-size: 13px; margin: 4px 0 }
+#lnb li.selected{ font-weight: bold }
+
+#page-content{ margin-bottom: 20px }
+#page-content h1{ margin: 0 0 5px 0 }
+#page-content a{ color: #369; }
+#page-content ul li{ margin: 3px 0 }

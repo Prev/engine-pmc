@@ -26,7 +26,7 @@
 				//if ($articleData->read_permission)
 
 				$this->title = $articleData->title;
-				$this->board = ($articleData->boardName_kr ? $articleData->boardName_kr : $articleData->boardName);
+				$this->board = ($articleData->boardName_locale ? $articleData->boardName_locale : $articleData->boardName);
 				$this->upload_time = $articleData->upload_time;
 				$this->writer = $articleData->writerNick;
 				$this->url = (USE_SHORT_URL ? 

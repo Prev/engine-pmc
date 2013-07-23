@@ -178,6 +178,7 @@
 			if ($level == 1) {
 				$arr = DBHandler::for_table('menu')
 					->where('level', 1)
+					->where('visible', 1)
 					->find_many();
 			}else {
 				if (empty($selectedMenuData)) {
@@ -203,6 +204,7 @@
 				}
 				$arr = DBHandler::for_table('menu')
 						->where('level', $level)
+						->where('visible', 1)
 						->where('parent_id', $parent_id)
 						->find_many();
 			}
@@ -219,12 +221,11 @@
 				
 				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false) {
 					$arr[$i]->selected = true;
-					$arr[$i]->className .= ' pmc-menu' . $level . '-selected';
+					$arr[$i]->className .= ' pmc-menu' . $level . '-selected selected';
 				}
 				if ($arr[$i]->is_index && USE_SHORT_URL)
 					$arr[$i]->title = '';
-
-				$arr[$i]->title_locales = json_decode($arr[$i]->title_locales);
+				
 				$arr[$i]->title_locale = fetchLocale($arr[$i]->title_locales);
 			}
 			$menuCSSPath = CacheHandler::getMenuCachePath($arr, $level);
@@ -295,17 +296,21 @@
 		
 		/**
 		 * add header files like css/js/favicon
-		 * if index is -1, push file in last of array
-		 * else, push file in current index
+		 * @param $path : path of file
+		 * @param $index : if $index is -1, push file in last of array, else push file in current index
+		 * @param $position : position of header files / generally added in head, body-top or body-bottom
+		 * @param $requiredAgent : if $requiredAgent !== NULL, check user agent and matching of them.
+		 *							if $requiredAgent doesn't matche with userAgent, header file is not added
+		 * @param $targetie : target of added ie, if @param is not NULL, header tag is reaplaced to <!--[if @param]>HEADER_TAG<![endif]-->
 		 */
 		public function addHeaderFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
 			if (substr($path, 0, 1) != '/')
 				$path = '/' . $path;
-			
+
 			if (!is_file(ROOT_DIR . '/' . $path)) {
 				self::printWarning(array(
-					'en' => 'fail to load file "<b>/'.$path.'"</b>',
-					'kr' => '파일을 불러오는데 실패했습니다 - "<b>/'.$path.'"</b>'
+					'en' => 'fail to load file "<b>'.$path.'"</b>',
+					'kr' => '파일을 불러오는데 실패했습니다 - "<b>'.$path.'"</b>'
 				));
 				return;
 			}
@@ -449,6 +454,9 @@
 			ErrorLogger::log('Warning : ' . $message, $backtrace);
 		}
 		
+		/**
+		 * check sso and initialize
+		 */
 		public function checkSSO() {
 			if (isset($_COOKIE['pmc_sess_key']) && !isset($_SESSION['pmc_sso_data'])) {
 				$urlData = getURLData(SSO_URL . '?sess_key=' . $_COOKIE['pmc_sess_key'], SSO_AGENT_KEY);

@@ -144,6 +144,8 @@
 	ini_set('display_errors', (DEBUG_MODE ? 1 : 0));
 	
 	
+	// lib.rsa.php
+	// lib.lessc.php is required when is needed
 	require ROOT_DIR . '/config/database.php';
 	require ROOT_DIR . '/config/secure-keys.php';
 	require ROOT_DIR . '/lib/others/lib.idiorm.php';

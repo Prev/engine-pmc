@@ -58,7 +58,16 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
-####v 0.2.1
+####v 0.2.3
++ DB구조 일부 변경
+ + menu visible 컬럼 추가
+ + board 다국어 지원
++ getUrlA 버그 픽스
++ 오픈소스 라이브러리 페이지 추가
++ 템플릿 문법 <link> 추가
++ common.function.php 주석 추가
+
+####v 0.2.1 ~ 0.2.2
 + 모듈 관련 기능 변경
  + default 모듈 작성규칙 (ModuleName)Module.class.php 로 변경
  + 모듈 폴더에 default 모듈 php가 없을시 기본 Module 클래스 불러옴
