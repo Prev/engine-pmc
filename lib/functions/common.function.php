@@ -28,8 +28,8 @@
 	 * 다중 모듈 이용시 사용
 	 * @param $moduleID의 값이 null일시 default 모듈의 내용을 불러옴
 	 */
-	function getContent($moduleID=NULL, $moduleAction=NULL) {
-		Context::getInstance()->getModuleContent($moduleID, $moduleAction);
+	function getContent($moduleID=NULL, $moduleAction=NULL, $queryParam=NULL) {
+		Context::getInstance()->getModuleContent($moduleID, $moduleAction, $queryParam);
 	}
 
 
@@ -59,6 +59,22 @@
 		return str_replace("\\", '/', str_replace(ROOT_DIR, '', $path));
 	}
 	
+	/**
+	 * 상위 경로를 불러옴
+	 * ex) /modules/index/template/ -> /modules/index/
+	 */
+	function getUpperPath($path) {
+		$path = str_replace("\\", '/', $path);
+		if (substr($path, strlen($path)-1) == '/') {
+			$path = substr($path, 0, strlen($path)-1);
+			$end = '/';
+		}
+		if (strrpos($path, '/') === false)
+			return $path . '/..' . (isset($end) ? $end : '');
+		else
+			return substr($path, 0, strrpos($path, '/')) . (isset($end) ? $end : '');
+	}
+
 
 	/**
 	 * 문자의 길이만큼 빈곳에 0을 집어넣음
@@ -225,7 +241,7 @@
 	 * @return 해당 url에서 반환한 값에서 헤더를 잘라낸뒤 출력
 	 *		   데이터 로딩에 실패할시 NULL 반환
 	 */
-	function getURLData($url, $userAgent=NULL) {
+	function getUrlData($url, $userAgent=NULL) {
 		$temp = explode('://', $url);
 		$temp = explode('/', $temp[1]);
 
@@ -321,13 +337,12 @@
 					$queryObj->{$tempArr2[0]} = $tempArr2[1];
 			}
 		}
-
+		if (is_string($queryParam)) $queryParam = urlQueryToArray($queryParam);
 		if ($queryParam) {
 			foreach ($queryParam as $key => $value) {
 				if ($key) $queryObj->{$key} = $value;
 			}
 		}
-
 		if (isset($module)) {
 			$queryObj->module = $module;
 			if (isset($action))
@@ -335,6 +350,12 @@
 		}
 		
 		$parsedUrl['query'] = arrayToUrlQuery($queryObj);
+		if ($parsedUrl['query'] == '') $parsedUrl['query'] = NULL;
+		
+		if ($parsedUrl['query'] != NULL)
+			if (strrpos($parsedUrl['path'], '/') !== strlen($parsedUrl['path'])-1)
+				$parsedUrl['path'] .= '/';
+
 		return unparse_url($parsedUrl);
 	
 	}
@@ -346,6 +367,12 @@
 		return getUrl(NULL, NULL, $queryParam, $url);
 	}
 	
+	/**
+	 * 현재 url 반환
+	 */
+	function getCurrentUrl() {
+		return REAL_URL;
+	}
 
 	/**
 	 * parse_url()의 역함수
@@ -425,5 +452,9 @@
 				'<script type="text/javascript">location.replace("'.$url.'")</script>' .
 				'</head><body></body></html>';
 		exit;
+	}
+
+	function goLogin() {
+		redirect(LOGIN_URL);
 	}
 	

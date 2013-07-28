@@ -1,0 +1,35 @@
+<import path="../../js/popup.js" />
+<import path="../../css/popup.css" />
+
+<script type="text/javascript">
+// <![CDATA[
+	window.onload = function() {
+		var _opener = PopupUtil.getOpener();
+		if (!_opener) {
+			alert('잘못된 경로로 접근하셨습니다.');
+			return;
+		}
+		var _attacher = getAttacher('image', _opener);
+		registerAction(_attacher);
+	}
+// ]]>
+</script>
+<div class="wrapper">
+	<form name="form1" enctype="multipart/form-data" action="{getUrl('file', 'procImageUpload')}" method="post">
+		<div class="header">
+			<h1>사진 첨부</h1>
+		</div>
+		<div class="body">
+			<div class="input-file-wrap">
+				<input type="file" name="bifile" class="input" accept="image/*">
+			</div>
+		</div>
+		<div class="footer">
+			<p><a href="#" onclick="closeWindow();" title="닫기" class="close">닫기</a></p>
+			<ul>
+				<li class="submit"><a href="#" onclick="form1.submit();" title="등록" class="btnlink">등록</a> </li>
+				<li class="cancel"><a href="#" onclick="closeWindow();" title="취소" class="btnlink">취소</a></li>
+			</ul>
+		</div>
+	</form>
+</div>

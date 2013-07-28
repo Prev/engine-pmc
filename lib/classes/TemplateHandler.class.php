@@ -40,17 +40,13 @@
 			// {func()} -> Context::execFunction('func', array())
 			$html = preg_replace_callback("`{([a-zA-Z0-9_\s]+)\((.*)\)}`", array($this, 'parseFunc'), $html);
 			
+
 			// insert RELATIVE_URL in absolute src (/.*), href and action
-			$html = preg_replace("`src=\"/(.*)\"`i", 'src="' . RELATIVE_URL . '/$1"', $html);
-			$html = preg_replace("`href=\"/(.*)\"`i", 'href="' . RELATIVE_URL . '/$1"', $html);
-			$html = preg_replace("`action=\"/(.*)\"`i", 'action="' . RELATIVE_URL . '/$1"', $html);
-			
-			
+			// insert module realitve url in upper relative src (../.*), href and action
 			// insert module realitve url in relative src (./.*), href and action
-			$html = preg_replace("`src=\"\./(.*)\"`i", 'src="' . RELATIVE_URL . $this->relativePath . '$1"', $html);
-			$html = preg_replace("`href=\"\./(.*)\"`i", 'href="' . RELATIVE_URL . $this->relativePath . '$1"', $html);
-			$html = preg_replace("`action=\"\./(.*)\"`i", 'action="' . RELATIVE_URL . $this->relativePath . '$1"', $html);
+			$html = preg_replace_callback("`(src|href|action)=\"(.*?)\"`i", array($this, 'parseUrl'), $html);
 			
+
 			// targetie condition
 			$html = preg_replace('`<condition\s+targetie="([^"]+)"\s*>([\s\S]*?)</condition>`', '<!--[if $1]>$2<![endif]-->', $html);
 
@@ -75,14 +71,31 @@
 			return $html;
 		}
 		
-		private function handleImportTags($vals) {
-			if (substr($vals[0], 0, 1) == '#') return;
+		private function parseUrl($matches) {
+			$url = $matches[2];
 			
-			preg_match_all('/([a-zA-Z0-9]+)="([^"]+)"/', $vals[1], $output);
+			if (strpos($url, '://') !== false || substr($url, 0, 1) == '#' || substr($url, 0, 5) == '<?php')
+				$url = $matches[2];
+			else if (substr($url, 0, 1) == '/')
+				$url = RELATIVE_URL . $matches[2];
+			else if (substr($url, 0, 3) == '../')
+				$url = RELATIVE_URL . getUpperPath($this->relativePath) . substr($matches[2], 3);
+			else if (substr($url, 0, 2) == './')
+				$url = RELATIVE_URL . $this->relativePath . substr($matches[2], 2);
+			else
+				$url = RELATIVE_URL . $this->relativePath . $matches[2];
+
+			return $matches[1] . '="' . $url . '"';
+		}
+
+		private function handleImportTags($matches) {
+			if (substr($matches[0], 0, 1) == '#') return;
+			
+			preg_match_all('/([a-zA-Z0-9]+)="([^"]+)"/', $matches[1], $output);
 			
 			if (count($output) !== 3) {
 				Context::printWarning(array(
-					'en'=>'Complie layout error - vals length error',
+					'en'=>'Complie layout error - matches length error',
 					'kr'=>'레이아웃 컴파일 에러 - 정규식 길이가 올바르지 않음'
 				));
 				return;
@@ -116,10 +129,11 @@
 			'); ?>';
 			
 		}
-		private function parseCode($m) {
-			if (!$m[1]) return;
+
+		private function parseCode($matches) {
+			if (!$matches[1]) return;
 			
-			$c = $m[1];
+			$c = $matches[1];
 			$c = preg_replace('/([^:>])\$([\>a-zA-Z0-9_-]*)/', '$1\$__attr->$2', $c, -1);
 			$c = preg_replace('/([^:>])\${([\>a-zA-Z0-9_-]*)}/', '$1\${__attr->$2}', $c, -1);
 			
@@ -129,25 +143,31 @@
 			return '<?php' . $c . '?>';
 		}
 		
-		private function parseConditions($m) {
-			if (!$m[1]) return;
+		private function parseConditions($matches) {
+			if (!$matches[1]) return;
 			
-			$c = $m[1];
+			$c = $matches[1];
 			$c = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $c, -1);
 			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
 				
 			return '<?php if('.$c.') { ?>';
 		}
 		
-		private function parseFunc($m) {
-			if (!$m[1]) return;
+		private function parseFunc($matches) {
+			if (!$matches[1]) return;
 			
-			$function = $m[1];
-			$args = $m[2];
+			$function = $matches[1];
+			$args = $matches[2];
 			$args = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $args, -1);
 			$args = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $args, -1);
 
-			if (function_exists($function))
+
+			if ($function == 'getUrl' || $function == 'getUrlA') {
+				// compile
+				$ufunc = create_function('', 'return '.$function.'('.$args.');');
+				$url = $ufunc();
+				return $url;
+			}else if (function_exists($function))
 				return '<?php if ($func = '.$function.'('.$args.')) echo $func; ?>';
 
 			else if ($this->module && method_exists($this->module, $function))

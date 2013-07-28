@@ -42,7 +42,7 @@ body{
 	float:left;
 }
 
-#header ul#gnb li.pmc-menu1-selected a{
+#header ul#gnb li.selected a{
 	color:#06C !important;
 	font-weight:bold;
 }

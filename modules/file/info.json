@@ -1,0 +1,17 @@
+{	
+	"name":"file module",
+	"version":"1.0.0",
+	"author":"prevdev@gmail.com",
+	"layout":"blank",
+
+	"actions":[
+		{
+			"name":"procFileUpload",
+			"controller":"FileController"
+		},
+		{
+			"name":"procImageUpload",
+			"controller":"FileController"
+		}
+	]
+}

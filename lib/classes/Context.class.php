@@ -84,7 +84,7 @@
 			$this->setLayout(LAYOUT_NAME);
 
 			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale']);
-
+			if (isset($_GET['page']) && !isset($_GET['module'])) $_GET['module'] = 'page';
 			if (!isset($GLOBALS['serverInfo'])) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot find connected server with the server defined in config/server_info.json',
@@ -96,14 +96,15 @@
 			CacheHandler::init();
 			ModuleHandler::init();
 			DBHandler::init($db_info);
-			$this->initMenu($_GET);
+			
+			$this->initMenu($_REQUEST);
 			
 			$this->addHeaderFile('/static/css/global.css');
 			$this->addHeaderFile('/static/js/lie.js');
 			$this->addMetaTag( array('charset'=>TEXT_ENCODING) );
 
 			if (DEBUG_MODE)
-				$this->addHeaderFile('/static/js/vdump.js', -1, 'body-bottom');
+				$this->addHeaderFile('/static/js/vdump.js');
 			
 			if (X_UA_Compatible) {
 				$this->addMetaTag(
@@ -123,7 +124,8 @@
 		private function initMenu($getVars) {
 			$moduleID = isset($getVars['module']) ? $getVars['module'] : NULL;
 			$moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
-			
+
+			// get default(index) menu when module and menu not defined
 			if (!isset($getVars['menu']) && !$moduleID) {
 				$data = DBHandler::for_table('menu')
 					->where('is_index', 1)
@@ -131,12 +133,14 @@
 
 				if (isset($data)) $getVars['menu'] = $data->title;
 			}
+
 			if (!isset($getVars['menu'])) $getVars['menu'] = NULL;
 			
 			$data = DBHandler::for_table('menu')
 				->where('title', $getVars['menu'])
 				->find_one();
 
+			// module and menu are not defined, print error
 			if (!isset($data) && !isset($moduleID)) {
 				self::printErrorPage(array(
 					'en' => 'Cannot find requested menu',
@@ -174,7 +178,7 @@
 			$selectedMenuData = DBHandler::for_table('menu')
 				->where('title', self::getInstance()->selectedMenu)
 				->find_one();
-
+				
 			if ($level == 1) {
 				$arr = DBHandler::for_table('menu')
 					->where('level', 1)
@@ -217,19 +221,17 @@
 
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i] = $arr[$i]->getData();
-				$arr[$i]->className = 'pmc-menu' . $level . '-' . $arr[$i]->title;
+				$arr[$i]->className = 'menu-' . $arr[$i]->title;
 				
 				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false) {
 					$arr[$i]->selected = true;
-					$arr[$i]->className .= ' pmc-menu' . $level . '-selected selected';
+					$arr[$i]->className .= ' menu-' . $arr[$i]->title . '-selected selected';
 				}
 				if ($arr[$i]->is_index && USE_SHORT_URL)
 					$arr[$i]->title = '';
 				
 				$arr[$i]->title_locale = fetchLocale($arr[$i]->title_locales);
 			}
-			$menuCSSPath = CacheHandler::getMenuCachePath($arr, $level);
-			self::getInstance()->addHeaderFile($menuCSSPath);
 			
 			self::$menuDatas->{$menuHash} = $arr;
 			return $arr;
@@ -459,7 +461,7 @@
 		 */
 		public function checkSSO() {
 			if (isset($_COOKIE['pmc_sess_key']) && !isset($_SESSION['pmc_sso_data'])) {
-				$urlData = getURLData(SSO_URL . '?sess_key=' . $_COOKIE['pmc_sess_key'], SSO_AGENT_KEY);
+				$urlData = getUrlData(SSO_URL . '?sess_key=' . $_COOKIE['pmc_sess_key'], SSO_AGENT_KEY);
 				
 				if (!$urlData) {
 					Context::printErrorPage(array(
@@ -504,11 +506,10 @@
 		public function procLayout() {
 			if (!$this->contentPrintable) return; // if error printed, return
 
-			OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
-
+			ob_start();
 			CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
-			
 			$content = ob_get_clean();
+
 			OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
 			
 			$output = $this->getDoctype() . LINE_END .
@@ -533,13 +534,14 @@
 		/*
 		 * get module content
 		 */
-		public function getModuleContent($moduleID=NULL, $moduleAction=NULL) {
+		public function getModuleContent($moduleID=NULL, $moduleAction=NULL, $queryParam=NULL) {
 			if (!$moduleAction && !$moduleID)	$moduleAction = $this->moduleAction;
 			if (!$moduleID) 					$moduleID = $this->moduleID;
 
 			$module = ModuleHandler::initModule(
 				$moduleID,
-				$moduleAction
+				$moduleAction,
+				$queryParam
 			);
 			if (!$module)
 				$this->printWarning(array(

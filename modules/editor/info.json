@@ -1,0 +1,21 @@
+{	
+	"name":"editor module",
+	"version":"1.0.0",
+	"author":"prevdev@gmail.com",
+	"default_view":"EditorView",
+
+	"actions":[
+		{
+			"name":"dispEditor",
+			"allow_web_access":false
+		},
+		{
+			"name":"dispImagePopup",
+			"layout":"blank"
+		},
+		{
+			"name":"dispFilePopup",
+			"layout":"blank"
+		}
+	]
+}

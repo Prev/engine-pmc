@@ -1,4 +1,4 @@
 _etc/*
-cache/*
+files/*
 pmc_error.log
 config/database.php

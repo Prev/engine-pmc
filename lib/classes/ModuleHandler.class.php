@@ -36,7 +36,7 @@
 		}
 
 
-		static public function initModule($moduleID, $moduleAction=NULL) {
+		static public function initModule($moduleID, $moduleAction=NULL, $queryParam=NULL) {
 			if (isset(self::$modules->{$moduleID})) return self::$modules->{$moduleID};
 
 			$moduleDir = self::getModuleDir($moduleID);
@@ -69,6 +69,14 @@
 			}
 			$_module->__initBase();
 			$_module->init();
+
+			if ($queryParam) {
+				if (is_string($queryParam))
+					$queryParam = urlQueryToArray($queryParam);
+				foreach ($queryParam as $key => $value) {
+					$_module->{$key} = $value;
+				}
+			}
 			
 			if (method_exists($_module->model, 'init'))			$_module->model->init();
 			if (method_exists($_module->controller, 'init'))	$_module->controller->init();
@@ -164,8 +172,7 @@
 						$action = $actions[$i]->name;
 					
 					if ($action == $actions[$i]->name) {
-						
-						if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && isset(Context::getInstance()->moduleAction) && Context::getInstance()->moduleAction == $action){
+						if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && Context::getInstance()->moduleID == $moduleID && Context::getInstance()->moduleAction == $action){
 							Context::printErrorPage(array(
 								'en' => 'Cannot execute module action - web access is not allowed',
 								'kr' => '모듈 액션을 실행할 수 없습니다 - 웹 접근이 허용되지않음'

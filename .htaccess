@@ -7,19 +7,28 @@ RewriteRule ^login(\/?)$ ./index.php?module=login&action=dispLoginPage&%{QUERY_S
 # board acticle short url
 RewriteRule ^([0-9]+)$ ./index.php?module=board&action=dispArticle&article_no=$1&%{QUERY_STRING} [L,QSA]
 
-# menu handling
+# menu short url
 RewriteRule ^([a-zA-Z0-9]+)$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]
 
 
 
-# sub-directory php access denied (sso-server/index.php is allowed)
+
+# allow sso-server/index.php
 RewriteRule ^sso-server/index.php$ - [L]
+
+# allow editor/template/pages
+# RewriteRule ^modules/editor/template/pages/(.+)\.html$ - [L]
+
+
+
+
+# sub-directory php access denied
 RewriteRule ^(.+)/(.+)\.php$ - [L,F]
 
 # sub-directory php access denied
 RewriteRule ^cache/(.+)\.php$ - [L,F]
 
-# module.xml access denied
+# info.json access denied
 RewriteRule ^(modules)/(.+)/info.json$ - [L,F]
 
 # template html access denied
@@ -28,5 +37,6 @@ RewriteRule ^(modules)/(.+)/template/(.+)\.html$ - [L,F]
 # layout html access denied
 RewriteRule ^(layouts)/(.+)\.html$ - [L,F]
 
-# pmc_error.log
+
+# pmc_error.log access denied
 RewriteRule ^pmc_error.log$ - [L,F]

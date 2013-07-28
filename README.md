@@ -58,6 +58,14 @@ cache 생성이 제대로 되지 않을 경우 cache 폴더를 생성한 후 파
 
 #Change Log
 
+####v 0.2.4
++ DB구조 변경
+ + menu 테이블 css 속성 제거
+ + files 테이블 추가
++ editor 모듈 추가 (다음 오픈 에디터 사용)
++ file 모듈 추가
++ 각종 버그 픽스
+
 ####v 0.2.3
 + DB구조 일부 변경
  + menu visible 컬럼 추가
