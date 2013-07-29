@@ -2,7 +2,7 @@
 	"name":"editor module",
 	"version":"1.0.0",
 	"author":"prevdev@gmail.com",
-	"default_view":"EditorView",
+	"view":"EditorView",
 
 	"actions":[
 		{

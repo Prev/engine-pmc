@@ -33,8 +33,8 @@
 			foreach(array('model', 'view', 'controller') as $key => $mvc) {
 				if (isset($actionData->{$mvc}))
 					$this->{$mvc} = $this->loadMVCClass(ucfirst($actionData->{$mvc}), false);
-				else if (isset($this->moduleInfo->{'default_'.$mvc}))
-					$this->{$mvc} = $this->loadMVCClass($this->moduleInfo->{'default_'.$mvc}, false);
+				else if (isset($this->moduleInfo->{$mvc}))
+					$this->{$mvc} = $this->loadMVCClass($this->moduleInfo->{$mvc}, false);
 				else
 					$this->{$mvc} = $this->loadMVCClass(ucfirst($mvc), true);
 

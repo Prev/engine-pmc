@@ -295,7 +295,7 @@
 		if (defined('RELATIVE_URL')) return RELATIVE_URL;
 		
 		return ($serverInfo = getServerInfo()) ?
-			($serverInfo->protocol . '://' . $serverInfo->host . $serverInfo->uri) :
+			($serverInfo->protocol . '://' . $serverInfo->host . (isset($serverInfo->port) ? ':' . $serverInfo->host : '') . $serverInfo->uri) :
 			PROTOCOL . '://' . $_SERVER['HTTP_HOST'];
 	}
 	

@@ -56,6 +56,9 @@
 			
 			// <link>http://google.com</link> -> <a href="http://google.com">http://google.com</a>
 			$html = preg_replace('`<link(.*?)>(.*?)</link>`', '<a href="$2"$1>$2</a>', $html);
+			
+			// <title>title</title> proc
+			$html = preg_replace_callback('`<title>(.*?)</title>`', array($this, 'setTitle'), $html);
 
 
 			$html = join('$_SERVER', explode('$__attr->_SERVER', $html));
@@ -162,20 +165,25 @@
 			$args = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $args, -1);
 
 
-			if ($function == 'getUrl' || $function == 'getUrlA') {
-				// compile
-				$ufunc = create_function('', 'return '.$function.'('.$args.');');
-				$url = $ufunc();
-				return $url;
-			}else if (function_exists($function))
+			if (function_exists($function))
 				return '<?php if ($func = '.$function.'('.$args.')) echo $func; ?>';
 
 			else if ($this->module && method_exists($this->module, $function))
 				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->'.$function.'('.$args.')) echo $func; ?>';
 			
+			else if ($this->module && $this->module->model && method_exists($this->module->model, $function)) {
+				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->model->'.$function.'('.$args.')) echo $func; ?>';
+
+			else if ($this->module && $this->module->controller && method_exists($this->module->controller, $function)) {
+				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->controller->'.$function.'('.$args.')) echo $func; ?>';
+
 			else if ($this->module && $this->module->view && method_exists($this->module->view, $function)) {
 				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->view->'.$function.'('.$args.')) echo $func; ?>';
 			}
+		}
+
+		private function setTitle($matches) {
+			Context::getInstance()->setTitle($matches[1]);
 		}
 		
 
@@ -205,7 +213,6 @@
 				$content = join('<', explode("\r\n<", $content));
 				return $this->deleteWhiteSpace($content);
 			}
-			
 			
 			return $content;
 		}

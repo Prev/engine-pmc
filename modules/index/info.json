@@ -2,7 +2,7 @@
 	"name":"index module",
 	"version":"1.0.0",
 	"author":"prevdev@gmail.com",
-	"default_controller":"IndexController",
+	"controller":"IndexController",
 
 	"actions":[
 		{

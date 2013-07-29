@@ -11,7 +11,7 @@
 		"protocol":"http",
 		"host":"localhost",
 		"session_domain":"localhost",
-		"uri":"/engine-pmc"
+		"uri":"/pmc"
 	},
 	{
 		"type":"test",

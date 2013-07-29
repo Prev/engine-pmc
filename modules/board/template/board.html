@@ -41,7 +41,7 @@
 	<div class="page-numbers">
 		<condition do="$pageNumbers->prevBtn !== NULL">
 			<div class="prev-btn">
-				<a href="?page={$pageNumbers->prevBtn}&{$QS}">
+				<a href="{getUrlA('page='.$pageNumbers->prevBtn, REAL_URL)}">
 					&#9664;
 				</a>
 			</div>
@@ -50,7 +50,7 @@
 		{@ foreach ($pageNumbers->pages as $key => $n): }
 			<condition do="$n != $nowPage">
 				<div class="page-btn">
-					<a href="?page={$n}&{$QS}">{$n}</a>
+					<a href="{getUrlA('page='.$n, REAL_URL)}">{$n}</a>
 				</div>
 			</condition>
 			
@@ -63,7 +63,7 @@
 		
 		<condition do="$pageNumbers->nextBtn !== NULL">
 			<div class="next-btn">
-				<a href="?page={$pageNumbers->nextBtn}&{$QS}">
+				<a href="{getUrlA('page='.$pageNumbers->nextBtn, REAL_URL)}">
 					&#9654;
 				</a>
 			</div>
