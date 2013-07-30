@@ -67,7 +67,9 @@
 						'kr'=>'클래스 "'. $className . '" 를 불러 올 수 없습니다. - 파일을 불러 올 수 없음'
 					)); 
 				}else {
-					require $classPath;
+					if (!class_exists($className))
+						require $classPath;
+					
 					if (!class_exists($className)) {
 						Context::printErrorPage(array(
 							'en'=>'Cannot load lass "'. $className . '" - cannot find class',

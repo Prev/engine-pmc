@@ -25,7 +25,7 @@
 			$this->relativePath = $relativePath;
 			
 			// comment ignore
-			$html = preg_replace('`//(.*)`', ' ', $html);
+			$html = preg_replace('`\n//(.*)`', ' ', $html);
 			$html = preg_replace('`/\*([\s\S]*?)\*/`', '', $html);
 
 			
@@ -160,16 +160,12 @@
 				return '<?php if ($func = '.$function.'('.$args.')) echo $func; ?>';
 
 			else if ($this->module && method_exists($this->module, $function))
-				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->'.$function.'('.$args.')) echo $func; ?>';
+				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->moduleAction.'\')->'.$function.'('.$args.')) echo $func; ?>';
 			
-			else if ($this->module && $this->module->model && method_exists($this->module->model, $function))
-				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->model->'.$function.'('.$args.')) echo $func; ?>';
-
-			else if ($this->module && $this->module->controller && method_exists($this->module->controller, $function))
-				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->controller->'.$function.'('.$args.')) echo $func; ?>';
-
-			else if ($this->module && $this->module->view && method_exists($this->module->view, $function))
-				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->view->'.$function.'('.$args.')) echo $func; ?>';
+			foreach (array('model', 'controller', 'view') as $key => $mvc) {
+				if ($this->module && $this->module->{$mvc} && method_exists($this->module->{$mvc}, $function))
+					return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->moduleAction.'\')->'.$mvc.'->'.$function.'('.$args.')) echo $func; ?>';
+			}
 		}
 
 		private function parseCode($matches) {

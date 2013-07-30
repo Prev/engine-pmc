@@ -27,8 +27,8 @@
 			return (is_file($path) && is_readable($path)) ? true : false;
 		}
 
-		static public function getModule($moduleID) {
-			return self::$modules->{$moduleID};
+		static public function getModule($moduleID, $moduleAction) {
+			return self::$modules->{$moduleID.'.'.$moduleAction};
 		}
 
 		static public function getModuleDir($moduleID) {
@@ -37,7 +37,7 @@
 
 
 		static public function initModule($moduleID, $moduleAction=NULL, $queryParam=NULL) {
-			if (isset(self::$modules->{$moduleID})) return self::$modules->{$moduleID};
+			if (isset(self::$modules->{$moduleID.'.'.$moduleAction})) return self::$modules->{$moduleID.'.'.$moduleAction};
 
 			$moduleDir = self::getModuleDir($moduleID);
 			if (!$moduleID) {
@@ -55,7 +55,7 @@
 				return;
 			}
 			
-			$_module = self::loadModule($moduleID);
+			$_module = self::loadModule($moduleID, $moduleAction);
 			if ($_module === NULL) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot load module in self::procModule',
@@ -86,16 +86,17 @@
 		}
 
 		
-		static private function loadModule($moduleID) {
+		static private function loadModule($moduleID, $moduleAction) {
 			if (!self::moduleExists($moduleID)) return NULL;
 
 			$moduleDir = self::getModuleDir($moduleID);
 			
-			
 			// if (ModuleName)Module.class.php exists, load it
 			// else, default Module class
 			if (self::customModuleExists($moduleID)) {
-				require $moduleDir . '/' . ucfirst($moduleID) . 'Module.class.php';
+				if (!class_exists(ucfirst($moduleID) . 'Module'))
+					require $moduleDir . '/' . ucfirst($moduleID) . 'Module.class.php';
+
 				$classID = ucfirst(strtolower($moduleID)) . 'Module';
 
 			}else
@@ -150,8 +151,8 @@
 			$module = $_loader();
 			$module->moduleInfo = $moduleInfo;
 
-			self::$modules->{$moduleID} = $module;
-			self::$moduleInfos->{$moduleID} = $moduleInfo;
+			self::$modules->{$moduleID.'.'.$moduleAction} = $module;
+			self::$moduleInfos->{$moduleID.'.'.$moduleAction} = $moduleInfo;
 
 			return $module;
 		}
@@ -163,14 +164,14 @@
 			// info.json 파일이 없으면 취소
 			if (!is_file($moduleDir . '/info.json')) return;
 
-			if (self::$moduleInfos->{$moduleID}) {
-				if (!self::$moduleInfos->{$moduleID}->actions && self::$moduleInfos->{$moduleID}->action) {
+			if ($moduleInfo = self::$moduleInfos->{$moduleID.'.'.$action}) {
+				if (!$moduleInfo->actions && $moduleInfo->action) {
 					Context::printErrorPage(array(
 						'en' => 'Action property in "info.json" is not "action" : "actions" (caution "s")',
 						'kr' => 'info.json 에서 정의하는 액션 속성은 action이 아닌 actions 속성입니다. ("s" 주의)'
 					));
 				}
-				$actions = self::$moduleInfos->{$moduleID}->actions; //array
+				$actions = $moduleInfo->actions; //array
 				
 				for ($i=0; $i<count($actions); $i++) {
 					// action이 지정되지 않고 default action이 info.json에서 정의됬을 시 해당 action 실행
