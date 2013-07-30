@@ -446,6 +446,7 @@
 	 * url 리다이렉트
 	 */
 	function redirect($url) {
+		ob_clean();
 		echo Context::getInstance()->getDoctype() .
 				'<html><head>' .
 				'<meta http-equiv="refresh" content="0; url='.$url.'">' .
@@ -455,6 +456,6 @@
 	}
 
 	function goLogin() {
-		redirect(LOGIN_URL);
+		redirect( getUrlA('next='.REAL_URL, LOGIN_URL));
 	}
 	
