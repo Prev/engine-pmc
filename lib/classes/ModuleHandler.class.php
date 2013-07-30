@@ -164,6 +164,12 @@
 			if (!is_file($moduleDir . '/info.json')) return;
 
 			if (self::$moduleInfos->{$moduleID}) {
+				if (!self::$moduleInfos->{$moduleID}->actions && self::$moduleInfos->{$moduleID}->action) {
+					Context::printErrorPage(array(
+						'en' => 'Action property in "info.json" is not "action" : "actions" (caution "s")',
+						'kr' => 'info.json 에서 정의하는 액션 속성은 action이 아닌 actions 속성입니다. ("s" 주의)'
+					));
+				}
 				$actions = self::$moduleInfos->{$moduleID}->actions; //array
 				
 				for ($i=0; $i<count($actions); $i++) {
