@@ -46,6 +46,7 @@ a img{ border:none; outline:none }
 .fl{ float:left }
 .fr{ float:right }
 .bold{ font-weight: bold }
+.hidden{ visibility: hidden }
 
 input,label{ vertical-align:middle }
 
