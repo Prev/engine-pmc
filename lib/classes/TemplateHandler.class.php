@@ -51,12 +51,19 @@
 			// insert module realitve url in relative src (./.*), href and action
 			$html = preg_replace_callback('`(src|href|action)="(.*?)"`i', array($this, 'parseUrl'), $html);
 			
-
 			// targetie condition
 			$html = preg_replace('`<condition\s+targetie="([^"]+)"\s*>([\s\S]*?)</condition>`i', '<!--[if $1]>$2<![endif]-->', $html);
 			
-			// condition tag
-			$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
+			$count = 0;
+			
+			while (strpos($html, '<condition') !== false) {
+				// condition tag
+				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
+				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
+				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
+				
+				if (++$count > 15) break;
+			}
 			
 			// switch tag
 			$html = preg_replace_callback('/<switch\s+var="([^"]+)"\s*>([\s\S]*?)<\/switch>/i', array($this, 'parseSwitches'), $html);
@@ -190,25 +197,13 @@
 			
 			$code = $matches[2];
 
-			if ($pos = strpos($code, '<else>')) {
-				$trueCode = substr($code, 0, $pos);
-				$falseCode = substr($code, $pos + 6);
-
-				return '<?php if ('.$c.') { ?>' .$trueCode . '<?php }else { ?>'.$falseCode.'<?php } ?>';
-
-			}else if (strpos($code, '<false>')) {
-				$tempArr = explode('<true>', $code);
-				$tempArr = explode('</true>', $tempArr[1]);
-				$trueCode = $tempArr[0];
-
-				$tempArr = explode('<false>', $code);
-				$tempArr = explode('</false>', $tempArr[1]);
-				$falseCode = $tempArr[0];
-
-				return '<?php if ('.$c.') { ?>' .$trueCode . '<?php }else { ?>'.$falseCode.'<?php } ?>';
-
-			}else
-				return '<?php if ('.$c.') { ?>' . $code . '<?php } ?>';
+			if (count($matches) == 4) 
+				// 삼항 연산자
+				return '<?php if ('.$c.') { ?>' .$matches[2] . '<?php }else { ?>' . $matches[3] . '<?php } ?>';
+			else if (count($matches) == 3)
+				return '<?php if ('.$c.') { ?>' .$matches[2] . '<?php } ?>';
+			else
+				return '<?php if ('.$c.') { ?>';
 		}
 
 		private function parseSwitches($matches) {
