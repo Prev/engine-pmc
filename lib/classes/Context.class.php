@@ -93,6 +93,14 @@
 				return;
 			}
 
+			if (!class_exists('PDO')) {
+				Context::printErrorPage(array(
+					'en' => 'php extension "PDO" does not exists',
+					'kr' => 'php 확장 모듈 "PDO"가 존재하지 않습니다'
+				));
+				return;
+			}
+			
 			CacheHandler::init();
 			ModuleHandler::init();
 			DBHandler::init($db_info);

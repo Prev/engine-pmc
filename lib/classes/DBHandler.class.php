@@ -74,6 +74,8 @@
 		}
 
 
+
+
 		static public function init($info) {
 			self::$type = $info->type;
 			self::$prefix = $info->prefix;
@@ -83,7 +85,7 @@
 			self::configure('password', $info->password);
 
 			$charset = join('', explode('-', TEXT_ENCODING));
-			
+
 			switch (self::$type) {
 				case 'mysqli':
 					@self::$db = new MySQLi($info->host, $info->username, $info->password, $info->database_name);
