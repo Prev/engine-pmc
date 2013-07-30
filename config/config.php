@@ -65,7 +65,7 @@
 	/**
 	 * define zipping blank
 	 */
-	define('ZIP_BLANK', true);
+	define('ZIP_BLANK', false);
 	
 	
 		/**

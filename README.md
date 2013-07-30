@@ -15,13 +15,16 @@
 [데모사이트](http://engine-pmc.parameter.kr)
 
 # Install
-engine-pmc 설치 및 개발 방법은 [이 문서](https://github.com/Prev/engine-pmc/wiki)에 정의되어 있습니다.
+engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/engine-pmc/wiki)**에 정의되어 있습니다.
 
 
 #Change Log
 
 
 ####v 0.2.5
++ 템플릿 문법 추가
+ + condtion 태그 업그레이드
+ + switch 태그 추가
 + 각종 버그 픽스
 
 ####v 0.2.4

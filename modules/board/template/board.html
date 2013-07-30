@@ -48,16 +48,17 @@
 		</condition>
 		
 		{@ foreach ($pageNumbers->pages as $key => $n): }
-			<condition do="$n != $nowPage">
-				<div class="page-btn">
-					<a href="{getUrlA('page='.$n, REAL_URL)}">{$n}</a>
-				</div>
-			</condition>
-			
 			<condition do="$n == $nowPage">
-				<div class="page-btn current-page">
-					{$n}
-				</div>
+				<true>
+					<div class="page-btn current-page">
+						{$n}
+					</div>
+				</true>
+				<false>
+					<div class="page-btn">
+						<a href="{getUrlA('page='.$n, REAL_URL)}">{$n}</a>
+					</div>
+				</false>
 			</condition>
 		{@ endforeach; }
 		

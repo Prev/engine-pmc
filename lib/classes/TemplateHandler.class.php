@@ -49,10 +49,12 @@
 
 			// targetie condition
 			$html = preg_replace('`<condition\s+targetie="([^"]+)"\s*>([\s\S]*?)</condition>`', '<!--[if $1]>$2<![endif]-->', $html);
-
-			// condition
-			$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>/', array($this, 'parseConditions'), $html);
-			$html = str_replace('</condition>', '<?php } ?>', $html);
+			
+			// condition tag
+			$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/', array($this, 'parseConditions'), $html);
+			
+			// switch tag
+			$html = preg_replace_callback('/<swtich\s+var="([^"]+)"\s*>([\s\S]*?)<\/switch>/', array($this, 'parseSwitches'), $html);
 			
 			// <link>http://google.com</link> -> <a href="http://google.com">http://google.com</a>
 			$html = preg_replace('`<link(.*?)>(.*?)</link>`', '<a href="$2"$1>$2</a>', $html);
@@ -152,8 +154,42 @@
 			$c = $matches[1];
 			$c = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $c, -1);
 			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
-				
-			return '<?php if('.$c.') { ?>';
+			
+			$code = $matches[2];
+
+			if ($pos = strpos($code, '<else>')) {
+				$trueCode = substr($code, 0, $pos);
+				$falseCode = substr($code, $pos + 6);
+
+				return '<?php if ('.$c.') { ?>' .$trueCode . '<?php }else { ?>'.$falseCode.'<?php } ?>';
+
+			}else if (strpos($code, '<false>')) {
+				$tempArr = explode('<true>', $code);
+				$tempArr = explode('</true>', $tempArr[1]);
+				$trueCode = $tempArr[0];
+
+				$tempArr = explode('<false>', $code);
+				$tempArr = explode('</false>', $tempArr[1]);
+				$falseCode = $tempArr[0];
+
+				return '<?php if ('.$c.') { ?>' .$trueCode . '<?php }else { ?>'.$falseCode.'<?php } ?>';
+
+			}else
+				return '<?php if ('.$c.') { ?>' . $code . '<?php } ?>';
+		}
+
+		private function parseSwitches($matches) {
+			if (!$matches[1]) return;
+
+			$c = $matches[1];
+			$c = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $c, -1);
+			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
+
+			$code = $matches[2];
+			$code = preg_replace('/<case value="(.*?)">([\s\S]*?)<\/case>/', 'case \'$1\' : ?>$2<?php break; ?>', $code, 1);
+			$code = preg_replace('/<case value="(.*?)">([\s\S]*?)<\/case>/', '<?php case \'$1\' : ?>$2<?php break; ?>', $code);
+
+			return '<?php switch ('.$c.') :' . $code . '<?php endswitch; ?>';
 		}
 		
 		private function parseFunc($matches) {
