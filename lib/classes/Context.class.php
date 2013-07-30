@@ -170,7 +170,7 @@
 		 * Get menu data
 		 * Add cached CSS
 		 */
-		static function getMenu($level) {
+		static public function getMenu($level) {
 			$menuHash = $level . ':' . self::getInstance()->selectedMenu;
 			if (isset(self::$menuDatas->{$menuHash})) return self::$menuDatas->{$menuHash};
 
