@@ -80,10 +80,6 @@
 			self::$type = $info->type;
 			self::$prefix = $info->prefix;
 
-			self::configure('mysql:host=' . $info->host . ';dbname=' . $info->database_name);
-			self::configure('username', $info->username);
-			self::configure('password', $info->password);
-
 			$charset = join('', explode('-', TEXT_ENCODING));
 
 			switch (self::$type) {
@@ -99,8 +95,11 @@
 					$e = mysql_error();
 					
 					if (!$e) {
-						mysql_select_db($info->database_name,  self::$db);
+						$r = mysql_select_db($info->database_name,  self::$db);
 						mysql_query('set names ' . $charset);
+						
+						if (!$r)
+							$e = 'Cannot connect to database "'.$info->database_name.'"';
 					}
 					break;
 					
@@ -116,6 +115,11 @@
 				'en' => 'Fail connecting database - ' . $e,
 				'kr' => '데이터베이스에 연결에 실패하였습니다 - ' . $e
 			));
+
+			self::configure('mysql:host=' . $info->host . ';dbname=' . $info->database_name);
+			self::configure('username', $info->username);
+			self::configure('password', $info->password);
+
 		}
 		
 		static public function rawQuery($query, $fetchType='object') {
