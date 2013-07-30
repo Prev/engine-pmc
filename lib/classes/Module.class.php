@@ -37,7 +37,8 @@
 					$this->{$mvc} = $this->loadMVCClass($this->moduleInfo->{$mvc}, false);
 				else
 					$this->{$mvc} = $this->loadMVCClass(ucfirst($mvc), true);
-
+			}
+			foreach(array('model', 'view', 'controller') as $key => $mvc) {
 				$this->{$mvc}->setMMVC(
 					$this,
 					$this->model,

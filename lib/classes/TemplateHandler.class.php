@@ -171,15 +171,14 @@
 			else if ($this->module && method_exists($this->module, $function))
 				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->'.$function.'('.$args.')) echo $func; ?>';
 			
-			else if ($this->module && $this->module->model && method_exists($this->module->model, $function)) {
+			else if ($this->module && $this->module->model && method_exists($this->module->model, $function))
 				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->model->'.$function.'('.$args.')) echo $func; ?>';
 
-			else if ($this->module && $this->module->controller && method_exists($this->module->controller, $function)) {
+			else if ($this->module && $this->module->controller && method_exists($this->module->controller, $function))
 				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->controller->'.$function.'('.$args.')) echo $func; ?>';
 
-			else if ($this->module && $this->module->view && method_exists($this->module->view, $function)) {
+			else if ($this->module && $this->module->view && method_exists($this->module->view, $function))
 				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\')->view->'.$function.'('.$args.')) echo $func; ?>';
-			}
 		}
 
 		private function setTitle($matches) {

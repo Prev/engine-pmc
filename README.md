@@ -14,49 +14,15 @@
 
 [데모사이트](http://engine-pmc.parameter.kr)
 
-#Install
-설정할 대부분의 파일은 `config` 폴더안에 있습니다.
-
-
-#####먼저 `config/server-info.json` 파일을 자신의 서버와 맞게 설정하세요
-만약 서버 도메인이 `localhost` 이고 `/pmc` 라는 하위 경로를 사용 할 경우 아래처럼 사용하시면 됩니다.
-```json
-{
- "type":"test",
- "protocol":"http",
- "host":"localhost",
- "session_domain":"localhost",
- "uri":"/pmc"
-}
-```
-테스트 서버의 경에는 `type`을 `test`로, 실제 운영할 서버의 경우에는 `running` 으로 설정 해주시기 바랍니다.
-
-#####둘째, `config/database.php` 파일에서 데이터베이스 관련 정보를 업데이트 하십시오
-```php
-return (object) array(
- 'type' => 'mysqli',
- 'username' => '%접속아이디%',
- 'password' => '%접속비밀번호%',
- 'database_name' => '%데이터베이스 이름%',
- 'prefix' => 'pmc_'
-);
-```
-
-#####셋째, cache/file 생성 문제
-cache/file 생성이 제대로 되지 않을 경우 `/files` 폴더를 생성한 후 파일 생성 및 수정 권한을 추가하십시오
-
-#####넷째, 보안관련 키 문제
-이 프로젝트는 오픈소스로 관리되므로 보안관련 커스텀 마이징이 필요합니다.
-보안 관련 키 설정은 `config/secure-keys.php` 에 정의되어 있습니다.
-+ `RSA_*` 는 로그인 보안에 관련된 키로 RSA 비대칭 암호화에 관련된 키입니다.
-+ `SSO_AGENT_KEY` 는 SSO와 관련된 키인데, 이 키를 바꾸실 경우에는 `/sso-server/conf.config.php` 파일도 같이 수정 해 주시길 바랍니다.
-
-#####기타
-+ 현재 데이터베이스 자동 초기화 기능이 없으므로 `config/initialize.sql` 에서 SQL을 복사 후 실행하여 사용하시길 바랍니다.
-+ 이 밖에 각종 설정은 `config/config.php` 에서 하실 수 있습니다.
+# Install
+engine-pmc 설치 및 개발 방법은 [이 문서](https://github.com/Prev/engine-pmc/wiki)에 정의되어 있습니다.
 
 
 #Change Log
+
+
+####v 0.2.5
++ 각종 버그 픽스
 
 ####v 0.2.4
 + DB구조 변경

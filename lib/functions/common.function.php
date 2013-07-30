@@ -272,9 +272,9 @@
 	function getServerInfo() {
 		if (!empty($GLOBALS['serverInfo'])) return $GLOBALS['serverInfo'];
 		
-		$server_info = json_decode(readFileContent(SERVER_INFO_FILE_PATH));
-		foreach($server_info as $_key => $_value) {
-			if ($_SERVER['HTTP_HOST'] === $_value->host) {
+		$serverInfo = json_decode(readFileContent(SERVER_INFO_FILE_PATH));
+		foreach($serverInfo as $_key => $_value) {
+			if ($_SERVER['HTTP_HOST'] === $_value->host . (isset($_value->port) ? ':' . $_value->port : '')) {
 				if (!defined('DEBUG_MODE'))
 					define('DEBUG_MODE', ($_value->type === 'test'));
 				
@@ -295,7 +295,7 @@
 		if (defined('RELATIVE_URL')) return RELATIVE_URL;
 		
 		return ($serverInfo = getServerInfo()) ?
-			($serverInfo->protocol . '://' . $serverInfo->host . (isset($serverInfo->port) ? ':' . $serverInfo->host : '') . $serverInfo->uri) :
+			($serverInfo->protocol . '://' . $serverInfo->host . (isset($serverInfo->port) ? ':' . $serverInfo->port : '') . $serverInfo->uri) :
 			PROTOCOL . '://' . $_SERVER['HTTP_HOST'];
 	}
 	
