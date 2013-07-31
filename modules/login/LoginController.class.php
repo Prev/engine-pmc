@@ -117,7 +117,7 @@
 
 				$this->insertLoginlog($id, true, $autoLogin);
 				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), getServerInfo()->uri, SESSION_DOMAIN);
-
+				
 				redirect($next);
 
 			}

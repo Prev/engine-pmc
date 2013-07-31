@@ -46,6 +46,9 @@
 				
 			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/layout/'))
 				mkdir(ROOT_DIR . self::$siteCacheDir . '/layout/');
+
+			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/template/'))
+				mkdir(ROOT_DIR . self::$siteCacheDir . '/template/');
 				
 			if (!is_file(ROOT_DIR . $filePath)) {
 				Context::printWarning(array(
@@ -94,8 +97,15 @@
 			require self::getTemplateCacheDir($filePath);
 		}
 		static private function getTemplateCacheDir($originFilePath) {
-			return ROOT_DIR . self::$siteCacheDir . '/layout/' . urlencode($originFilePath) . '.compiled.php';
-			//return ROOT_DIR . self::$siteCacheDir . '/layout/' . md5($originFilePath) . '.compiled.php';
+			$originFilePath = getFilePathClear($originFilePath);
+			
+			if (strpos($originFilePath, '/layouts') === 0) {
+				$originFilePath = substr($originFilePath, strlen('/layouts/'));
+				return ROOT_DIR . self::$siteCacheDir . '/layout/' . urlencode($originFilePath) . '.compiled.php';
+			}else {
+				$originFilePath = substr($originFilePath, strpos($originFilePath, '/modules/') + strlen('/modules/'));
+				return ROOT_DIR . self::$siteCacheDir . '/template/' . urlencode($originFilePath) . '.compiled.php';
+			}
 		}
 		static private function makeTemplateCache($filePath, $content) {	
 			$cacheFileName = self::getTemplateCacheDir($filePath);

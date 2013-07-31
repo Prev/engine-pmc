@@ -72,7 +72,7 @@
 			$html = preg_replace('`<link(.*?)>(.*?)</link>`', '<a href="$2"$1>$2</a>', $html);
 			
 			// <title>title</title> proc
-			$html = preg_replace_callback('`<title>(.*?)</title>`', array($this, 'setTitle'), $html);
+			$html = preg_replace_callback('`<title>(.*?)</title>`', create_function('$matches', 'Context::getInstance()->setTitle($matches[1]);'), $html);
 
 
 			$html = join('$_SERVER', explode('$__attr->_SERVER', $html));
@@ -216,13 +216,10 @@
 			$code = $matches[2];
 			$code = preg_replace('/<case value="(.*?)">([\s\S]*?)<\/case>/', 'case \'$1\' : ?>$2<?php break; ?>', $code, 1);
 			$code = preg_replace('/<case value="(.*?)">([\s\S]*?)<\/case>/', '<?php case \'$1\' : ?>$2<?php break; ?>', $code);
+			$code = preg_replace('/<default>([\s\S]*?)<\/default>/', '<?php default : ?>$1<?php break; ?>', $code);
+
 
 			return '<?php switch ('.$c.') :' . $code . '<?php endswitch; ?>';
-		}
-		
-
-		private function setTitle($matches) {
-			Context::getInstance()->setTitle($matches[1]);
 		}
 		
 

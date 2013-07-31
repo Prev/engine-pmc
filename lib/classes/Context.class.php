@@ -100,7 +100,7 @@
 				));
 				return;
 			}
-			
+
 			CacheHandler::init();
 			ModuleHandler::init();
 			DBHandler::init($db_info);
@@ -164,6 +164,14 @@
 						));
 					}else
 						$moduleID = $data->module;
+				}
+				if ($data && $data->extra_vars) {
+					$extraVars = json_decode($data->extra_vars);
+					if ($extraVars && $extraVars->linkToSubMenu == true) {
+						$subMenu = self::getMenu(2);
+						if ($subMenu && count($subMenu) > 0)
+							redirect(getUrl() . (USE_SHORT_URL ? '/' : '/?menu=') . $subMenu[0]->title);
+					}
 				}
 				if ($data && $data->module && $data->action && !$moduleAction)
 					$moduleAction = $data->action;
@@ -479,6 +487,7 @@
 					unset($_SESSION['pmc_sso_data']);
 					return false;
 				}
+
 				$ssoData = json_decode($urlData);
 				if (!$ssoData || $ssoData->result === 'fail') {
 					Context::printErrorPage(array(
@@ -489,12 +498,6 @@
 					return false;
 				}
 				$userData = $ssoData->userData;
-				if (isset($userData->groups)) {
-					for ($i=0; $i<count($userData->groups); $i++) { 
-						$group = $userData->groups[$i];
-						$group->name_locale = fetchLocale($group->name_locales);
-					}
-				}
 				$_SESSION['pmc_sso_data'] = $ssoData;
 
 				User::initCurrent();
@@ -561,4 +564,3 @@
 			}
 		}
 	}
-	

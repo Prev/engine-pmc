@@ -56,8 +56,9 @@
 	foreach ($userData as $key => $value) {
 		if ($key === 'password' || $key === 'password_salt') continue;
 		if ($key == 'input_id')
-			$obj->userData->user_id = $value;
+			$obj->userData->userId = $value;
 
+		$key = preg_replace_callback('/(.)_([a-z])/', create_function('$m', 'return $m[1].strtoupper($m[2]);'), $key);
 		$obj->userData->{$key} = $value;
 	}
 
@@ -70,11 +71,16 @@
 
 	$obj->userData->groups = array();	
 	for ($i=0; $i < count($groupDatas); $i++) {
-		$tmp = $groupDatas[$i];
-		$tmp->name_locales = json_decode($tmp->name_locales);
-		unset($tmp->id);
-		unset($tmp->user_id);
-
+		$tmp = new StdClass();
+		foreach ($groupDatas[$i] as $key => $value) {
+			if ($key === 'id' || $key === 'user_id') continue;
+			if ($key === 'name_locales') {
+				$tmp->nameLocales = json_decode($value);
+				continue;
+			}
+			$key = preg_replace_callback('/(.)_([a-z])/', create_function('$m', 'return $m[1].strtoupper($m[2]);'), $key);
+			$tmp->{$key} = $value;
+		}
 		array_push($obj->userData->groups, $tmp);
 	}
 	

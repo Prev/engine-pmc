@@ -20,6 +20,9 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+####v 0.2.6
++ User 클래스 멤버변수 작성법 변경 -> 언더바 사용 X
++ 각종 버그 픽스
 
 ####v 0.2.5
 + 템플릿 문법 추가

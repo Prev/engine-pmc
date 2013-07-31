@@ -12,14 +12,14 @@
 		static private $userSingleTon;
 
 		public $id;
-		public $input_id;
-		public $nick_name;
-		public $user_name;
-		public $email_address;
-		public $phone_number;
-		public $permission;
-		public $last_logined_ip;
-		public $extra_vars;
+		public $inputId;
+		public $userId;
+		public $nickName;
+		public $userName;
+		public $emailAddress;
+		public $phoneNumber;
+		public $lastLoginedIp;
+		public $extraVars;
 		public $groups;
 
 		static public function getCurrent() {
@@ -44,15 +44,15 @@
 		}
 
 		public function __construct($data) {
-			if (isset($data->input_id) &&
-				isset($data->nick_name) &&
-				isset($data->user_name) &&
-				isset($data->email_address) &&
-				isset($data->phone_number)
-			){
+			if (isset($data->id) && isset($data->inputId)){
 				foreach ($data as $key => $value) {
 					$this->{$key} = $value;
 				}
+				if (isset($this->groups)) {
+					for ($i=0; $i<count($this->groups); $i++) 
+						$this->groups[$i]->nameLocale = fetchLocale($this->groups[$i]->nameLocales);
+				}
+				
 			}
 			else {
 				Context::printWarning('User class is not initialize with User record data');
