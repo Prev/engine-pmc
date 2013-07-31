@@ -1,7 +1,7 @@
 <?php
 	
 	/**
-	 * @author luaviskang@gmail.com, prevdev@gmail.com
+	 * @author prevdev@gmail.com, luaviskang@gmail.com
 	 * @2013.07
 	 *
 	 *
@@ -44,18 +44,21 @@
 		}
 
 		public function __construct($data) {
-			if (isset($data->id) && isset($data->inputId)){
-				foreach ($data as $key => $value) {
-					$this->{$key} = $value;
+			if (is_object($data) || is_array($data)) {
+				if (isset($data->id) && isset($data->inputId)){
+					foreach ($data as $key => $value) {
+						$this->{$key} = $value;
+					}
+					if (isset($this->groups)) {
+						for ($i=0; $i<count($this->groups); $i++) 
+							$this->groups[$i]->nameLocale = fetchLocale($this->groups[$i]->nameLocales);
+					}
+					$this->id = (int) $this->id;
 				}
-				if (isset($this->groups)) {
-					for ($i=0; $i<count($this->groups); $i++) 
-						$this->groups[$i]->nameLocale = fetchLocale($this->groups[$i]->nameLocales);
-				}
-				
-			}
-			else {
-				Context::printWarning('User class is not initialize with User record data');
+				else
+					Context::printWarning('User class is not initialize with User record data');
+			}else {
+				Context::printWarning('Unknown type of param $data - in User::__construct');
 			}
 		}
 
