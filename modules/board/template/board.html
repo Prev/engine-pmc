@@ -1,4 +1,4 @@
-<import path="css/board.css">
+	<import path="css/board.css">
 
 <div class="board">
 	<div class="board-article">
@@ -17,7 +17,7 @@
 				<condition do="isset($data->top_notice)">
 					<li class="notice-icon">{# 'en'=>'Notice', 'kr'=>'공지'}</li>
 				</condition>
-			
+				
 				<li class="title">
 					<condition do="!isset($data->top_notice)">
 						{printArticlePrefix($data->order_key, $data->category)}

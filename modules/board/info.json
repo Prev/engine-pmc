@@ -22,6 +22,11 @@
 			"view":"BoardEditorView"
 		},
 		{
+			"name":"dispEditorInsertData",
+			"view":"BoardEditorView",
+			"allow_web_access" : false
+		},
+		{
 			"name":"procSaveArticle",
 			"controller":"BoardEditorController"
 		}

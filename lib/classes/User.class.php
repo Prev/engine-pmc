@@ -66,17 +66,23 @@
 			return $this->{$name};
 		}
 
-		public function checkGroup($groups) {
-			if (is_array($groups)) {
-				for ($i=0; $i<count($groups); $i++) {
+		public function checkGroup($targetGroups) {
+			if (is_array($targetGroups)) {
+				for ($i=0; $i<count($targetGroups); $i++) {
+					if ($targetGroups[$i] == '*')
+						return true;
+
 					for ($j=0; $j<count($this->groups); $j++) { 
-						if ($groups[$i] == $this->groups[$j]->name)
+						if ($targetGroups[$i] == $this->groups[$j]->name)
 							return true;
 					}
 				}
 			}else {
+				if ($targetGroups == '*')
+					return true;
+				
 				for ($j=0; $j<count($this->groups); $j++) { 
-					if ($groups == $this->groups[$j]->name)
+					if ($targetGroups == $this->groups[$j]->name)
 						return true;
 				}
 			}

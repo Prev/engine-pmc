@@ -13,7 +13,7 @@
 			$enc_id = $_POST['enc_id'];
 			$enc_pw = $_POST['enc_pw'];
 			$check_sum = $_POST['check_sum'];
-			$next = $_REQUEST['next'] ? $_REQUEST['next'] : getUrl();
+			$next = $_REQUEST['next'] ? urldecode($_REQUEST['next']) : getUrl();
 
 			$_rsa = new RSA(
 				RSA_PUBLIC_KEY,
@@ -29,7 +29,7 @@
 				$real_pw = $_rsa->decrypt($enc_pw);
 				
 				if (md5($real_id . $real_pw) != $check_sum) {
-					$this->goBackToLoginPage('result=fail_sec', $next);
+					$this->goBackToLoginPage('result=fail_sec', urldecode($next));
 					return;
 				}
 				if (!isset($_POST['auto_login'])) $_POST['auto_login'] = false;
@@ -48,8 +48,7 @@
 			setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
 			unset($_SESSION['pmc_sso_data']);
 			
-			$next = (isset($_REQUEST['next']) ? $_REQUEST['next'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : getUrl()));
-			redirect($next);
+			goBack();
 		}
 		
 		private function generateSessionKey() {
@@ -74,7 +73,7 @@
 		}
 		
 		private function login($id, $pw, $autoLogin) {
-			$next = !empty($_REQUEST['next']) ? $_REQUEST['next'] : getUrl();
+			$next = !empty($_REQUEST['next']) ? urldecode($_REQUEST['next']) : getUrl();
 
 			$r = DBHandler::for_table('user')
 				->select_many('id', 'input_id', 'password', 'password_salt')
@@ -84,7 +83,7 @@
 			// ID does not exist OR password do not match
 			if (!$r || ($r->password != hash('sha256', $pw . $r->password_salt))) {
 				$this->insertLoginlog($id, false, $autoLogin);
-				$this->goBackToLoginPage('result=fail' ,$next);
+				$this->goBackToLoginPage('result=fail', urldecode($next));
 			}else {
 				do {
 					$sessionKey = $this->generateSessionKey();

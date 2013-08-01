@@ -6,6 +6,12 @@
 		{@ foreach ($formData as $key => $value): }
 			<input type="hidden" name="${key}" value="{$value}">
 		{@ endforeach; }
+		{@
+			if (is_array($formInsertData) && $formInsertData['module'] && $formInsertData['action'])
+				getContent($formInsertData['module'], $formInsertData['action']);
+			else
+				echo $formInsertData;
+		}
 		<!-- 에디터 컨테이너 시작 -->
 		<div id="tx_trex_container" class="tx-editor-container">
 			<!-- 사이드바 -->

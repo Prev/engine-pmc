@@ -23,7 +23,13 @@
 					self::execTemplate('article_not_found');
 					return;
 				}
-				//if ($articleData->read_permission)
+
+				if ($articleData->readable_group) {
+					$me = User::getCurrent();
+					if (!$me || !$me->checkGroup($articleData->readable_group)) {
+						goBack('글을 볼 권한이 없습니다');
+					}
+				}
 
 				$this->title = $articleData->title;
 				$this->board = ($articleData->boardName_locale ? $articleData->boardName_locale : $articleData->boardName);

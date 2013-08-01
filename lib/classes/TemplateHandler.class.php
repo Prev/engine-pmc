@@ -25,7 +25,7 @@
 			$this->relativePath = $relativePath;
 			
 			// comment ignore
-			$html = preg_replace('`\n//(.*)`', ' ', $html);
+			$html = preg_replace('`\n(\t)+//(.*)`', ' ', $html);
 			$html = preg_replace('`/\*([\s\S]*?)\*/`', '', $html);
 
 			
@@ -56,14 +56,27 @@
 			
 			$count = 0;
 			
-			while (strpos($html, '<condition') !== false) {
+			while (preg_match('/<condition\s+do="([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
+				if (++$count > 15) break;
+			}
+			while (preg_match('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
+				if (++$count > 15) break;
+			}
+			while (preg_match('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
+				if (++$count > 15) break;
+			}
+
+			/*while (strpos($html, '<condition') !== false) {
 				// condition tag
 				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
 				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
 				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
 				
 				if (++$count > 15) break;
-			}
+			}*/
 			
 			// switch tag
 			$html = preg_replace_callback('/<switch\s+var="([^"]+)"\s*>([\s\S]*?)<\/switch>/i', array($this, 'parseSwitches'), $html);
@@ -81,7 +94,9 @@
 			$html = join('$_GET', explode('$__attr->_GET', $html));
 			$html = join('$_POST', explode('$__attr->_POST', $html));
 			$html = join('$_REQUEST', explode('$__attr->_REQUEST', $html));
-
+			
+			$html = preg_replace('/([a-zA-Z0-9_])::\$__attr->(.*)/', '$1::\$$2', $html);
+			
 			//$html = join('::$', explode('::$__attr->', $html));
 
 			if (ZIP_BLANK) $html = $this->deleteWhiteSpace($html);
@@ -167,11 +182,11 @@
 				return '<?php if ($func = '.$function.'('.$args.')) echo $func; ?>';
 
 			else if ($this->module && method_exists($this->module, $function))
-				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->moduleAction.'\')->'.$function.'('.$args.')) echo $func; ?>';
+				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$function.'('.$args.')) echo $func; ?>';
 			
 			foreach (array('model', 'controller', 'view') as $key => $mvc) {
 				if ($this->module && $this->module->{$mvc} && method_exists($this->module->{$mvc}, $function))
-					return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->moduleAction.'\')->'.$mvc.'->'.$function.'('.$args.')) echo $func; ?>';
+					return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$mvc.'->'.$function.'('.$args.')) echo $func; ?>';
 			}
 		}
 
