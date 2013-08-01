@@ -90,6 +90,7 @@
 
 			foreach (Context::$attr as $key => $value)
 				$__attr->{$key} = $value;
+
 			if (isset($view)) {
 				foreach ($view as $key => $value)
 					$__attr->{$key} = $value;

@@ -2,8 +2,7 @@
 	
 	class IndexView extends View {
 		
-		var $userData;
-		var $message;
+		var $user;
 		var $loggedin;
 		
 		public function dispDefault() {

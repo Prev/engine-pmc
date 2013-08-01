@@ -10,9 +10,9 @@
 
 	class View extends MVC {
 
-		protected $module;
-		protected $model;
-		protected $controller;
+		public $module;
+		public $model;
+		public $controller;
 		
 		final public function setMMVC($module, $model, $view, $controller) {
 			$this->module = $module;
