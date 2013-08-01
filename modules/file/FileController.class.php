@@ -50,20 +50,7 @@
 			$fileSize = (int)$_FILES["bifile"]["size"];
 			$fileExtension = substr(strrchr($_FILES['bifile']['name'], '.'), 1);
 			
-			if(
-				$fileExtension === 'php' ||
-				$fileExtension === 'css' ||
-				$fileExtension === 'html' ||
-				$fileExtension === 'js' ||
-				$fileExtension === '.xhtml' ||
-				$fileExtension === 'html'
-			) {
-				$this->close('Fail uploading file');
-				ErrorLogger::log('Fatal Error: not allowed file extension');
-				exit;
-			}
-			
-			$uploadFileUrl = '/files/attach/' . ($isBinary ? 'binaries' : 'images') . '/' . $fileHash . ($isBinary ? '' : '.' . $fileExtension);
+			$uploadFileUrl = '/files/attach/' . ($isBinary ? 'binaries' : 'images') . '/' . $fileHash . ($isBinary ? '.file' : '.' . $fileExtension);
 			$uploadFileDir = ROOT_DIR . $uploadFileUrl;
 			
 			if ($fileSize > 1024 * 1024 * 20) {
