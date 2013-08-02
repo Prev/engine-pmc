@@ -22,6 +22,11 @@
 			"name":"procLogout",
 			"controller":"LoginController",
 			"layout":"blank"
+		},
+		{
+			"name":"procLogout2",
+			"controller":"LoginController",
+			"layout":"blank"
 		}
 	]
 }
