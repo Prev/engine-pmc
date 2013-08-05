@@ -91,3 +91,4 @@ div.tx-canvas div.tx-wysiwyg-padding{height:100%;width:0;left:0;position:absolut
 	padding: 12px 0;
 	color: black;
 }
+.tx-insert{ display: none !important }

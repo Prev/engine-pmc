@@ -149,8 +149,8 @@
 				else if (isset($data->en))
 					return $data->en;
 				else {
-					foreach ($key as $data => $value)
-						return $value;
+					foreach ($key as $data => $contentue)
+						return $contentue;
 				}
 			break;
 			
@@ -160,8 +160,8 @@
 				else if (isset($data['en']))
 					return $data['en'];
 				else {
-					foreach ($key as $data => $value)
-						return $value;
+					foreach ($key as $data => $contentue)
+						return $contentue;
 				}
 			break;
 			
@@ -239,7 +239,7 @@
 	 * @param $userAgent 설정시 해당 userAgent를 첨가하여 송신
 	 *
 	 * @return 해당 url에서 반환한 값에서 헤더를 잘라낸뒤 출력
-	 *		   데이터 로딩에 실패할시 NULL 반환
+	 *			데이터 로딩에 실패할시 NULL 반환
 	 */
 	function getUrlData($url, $userAgent=NULL) {
 		$temp = explode('://', $url);
@@ -257,7 +257,7 @@
 			'User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) PHP fsocket' . ($userAgent ? ' ' . $userAgent : '') . "\r\n\r\n");
 
 		while(!feof($fp))
-			$output .= fgets($fp, 1024);    
+			$output .= fgets($fp, 1024);	
 		
 		// 헤더 정보 잘라내기
 		$output = substr($output, strpos($output, "\r\n\r\n")+4);
@@ -339,8 +339,8 @@
 		}
 		if (is_string($queryParam)) $queryParam = urlQueryToArray($queryParam);
 		if ($queryParam) {
-			foreach ($queryParam as $key => $value) {
-				if ($key) $queryObj->{$key} = $value;
+			foreach ($queryParam as $key => $contentue) {
+				if ($key) $queryObj->{$key} = $contentue;
 			}
 		}
 		if (isset($module)) {
@@ -379,14 +379,14 @@
 	 * getUrlA 함수에서 쓰임
 	 */
 	function unparse_url($parsed_url) { 
-		$scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : ''; 
-		$host     = isset($parsed_url['host']) ? $parsed_url['host'] : ''; 
-		$port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : ''; 
-		$user     = isset($parsed_url['user']) ? $parsed_url['user'] : ''; 
-		$pass     = isset($parsed_url['pass']) ? ':' . $parsed_url['pass']  : ''; 
-		$pass     = ($user || $pass) ? "$pass@" : ''; 
-		$path     = isset($parsed_url['path']) ? $parsed_url['path'] : ''; 
-		$query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : ''; 
+		$scheme	= isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : ''; 
+		$host	 = isset($parsed_url['host']) ? $parsed_url['host'] : ''; 
+		$port	 = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : ''; 
+		$user	 = isset($parsed_url['user']) ? $parsed_url['user'] : ''; 
+		$pass	 = isset($parsed_url['pass']) ? ':' . $parsed_url['pass']  : ''; 
+		$pass	 = ($user || $pass) ? "$pass@" : ''; 
+		$path	 = isset($parsed_url['path']) ? $parsed_url['path'] : ''; 
+		$query	= isset($parsed_url['query']) ? '?' . $parsed_url['query'] : ''; 
 		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : ''; 
 		return $scheme . $user . $pass . $host . $port . $path . $query . $fragment; 
 	}
@@ -398,13 +398,13 @@
 		if (!$array) return NULL;
 		else {
 			$tempArr = array();
-			foreach($array as $key => $value) {
+			foreach($array as $key => $contentue) {
 				if (!$key)
 					continue;
-				else if ($key && !$value)
+				else if ($key && !$contentue)
 					array_push($tempArr, $key);
 				else
-					array_push($tempArr, $key . '=' . $value);
+					array_push($tempArr, $key . '=' . $contentue);
 			}
 			return join('&', $tempArr);
 		}
@@ -486,4 +486,72 @@
 	}
 
 
+	/**
+	 * 파일 사이즈를 예쁘게 출력
+	 * ex) 36KB, 11MB, 5GB 
+	 * @param $size : 파일 크키 (정수형, 단위 : 바이트)
+	 */
+	function getClearFileSize($size) {
+		if ($size > 1024 * 1024 * 1024)
+			return round($size / (1024 * 1024 * 1024) * 10) / 10 . 'GB';
+
+		else if ($size > 1024 * 1024)
+			return round($size / (1024 * 1024) * 10) / 10 . 'MB';
+
+		else if ($size > 1024)
+			return round($size / 1024 * 10) / 10 . 'KB';
+
+		else
+			return $size . 'Byte';
+	}
+
+
+	/**
+	 * XSS 태그 제거
+	 * @param $content : HTML 콘텐츠
+	 */
+	function removeXSS($content) {
+		// http://www.jynote.net/585
+		
+		$content = preg_replace('/([\x00-\x08][\x0b-\x0c][\x0e-\x20])/', '', $content); 
+	
+		$search = 'abcdefghijklmnopqrstuvwxyz'; 
+		$search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
+		$search .= '1234567890!@#$%^&*()'; 
+		$search .= '~`";:?+/={}[]-_|\'\\'; 
+		
+		for ($i = 0; $i < strlen($search); $i++) {
+			$content = preg_replace('/(&#[x|X]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $content); 
+			$content = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $content); // with a ; 
+		} 
+
+		$ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base'); 
+		$ra2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload'); 
+		$ra = array_merge($ra1, $ra2); 
+
+		$found = true; // keep replacing as long as the previous round replaced something 
+		
+		while ($found == true) { 
+			$content_before = $content; 
+			for ($i = 0; $i < sizeof($ra); $i++) { 
+				$pattern = '/'; 
+				for ($j = 0; $j < strlen($ra[$i]); $j++) { 
+					if ($j > 0) { 
+						$pattern .= '('; 
+						$pattern .= '(&#[x|X]0{0,8}([9][a][b]);?)?'; 
+						$pattern .= '|(&#0{0,8}([9][10][13]);?)?'; 
+						$pattern .= ')?'; 
+					}
+					$pattern .= $ra[$i][$j]; 
+				} 
+				$pattern .= '/i'; 
+				
+				$replacement = substr($ra[$i], 0, 2).'<x>'.substr($ra[$i], 2); // add in <> to nerf the tag 
+				$content = preg_replace($pattern, $replacement, $content); // filter out the hex tags 
+				if ($content_before == $content)
+					$found = false; 
+			} 
+		} 
+		return $content; 
+	}
 	

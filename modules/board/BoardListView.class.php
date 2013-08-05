@@ -2,12 +2,15 @@
 
 	class BoardListView extends View {
 
+		public $boardName;
 		public $nowPage;
+		public $pageNumbers;
+		public $articleDatas;
 
-		var $pageNumbers;
-		var $QS;
-		var $articleDatas;
-
+		/**
+			비밀글
+			원본이 없어진 답글
+		*/
 		function dispList() {
 
 			if (!$this->nowPage)
@@ -16,10 +19,6 @@
 			else {
 				$this->nowPage = $this->nowPage;
 				$this->pageNumbers = $this->model->getPageNumbers();
-				$this->QS = substr(
-					(isset($_GET['board_name']) ? '&board_name=' . $_GET['board_name']  : '') .
-					(isset($_GET['aop']) ? '&aop=' . $_GET['aop']  : '') 
-				, 1);
 				$this->articleData = array_merge(
 					$this->model->getNoticeArticles(),
 					$this->model->getArticleDatas()

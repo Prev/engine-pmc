@@ -10,6 +10,10 @@
 			"allow_web_access":false
 		},
 		{
+			"name":"dispFormInnerData",
+			"allow_web_access":false
+		},
+		{
 			"name":"dispImagePopup",
 			"layout":"blank"
 		},

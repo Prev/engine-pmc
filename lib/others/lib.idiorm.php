@@ -1497,7 +1497,7 @@
                     return $cached_result;
                 }
             }
-            
+
             self::_execute($query, $this->_values, $this->_connection_name);
             $statement = self::get_last_statement();
 
@@ -1514,7 +1514,7 @@
             $this->_values = array();
             $this->_result_columns = array('*');
             $this->_using_default_result_columns = true;
-
+            
             return $rows;
         }
 

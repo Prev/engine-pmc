@@ -11,6 +11,9 @@ RewriteRule ^([0-9]+)$ ./index.php?module=board&action=dispArticle&article_no=$1
 RewriteRule ^([a-zA-Z0-9]+)$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]
 
 
+#file down short url
+RewriteRule ^files/attach/([a-zA-Z0-9]+)$ ./index.php?module=file&action=procDownloadFile&file=$1&%{QUERY_STRING} [L,QSA]
+
 
 
 # allow sso-server/index.php

@@ -38,6 +38,11 @@
 
 
 		/**
+		 * only print module content 
+		 */
+		public $printAlone;
+
+		/**
 		 * headerTagHandler obj
 		 * HeaderTagHandler Class
 		 */
@@ -80,8 +85,10 @@
 		public function init($db_info) {
 			self::$attr = new StdClass();
 			self::$menuDatas = new StdClass();
+			
 			$this->headerTagHandler = new HeaderTagHandler();
 			$this->setLayout(LAYOUT_NAME);
+			$this->printAlone = false;
 
 			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale']);
 			if (isset($_GET['page']) && !isset($_GET['module'])) $_GET['module'] = 'page';
@@ -519,27 +526,32 @@
 
 			ob_start();
 			CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
-			$content = ob_get_clean();
+			
 
-			OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
+			if ($this->printAlone) {
+				ob_end_flush();
+			}else {
+				$content = ob_get_clean();
+				OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
 			
-			$output = $this->getDoctype() . LINE_END .
-					  '<html>' . LINE_END .
-					  '<head>' . LINE_END .
-					  $this->getHead() . 
-					  '</head>' . LINE_END .
-					  '<body>' . LINE_END .
-					  $this->getBodyTop() . LINE_END.
-			 		  $content . LINE_END .
-					  $this->getBodyBottom() . LINE_END .
-					  '</body>' . LINE_END .
-					  '</html>';
-				 
-			if (TEXT_ENCODING != 'utf-8')
-				$output = iconv('utf-8', TEXT_ENCODING, $output);
-			
-			echo $output;
-			ob_end_flush();
+				$output = $this->getDoctype() . LINE_END .
+						  '<html>' . LINE_END .
+						  '<head>' . LINE_END .
+						  $this->getHead() . 
+						  '</head>' . LINE_END .
+						  '<body>' . LINE_END .
+						  $this->getBodyTop() . LINE_END.
+				 		  $content . LINE_END .
+						  $this->getBodyBottom() . LINE_END .
+						  '</body>' . LINE_END .
+						  '</html>';
+
+				if (TEXT_ENCODING != 'utf-8')
+					$output = iconv('utf-8', TEXT_ENCODING, $output);
+				
+				echo $output;
+				ob_end_flush();
+			}
 		}
 
 		/*

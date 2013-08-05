@@ -73,7 +73,7 @@
 						return true;
 
 					for ($j=0; $j<count($this->groups); $j++) { 
-						if ($targetGroups[$i] == $this->groups[$j]->name)
+						if ($targetGroups[$i] == $this->groups[$j]->name || $this->groups[$j]->is_admin)
 							return true;
 					}
 				}
@@ -82,7 +82,7 @@
 					return true;
 				
 				for ($j=0; $j<count($this->groups); $j++) { 
-					if ($targetGroups == $this->groups[$j]->name)
+					if ($targetGroups == $this->groups[$j]->name || $this->groups[$j]->is_admin)
 						return true;
 				}
 			}

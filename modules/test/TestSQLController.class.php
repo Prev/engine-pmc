@@ -19,7 +19,7 @@
 				->where_equal('input_id', 'tester')
 				->find_many();*/
 
-			$data = DBHandler::for_table('login_log')
+			/*$data = DBHandler::for_table('login_log')
 				->select('login_log.*')
 				->join('user', array(
 					'user.input_id', '=', 'login_log.input_id'
@@ -29,8 +29,24 @@
 
 			for ($i=0; $i < count($data); $i++) { 
 				var_dump2($data[$i]->getData());
-			}
+			}*/
 			//var_dump2($d);
+
+			/*DBHandler::for_table('article')
+				->where('board_id', 1)
+				->find_one();*/
+			//$d = DBHandler::for_table('article')
+				//->raw_execute('SHOW KEYS FROM pmc_article WHERE Key_name =  "PRIMARY"');
+			/*$d = DBHandler::raw_execute('SHOW KEYS FROM pmc_article WHERE Key_name =  "PRIMARY"');
+			$d2 = DBHandler::get_db()
+				->query('SHOW KEYS FROM pmc_article WHERE Key_name =  "PRIMARY"');
+
+			var_dump2($d);
+			foreach ($d2 as $row) {
+				var_dump2($row);
+			}
+			*/
+			//var_dump2(self::get_last_statement());
 		}
 
 	}

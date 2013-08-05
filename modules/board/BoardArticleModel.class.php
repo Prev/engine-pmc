@@ -21,5 +21,14 @@
 			}
 			return $data;
 		}
+
+		function getArticleFiles($articleNo) {
+			return DBHandler::for_table('article_files')
+				->where('article_files.article_no', $articleNo)
+				->join('files', array(
+					'files.id', '=', 'article_files.file_id'
+				))
+				->find_many();
+		}
 		
 	}

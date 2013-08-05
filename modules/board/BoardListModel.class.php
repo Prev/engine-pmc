@@ -21,7 +21,7 @@
 				->join('user', array(
 					'user.id','=','article.writer_id'
 				))
-				->order_by_asc('article.top_no')
+				->order_by_desc('article.top_no')
 				->order_by_asc('article.order_key')
 				->limit($limitNum, $this->aop)
 				->find_many();

@@ -3,18 +3,20 @@
 	class EditorView extends View {
 
 		var $callbackUrl;
-		var $formInsertData;
+		var $formInnerData;
 		var $formData;
 
 		public function init() {
 			$this->callbackUrl = $this->module->callbackUrl;
-			$this->formInsertData = $this->module->formInsertData;
-
-			$this->formData = isset($this->module->formData) ? $this->module->formData : array();
+			$this->formInnerData = $this->module->formInnerData;
 		}
 
 		public function dispEditor() {
 			self::execTemplate('editor.html');
+		}
+
+		public function dispFormInnerData() {
+			self::execTemplate('editor_inner.html');
 		}
 
 		public function dispImagePopup() {

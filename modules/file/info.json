@@ -12,6 +12,12 @@
 		{
 			"name":"procImageUpload",
 			"controller":"FileController"
+		},
+		{
+			"name":"procDownloadFile",
+			"model":"FileDownModel",
+			"controller":"FileDownController",
+			"print_alone":true
 		}
 	]
 }

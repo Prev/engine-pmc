@@ -2,6 +2,13 @@
 	
 	class BoardEditorView extends View {
 		
+		var $boardLists;
+		var $boardName;
+
+		/**
+			게시판 카테고리
+		*/
+
 		public function init() {
 			if (User::getCurrent() == NULL) {
 				goLogin();
@@ -12,17 +19,15 @@
 		public function dispEditor() {
 			getContent('editor', 'dispEditor', array(
 				'callbackUrl' => getUrl('board', 'procSaveArticle'),
-				'formInsertData' => array(
-					'module' => 'board',
-					'action' => 'dispEditorInsertData'
-				),
-				'formData' => array(
-					
-				)
+				'formInnerData' => array('board', 'dispEditorInnerData')
 			));
 		}
 		
-		public function dispEditorInsertData() {
-			$this->execTemplate('editor_insert_data');
+		public function dispEditorInnerData() {
+			$this->boardLists = $this->model->getBoardLists();
+			if (isset($_GET['board_name']))
+				$this->boardName = $_GET['board_name'];
+
+			$this->execTemplate('editor_inner_data');
 		}
 	}

@@ -8,27 +8,31 @@
 			"name":"dispList",
 			"model":"BoardListModel",
 			"view":"BoardListView",
-			"controller":"BoardController",
+			"controller":"BoardListController",
 			"default":true
 		},
 		{
 			"name":"dispArticle",
 			"model":"BoardArticleModel",
 			"view":"BoardArticleView",
-			"controller":"BoardController"
+			"controller":"BoardArticleController"
 		},
 		{
 			"name":"dispEditor",
+			"model":"BoardEditorModel",
 			"view":"BoardEditorView"
 		},
 		{
-			"name":"dispEditorInsertData",
+			"name":"dispEditorInnerData",
+			"model":"BoardEditorModel",
 			"view":"BoardEditorView",
 			"allow_web_access" : false
 		},
 		{
 			"name":"procSaveArticle",
-			"controller":"BoardEditorController"
+			"model":"BoardEditorModel",
+			"controller":"BoardEditorController",
+			"layout" : "blank"
 		}
 	]
 }

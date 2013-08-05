@@ -83,7 +83,6 @@
 			if (method_exists($_module->controller, 'init'))	$_module->controller->init();
 			if (method_exists($_module->view, 'init'))			$_module->view->init();
 
-
 			return $_module;
 		}
 
@@ -143,6 +142,8 @@
 				));
 				return NULL;
 			}
+			if (isset($moduleInfo->print_alone)) 
+				Context::getInstance()->printAlone = true;
 
 			if (isset($moduleInfo->layout))
 				Context::getInstance()->setLayout($moduleInfo->layout);
@@ -205,6 +206,8 @@
 							));
 							return NULL;
 						}
+						if (isset($actions[$i]->print_alone))
+							Context::getInstance()->printAlone = true;
 						if (isset($actions[$i]->layout))
 							Context::getInstance()->setLayout($actions[$i]->layout);
 
@@ -217,7 +220,6 @@
 						'kr' => '모듈 액션이 정의되지 않았습니다.'
 					));
 				}
-
 				Context::printErrorPage(array(
 					'en' => 'Cannot execute module action - permission denined by configuration file',
 					'kr' => '모듈 액션을 실행할 수 없습니다 - Cofiguration 파일에 의해 권한이 거부됨'

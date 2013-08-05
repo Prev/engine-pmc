@@ -50,9 +50,15 @@
 		
 		final public function exec() {
 			foreach(array('model', 'view', 'controller') as $key => $mvc) {
-				if (method_exists($this->{$mvc}, $this->action))
+				if (method_exists($this->{$mvc}, $this->action)) {
 					$this->{$mvc}->{$this->action}();
+					return;
+				}
 			}
+			Context::printErrorPage(array(
+				'en' => 'Cannot find module action',
+				'kr' => '모듈 액션을 찾을 수 없습니다'
+			));
 		}
 		
 		private function loadMVCClass($className, $isGlobalFile) {

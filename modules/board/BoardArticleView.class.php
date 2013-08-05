@@ -12,6 +12,7 @@
 		var $writer;
 		var $url;
 		var $content;
+		var $fileDatas;
 
 		function dispArticle() {
 			$articleData = $this->articleData;
@@ -23,14 +24,7 @@
 					self::execTemplate('article_not_found');
 					return;
 				}
-
-				if ($articleData->readable_group) {
-					$me = User::getCurrent();
-					if (!$me || !$me->checkGroup($articleData->readable_group)) {
-						goBack('글을 볼 권한이 없습니다');
-					}
-				}
-
+				
 				$this->title = $articleData->title;
 				$this->board = ($articleData->boardName_locale ? $articleData->boardName_locale : $articleData->boardName);
 				$this->upload_time = $articleData->upload_time;
@@ -40,6 +34,7 @@
 					getUrl('board', 'dispArticle', array('article_no' => $this->articleNo))
 				);
 				$this->content = $articleData->content;
+				$this->attachFiles = $articleData->attach_files;
 
 				$this->prevArticle = NULL;
 				$this->nextArticle = NULL;

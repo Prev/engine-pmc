@@ -52,7 +52,8 @@
 				setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
 			}
 			unset($_SESSION['pmc_sso_data']);
-			
+			setcookie('pmc_logout_key', '0', time()-60);
+
 			goBack();
 		}
 		

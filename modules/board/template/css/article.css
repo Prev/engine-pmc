@@ -41,3 +41,22 @@
 .article .article-content {
 	padding:20px 10px 7px 10px;
 }
+
+
+.article-file {
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	background-color: #F7F7F7;
+	padding: 3px;
+	margin: 5px;
+}
+
+.article-file ul{ margin: 0; padding: 0; list-style: none }
+.article-file ul li{ padding: 1px 5px }
+
+.article-file ul li .file-icon{ display: inline-block; vertical-align: middle; width: 16px; height: 16px; background-image: url(data:image/gif;base64,R0lGODlhEAAQANU9APf395GPi4aDf56dmvLy8qempOvr6+3t7Y+Mifv7++Li4v7+/ufn56Oin5COio2Kh5GPjObm5vX19fPz85mYlZybmJmXlIiFgYiFgouIhZaUkejo6Kmopq2tqquqqOTk5JuZlpKQjY6MiJWTj+/v75WTkK6uq4eEgJiWk/r6+qqpp+Pj44mGgvn5+Zual/j4+KSjoIyJhvDw8O7u7oSBffz8/KCfnIWCfvHx8bi4uOzs7PT09P///////wAAAAAAACH5BAEAAD0ALAAAAAAQABAAAAarwJ5wSCwOGwVPx9TxFBoDymho23F4WOyilgDtAsKqKsvbplquHSRsrbm5L4DEC+4NdgWAXr4j4Cg7DkIVOzA4h4cyJDMoOwhCFjs2OpSVOgYlOw9CGjsTAzahAxUWGhM7GUIhfjMHBgczrzM4BCxCIjOUARABDggPlDMnQhkbDDFkWBcMGzdCFxEfGDw51Tk8Nx8RNEMCCtPW1zcKK9xDNzcC6ug07eZG8ENBADs%3D); }
+
+.article-file ul li a:link,
+.article-file ul li a:active,
+.article-file ul li a:visited{ color: #333; text-decoration: none }
+.article-file ul li a:hover{ color: #333; text-decoration: underline; }
