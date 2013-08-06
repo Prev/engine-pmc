@@ -13,7 +13,7 @@
 		</select>
 	</div>
 	<div class="fl">
-		<input type="text" id="board-title" name="title" />
+		<input type="text" id="board-title" name="title"{@ if (isset($title)) echo ' value="'.$title.'"'; } />
 	</div>
 </div>
 

@@ -37,11 +37,8 @@
 			}
 		}
 		public function procLogout() {
-			setcookie('pmc_logout_key', '1');
-			redirect(getUrl('login', 'procLogout2', 'next='.getBackUrl()));
-		}
-		public function procLogout2() {
-			if (!isset($_COOKIE['pmc_logout_key'])) return;
+			if (!isset($_SERVER['HTTP_REFERER'])) return;
+			
 			if (isset($_COOKIE['pmc_sess_key'])) {
 				$sessionKey = $_COOKIE['pmc_sess_key'];
 				

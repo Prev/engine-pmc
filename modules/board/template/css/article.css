@@ -42,13 +42,13 @@
 	padding:20px 10px 7px 10px;
 }
 
-
 .article-file {
 	border: 1px solid #CCC;
 	border-radius: 3px;
 	background-color: #F7F7F7;
 	padding: 3px;
 	margin: 5px;
+	margin-top: 20px;
 }
 
 .article-file ul{ margin: 0; padding: 0; list-style: none }
@@ -60,3 +60,38 @@
 .article-file ul li a:active,
 .article-file ul li a:visited{ color: #333; text-decoration: none }
 .article-file ul li a:hover{ color: #333; text-decoration: underline; }
+
+
+.article-buttons{ margin-top: 20px; padding: 0 3px; }
+.article-buttons div{ font-size: 12px; margin:0 3px; color:#666; }
+.article-buttons div#comment-label{ color: #06C; font-weight: bold }
+
+.article-buttons div.left-bar{ border-left: 1px solid #CCC; padding-left: 4px }
+
+.article-comment-wrap{
+	padding: 8px 15px;
+	margin-top: 10px;
+	background-color: #F7F7F7;
+}
+
+.article-comment-wrap ul.comment-list{ margin: 0; padding: 0; list-style: none }
+.article-comment-wrap ul.comment-list li{ padding: 8px 0; margin-bottom: 7px; border-bottom: 1px dotted #CCC }
+.article-comment-wrap ul.comment-list li .comment-first{ margin-bottom: 2px }
+.article-comment-wrap ul.comment-list li .comment-writer{ font-weight: bold; font-size: 13px }
+.article-comment-wrap ul.comment-list li .comment-write-time{ color: #999; font-size: 10px; margin: 4px 0 0 5px }
+.article-comment-wrap ul.comment-list li .comment-content{ color: #666 }
+.article-comment-wrap ul.comment-list li a:link,
+.article-comment-wrap ul.comment-list li a:active,
+.article-comment-wrap ul.comment-list li a:visited{ text-decoration: none; color: #666 }
+.article-comment-wrap ul.comment-list li a:hover{ text-decoration: underline; color: #666 }
+
+.article-comment-wrap textarea { width: 770px; height: 65px; }
+
+.article-comment-wrap #comment-btn{
+	width: 80px;
+	height: 73px;
+	margin-top: 1px;
+	color: white;
+	background-color: #444;
+	border: 1px solid #222;
+}

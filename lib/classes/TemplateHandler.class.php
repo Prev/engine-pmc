@@ -40,10 +40,10 @@
 			$html = preg_replace_callback('/{@([\s\S]+?)}/', array($this, 'parseCode'), $html);
 			
 			// {$a} -> echo  $__attr->a ( Context::get('a') or View->a )
-			$html = preg_replace_callback('/{(\$.*?)}/', array($this, 'parseVar'), $html);
+			$html = preg_replace_callback('/{\s*(\$.*?)}/', array($this, 'parseVar'), $html);
 			
 			// {func()} -> Context::execFunction('func', array())
-			$html = preg_replace_callback("`{([a-zA-Z0-9_\s]+)\((.*?)\)}`", array($this, 'parseFunc'), $html);
+			$html = preg_replace_callback("`{\s*([a-zA-Z0-9_\s]+)\((.*?)\)}`", array($this, 'parseFunc'), $html);
 			
 
 			// insert RELATIVE_URL in absolute src (/.*), href and action
@@ -182,17 +182,20 @@
 			$args = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $args, -1);
 			$args = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $args, -1);
 
-
 			if (function_exists($function))
-				return '<?php if ($func = '.$function.'('.$args.')) echo $func; ?>';
-
+				$func = ''.$function.'('.$args.')';
+				
 			else if ($this->module && method_exists($this->module, $function))
-				return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$function.'('.$args.')) echo $func; ?>';
-			
+				$func = 'ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$function.'('.$args.')';
+				
 			foreach (array('model', 'controller', 'view') as $key => $mvc) {
-				if ($this->module && $this->module->{$mvc} && method_exists($this->module->{$mvc}, $function))
-					return '<?php if ($func = ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$mvc.'->'.$function.'('.$args.')) echo $func; ?>';
+				if ($this->module && $this->module->{$mvc} && method_exists($this->module->{$mvc}, $function)) {
+					$func = 'ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$mvc.'->'.$function.'('.$args.')';
+					break;
+				}
 			}
+
+			return '<?php $func=' . $func . '; if (isset($func)) echo $func; ?>';
 		}
 
 		private function parseCode($matches) {
@@ -201,7 +204,7 @@
 			$c = $matches[1];
 			$c = preg_replace('/([^:>])\$([\>a-zA-Z0-9_-]*)/', '$1\$__attr->$2', $c, -1);
 			$c = preg_replace('/([^:>])\${([\>a-zA-Z0-9_-]*)}/', '$1\${__attr->$2}', $c, -1);
-			
+
 			if (substr($c, 0, 1) != ' ') $c = ' ' . $c;
 			if (substr($c, strlen($c)+1, 1) != ' ')	$c .= '';
 				

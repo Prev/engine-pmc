@@ -50,6 +50,11 @@
 	
 
 	/**
+	 * Define using real name in board, etc
+	 */
+	define('USE_REAL_NAME', false);
+
+	/**
 	  * Define default locale
 	  * Get current locale by calling getLocale() func
 	  */

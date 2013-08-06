@@ -77,14 +77,15 @@
 
 			if (isset(self::$primary_keys->{$table_name}))
 				parent::$_config[$connection_name]['id_column'] = self::$primary_keys->{$table_name};
-
-			$primaryRow = DBHandler::get_db($connection_name)
-				->query('SHOW KEYS FROM '.$table_name.' WHERE Key_name =  "PRIMARY"');
-			
-			foreach ($primaryRow as $row) {
-				self::$primary_keys->{$table_name} = $row['Column_name'];
-				if ($row['Column_name'] != 'id')
-					parent::$_config[$connection_name]['id_column'] = $row['Column_name'];
+			else {
+				$primaryRow = DBHandler::get_db($connection_name)
+					->query('SHOW KEYS FROM '.$table_name.' WHERE Key_name =  "PRIMARY"');
+				
+				foreach ($primaryRow as $row) {
+					self::$primary_keys->{$table_name} = $row['Column_name'];
+					if ($row['Column_name'] != 'id')
+						parent::$_config[$connection_name]['id_column'] = $row['Column_name'];
+				}
 			}
 		}
 
@@ -109,6 +110,9 @@
 			return $rows;
         }
 
+        public function getConfig() {
+        	return parent::$_config;
+        }
 
 		public function getQuery() {
 			$query = parent::_build_select();
@@ -120,6 +124,11 @@
 				$query = preg_replace('/(\?)/', $value, $query, 1);
 			}
 			return $query;
+		}
+
+		public function dumpQuery() {
+			var_dump2($this->getQuery());
+			return $this;
 		}
 
 		public function getData() {

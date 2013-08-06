@@ -9,7 +9,6 @@
 
 		/**
 			비밀글
-			원본이 없어진 답글
 		*/
 		function dispList() {
 

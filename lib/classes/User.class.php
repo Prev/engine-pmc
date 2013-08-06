@@ -10,6 +10,7 @@
 	class User {
 
 		static private $userSingleTon;
+		static private $masterAdmin;
 
 		private $id;
 		private $inputId;
@@ -60,6 +61,22 @@
 				self::$userSingleTon = new User($userData);
 			}else
 				self::$userSingleTon = NULL;
+		}
+
+		static public function getMasterAdmin() {
+			if (isset(self::$masterAdmin)) return self::$masterAdmin;
+
+			$arr = DBHandler::for_table('user_group')
+				->select('name')
+				->where('is_admin', 1)
+				->find_many();
+
+			$arr2 = array();
+			for ($i=0; $i<count($arr); $i++) 
+				array_push($arr2, $arr[$i]->name);
+			
+			self::$masterAdmin = $arr2;
+			return $arr2;
 		}
 
 		public function __get($name) {

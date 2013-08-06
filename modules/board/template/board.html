@@ -22,7 +22,23 @@
 					<condition do="!isset($data->top_notice)">
 						{printArticlePrefix($data->order_key, $data->category)}
 					</condition>
-					<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>
+					
+					<condition do="!$data->is_delete">
+						<true>
+							<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>
+							<span class="comment-counts">[<strong>{$data->comment_counts}</strong>]</span>
+							
+							<condition do="$data->file_counts">
+								<span class="file_icon">
+									파일
+									<span class="hidden">파일</span>
+								</span>
+							</condition>
+						</true>
+						<false>
+							<i>원글이 사라진 답글입니다</i>
+						</false>
+					</condition>
 				</li>
 				<li class="writer">{$data->user_name}</li>
 				<li class="date">{$data->upload_time2}</li>

@@ -103,6 +103,8 @@
 	 * ex) 2013-06-23 11:32:12 -> 13분 전
 	*/
 	function getRelativeTime($time) {
+		if (is_string($time)) $time = strtotime($time);
+
 		if ($time + 60 > time())
 			return '방금 전';
 		else if ($time + 3600 > time())
@@ -445,14 +447,17 @@
 	/**
 	 * url 리다이렉트
 	 */
-	function redirect($url) {
-		ob_clean();
-		echo Context::getInstance()->getDoctype() .
-				'<html><head>' .
-				'<meta http-equiv="refresh" content="0; url='.$url.'">' .
-				'<script type="text/javascript">location.replace("'.$url.'")</script>' .
-				'</head><body></body></html>';
-		exit;
+	function redirect($url, $ob_clean=true) {
+		if ($ob_clean) {
+			ob_clean();
+			echo Context::getInstance()->getDoctype() .
+					'<html><head>' .
+					'<meta http-equiv="refresh" content="0; url='.$url.'">' .
+					'<script type="text/javascript">location.replace("'.$url.'")</script>' .
+					'</head><body></body></html>';
+			exit;
+		}else
+			echo '<script type="text/javascript">location.replace("'.$url.'");</script>';
 	}
 
 	/**

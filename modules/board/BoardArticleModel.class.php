@@ -2,7 +2,7 @@
 	
 	class BoardArticleModel extends Model {
 		
-		function getArticleData($articleNo) {
+		public function getArticleData($articleNo) {
 			$data = DBHandler::for_table('article')
 				->select_many('article.*', 'board.*', 'user.nick_name')
 				->where('article.no', $articleNo)
@@ -17,12 +17,22 @@
 			if ($data) {
 				$data->boardName = $data->name;
 				$data->boardName_locale = fetchLocale($data->name_locales);
-				$data->writerNick = $data->nick_name;
+				$data->writer = USE_REAL_NAME ? $data->user_name : $data->nick_name;
 			}
 			return $data;
 		}
 
-		function getArticleFiles($articleNo) {
+		public function getArticleComments($articleNo) {
+			return DBHandler::for_table('article_comment')
+				->select_many('article_comment.*', 'user.user_name', 'user.nick_name')
+				->where('article_comment.article_no', $articleNo)
+				->join('user', array(
+					'user.id', '=', 'article_comment.writer_id'
+				))
+				->find_many();
+		}
+
+		public function getArticleFiles($articleNo) {
 			return DBHandler::for_table('article_files')
 				->where('article_files.article_no', $articleNo)
 				->join('files', array(

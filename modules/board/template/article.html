@@ -28,31 +28,80 @@
 		{$content}
 	</div>
 	
-	<div class="article-file">
-		<ul>
-			{@ foreach ($fileDatas as $key => $file) : }
+	<condition do="count($fileDatas)>0">
+		<div class="article-file">
+			<ul>
+				{@ foreach ($fileDatas as $key => $file) : }
+					<li>
+						<span class="file-icon"></span>
+						<a href="/{@ echo USE_SHORT_URL ? 'files/attach/' : '?module=file&action=procDownloadFile&file='; }{$file->file_hash}">
+							{$file->file_name}&nbsp;({getClearFileSize($file->file_size)})
+						</a>
+					</li>
+				{@ endforeach; }
+			</ul>
+		</div>
+	</condition>
+
+	<div class="article-buttons clearfix">
+		<div id="comment-label" class="fl">덧글 {count($commentDatas)}개</div>
+		<div class="fl">조회수&nbsp;{$hits+1}</div>
+		
+		<condition do="User::getCurrent()->id == $writer_id || $isBoardAdmin">
+			<div class="fr left-bar">
+				<a href="{getUrl('board', 'procDeleteArticle', 'article_no='.$articleNo)}">삭제</a>
+			</div>
+		</condition>
+
+		<condition do="User::getCurrent()->id == $writer_id">
+			<div class="fr left-bar">수정</div>
+		</condition>
+
+		<div class="fr">
+			<a href="{getUrl('board', 'dispEditor', 'parent_no='.$articleNo)}">답글</a>
+		</div>
+	</div>
+
+	<div class="article-comment-wrap">
+		<ul class="comment-list">
+			{@ foreach($commentDatas as $key => $comment) : }
 				<li>
-					<span class="file-icon"></span>
-					<a href="/{@ echo USE_SHORT_URL ? 'files/attach/' : '?module=file&action=procDownloadFile&file='; }{$file->file_hash}">
-						{$file->file_name}&nbsp;({getClearFileSize($file->file_size)})
-					</a>
+					<div class="comment-first clearfix">
+						<div class="comment-writer fl">{$comment->writer}</div>
+						<div class="comment-write-time fl" title="{$comment->write_time}">{getRelativeTime($comment->write_time)}</div>
+						<condition do="User::getCurrent()->id == $comment->writer_id">
+							<div class="comment-delete-btn fr">
+								<a href="{getUrl('board', 'procDeleteComment', 'comment_id='.$comment->id)}">삭제</a>
+							</div>
+							<div class="comment-delete-btn fr">
+								<a href="{getUrl('board', 'procUpdateComment', 'comment_id='.$comment->id)}">수정</a>
+							</div>
+						</condition>
+					</div>
+					<div class="comment-content">
+						{$comment->content}
+					</div>
 				</li>
 			{@ endforeach; }
 		</ul>
-	</div>
-	
-	<div class="article-footer">
-		
-		<!--
-		<condition do="$prevArticle">
-			<div class="fl">이전 게시글</div>
-		</condition>
-		
-		<div class="fl">목록으로</div>
-		
-		<condition do="$nextArticle">
-			<div class="fr">다음 게시글</div>
-		</condition>
-		-->
+		<div class="clearfix">
+			<form action="{getUrl('board', 'procWriteComment')}" method="post">
+				<input type="hidden" name="article_no" value="{$articleNo}">
+				<div class="fl">
+					<condition do="User::getCurrent()">
+						<condition do="$commentable">
+							<textarea name="comment" placeholder="덧글을 입력하세요"></textarea>
+						<else>
+							<textarea name="comment" placeholder="덧글을 쓸 권한이 없습니다" class="disabled" disabled></textarea>
+						</condition>
+					<else>
+						<textarea name="comment" placeholder="로그인한 유저만 댓글을 남길 수 있습니다" class="disabled" disabled></textarea>
+					</condition>
+				</div>
+				<div class="fr">
+					<button id="comment-btn" onclick="if (this.form.comment.value == '') { alert('덧글을 입력 해 주세요'); return false; } this.form.submit();">덧글달기</button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
