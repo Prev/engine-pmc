@@ -19,6 +19,7 @@
 		},
 
 
+
 		{
 			"name":"dispEditor",
 			"model":"BoardEditorModel",
@@ -31,17 +32,39 @@
 			"allow_web_access":false
 		},
 		{
-			"name":"procSaveArticle",
+			"name":"dispUpdateEditorInnerData",
 			"model":"BoardEditorModel",
-			"controller":"BoardEditorController",
+			"view":"BoardEditorView",
+			"allow_web_access":false
+		},
+		{
+			"name":"dispEditorInnerBottomData",
+			"model":"BoardEditorModel",
+			"view":"BoardEditorView",
+			"allow_web_access":false
+		},
+
+
+
+		{
+			"name":"procSaveArticle",
+			"model":"BoardCGIModel",
+			"controller":"BoardCGIController",
+			"layout":"blank"
+		},
+		{
+			"name":"procUpdateArticle",
+			"model":"BoardCGIModel",
+			"controller":"BoardCGIController",
 			"layout":"blank"
 		},
 		{
 			"name":"procDeleteArticle",
-			"model":"BoardEditorModel",
-			"controller":"BoardEditorController",
+			"model":"BoardCGIModel",
+			"controller":"BoardCGIController",
 			"layout":"blank"
 		},
+
 
 
 		{

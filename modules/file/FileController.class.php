@@ -45,7 +45,7 @@
 		private function _procUpload($isBinary) {
 			if (empty($_FILES['bifile'])) return;
 
-			$fileName = basename($_FILES['bifile']['name']);
+			$fileName = $_FILES['bifile']['name'];
 			$fileHash = sha1_file($_FILES['bifile']['tmp_name']);
 			$fileSize = (int)$_FILES["bifile"]["size"];
 			$fileExtension = substr(strrchr($_FILES['bifile']['name'], '.'), 1);

@@ -54,7 +54,9 @@
 		</condition>
 
 		<condition do="User::getCurrent()->id == $writer_id">
-			<div class="fr left-bar">수정</div>
+			<div class="fr left-bar">
+				<a href="{getUrl('board', 'dispEditor', 'article_no='.$articleNo)}">수정</a>
+			</div>
 		</condition>
 
 		<div class="fr">

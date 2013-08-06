@@ -20,7 +20,7 @@
 			$data = DBHandler::for_table('article')
 				->select_many('article.*', 'user.user_name')
 				->select_expr('(SELECT COUNT(*) FROM '.$pfx.'article_comment WHERE article_no = '.$pfx.'article.no)', 'comment_counts')
-				->select_expr('(SELECT COUNT(*) FROM '.$pfx.'article_files, '.$pfx.'files WHERE '.$pfx.'article_files.article_no = '.$pfx.'article.no AND '.$pfx.'files.id='.$pfx.'article_files.id)', 'file_counts')
+				->select_expr('(SELECT COUNT(*) FROM '.$pfx.'article_files WHERE article_no = '.$pfx.'article.no)', 'file_counts')
 				->where('article.board_id', $this->boardId)
 				->join('user', array(
 					'user.id','=','article.writer_id'

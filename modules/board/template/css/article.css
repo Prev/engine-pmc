@@ -68,6 +68,11 @@
 
 .article-buttons div.left-bar{ border-left: 1px solid #CCC; padding-left: 4px }
 
+.article-buttons a:link,
+.article-buttons a:active,
+.article-buttons a:visited{ color: #333; text-decoration: none }
+.article-buttons a:hover{ color: #333; text-decoration: underline; }
+
 .article-comment-wrap{
 	padding: 8px 15px;
 	margin-top: 10px;

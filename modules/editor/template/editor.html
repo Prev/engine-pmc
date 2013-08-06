@@ -26,47 +26,47 @@
 </div>
 
 <script type="text/javascript">
-var config = {
-	txHost: '',
-	txPath: '',
-	initializedId: "",
-	wrapper: "tx_trex_container",
-	form: 'tx_editor_form',
-	txIconPath: "{getUrl()}/modules/editor/template/images/icon/editor/",
-	txDecoPath: "{getUrl()}/modules/editor/template/images/deco/contents/",
-	tx_attach_max_size:10,
-	canvas: {
-		styles: {
-			color: "#123456", /* 기본 글자색 */
-			fontFamily: "굴림", /* 기본 글자체 */
-			fontSize: "10pt", /* 기본 글자크기 */
-			backgroundColor: "#fff", /*기본 배경색 */
-			lineHeight: "1.5", /*기본 줄간격 */
-			padding: "8px" /* 위지윅 영역의 여백 */
+	var config = {
+		txHost: '',
+		txPath: '',
+		initializedId: "",
+		wrapper: "tx_trex_container",
+		form: 'tx_editor_form',
+		txIconPath: "{getUrl()}/modules/editor/template/images/icon/editor/",
+		txDecoPath: "{getUrl()}/modules/editor/template/images/deco/contents/",
+		tx_attach_max_size:10,
+		canvas: {
+			styles: {
+				color: "#333333", /* 기본 글자색 */
+				fontFamily: "굴림", /* 기본 글자체 */
+				fontSize: "10pt", /* 기본 글자크기 */
+				backgroundColor: "#fff", /*기본 배경색 */
+				lineHeight: "1.5", /*기본 줄간격 */
+				padding: "8px" /* 위지윅 영역의 여백 */
+			},
+			showGuideArea: false
 		},
-		showGuideArea: false
-	},
-	events: {
-		preventUnload: false
-	},
-	sidebar: {
-		attachbox: {
-			show: true,
-			confirmForDeleteAll: true
+		events: {
+			preventUnload: false
 		},
-		attacher: {
-			image: {
-				features: {
-					left:50,
-					top:65,
-					width:397,
-					height:444
+		sidebar: {
+			attachbox: {
+				show: true,
+				confirmForDeleteAll: true
+			},
+			attacher: {
+				image: {
+					features: {
+						left:50,
+						top:65,
+						width:397,
+						height:444
+					}
+				},
+				file: {
 				}
 			},
-			file: {
-			}
-		},
-		capacity: {
+			capacity: {
 				maximum: 30 * 1024 * 1024 // 30 MB
 			}
 		},
@@ -75,8 +75,10 @@ var config = {
 		}
 	};
 
+	var editor;
+
 	EditorJSLoader.ready(function(Editor) {
-		var editor = new Editor(config);
+		editor = new Editor(config);
 	});	
 
 	function validForm(editor) {
@@ -103,9 +105,11 @@ var config = {
 
 		var files = Editor.getSidebar().getAttachments("file");
 		var fileIds = [];
-		for (i = 0; i < files.length; i++)
-			fileIds.push(files[i].data.fileId);
+		for (i = 0; i < files.length; i++) {
+			if (files[i].deletedMark) continue;
 
+			fileIds.push(files[i].data.fileId);
+		}
 		input = document.createElement('input');
 		input.type = 'hidden';
 		input.name = 'attach_files';

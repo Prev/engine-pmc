@@ -1,0 +1,38 @@
+<import path="css/editor_inner_data.css">
+
+<input type="hidden" name="article_no" value="{$_GET['article_no']}">
+
+<div id="board-top-container" class="clearfix">
+	<div class="fl">
+		<select id="board-selector" name="board_id">
+			{@ foreach ($boardLists as $key => $value) : }
+				<option value="{$value->id}"{@ if ($value->id == $boardData->board_id) echo ' selected="selected"';}>
+					{$value->name_locale}
+				</option>
+			{@ endforeach; }
+		</select>
+	</div>
+	<div class="fl">
+		<input type="text" id="board-title" name="title" value="{$boardData->title}" />
+	</div>
+</div>
+
+{getContent('editor', 'dispFormInnerData')}
+{getContent('board', 'dispEditorInnerBottomData')}
+
+<textarea id="origin-content" style="display:none; visibility:hidden">
+	{$boardData->content}
+</textarea>
+
+<script type="text/javascript">
+	window.addEventListener("load", function () {
+
+		{@ foreach($fileDatas as $key => $file) : }
+			appendFile("{getUrl()}{$file->uploaded_url}", "{$file->file_name}", {$file->file_size}, "", {$file->id});
+		{@ endforeach; }
+
+		Editor.modify({
+			"content": document.getElementById("origin-content")
+		});
+	});
+</script>

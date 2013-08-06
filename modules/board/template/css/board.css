@@ -27,6 +27,7 @@
 .board .board-article .title a:hover{ text-decoration:none; color:#333; }
 .board .board-article .title i{ color: #999 }
 .board .board-article .title span.comment-counts{ font-size: 10px; color: #5269a3 }
+.board .board-article .title .file-icon{ display: inline-block; width: 16px; height: 16px; vertical-align: middle; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAF1SURBVBgZpcE9axRRFIDh99y5s1nHjawQVEgQGxErIWgES9MGBDuxlrBVfkG6lBEsrUQEEXu7gNgIUSTBQrBSyYdgFjXMktmdmTvniLCB28/ziJnRhqMlR0ueyNrTLzY7A0UVON/r8PNojDjoZQlqwt98zNvdw9vfX97/yJQnMi4m3F26xr3FHm+2D1h/eJ3Yi3dDVOUDIEw5IkVZ82cU+G/r0y9OTQLkJQyPK0SUmCfinJAY1I3yeLCIqmFAgpF5KMuS/KQi5ol0U8ekrNl4/QMnEBpFG8UAMwODLFVinkhQo2wCiUsBQ2gQEUwNMyWEmqoKxDyRUVGTimewMkvQCnBgYKJ0fYfNV3v8zk+IeSKNGgkpyphnO6vMZZcRHMNin0e3nuDoUpQVMU/E+4Qrl+Bib8TyjSX6nXlwcDyZ58LZQNYBL0JMzIxTNwdb768unLnTn+nT9ecIWiOqiDWoFHzd+8ZRXvP5+QNhSsyMNhwtOVr6B/fLolbgemG4AAAAAElFTkSuQmCC); *zoom: 1; }
 .board .board-article .no-article{ padding:30px 0; text-align:center; border-bottom:1px solid #e0e0e0; }
 
 

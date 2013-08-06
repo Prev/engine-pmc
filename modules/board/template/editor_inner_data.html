@@ -1,6 +1,8 @@
 <import path="css/editor_inner_data.css">
 
-<input type="hidden" name="parent_no" value="{$_GET['parent_no']}">
+<condition do="$_GET['parent_no']">
+	<input type="hidden" name="parent_no" value="{$_GET['parent_no']}">
+</condition>
 
 <div id="board-top-container" class="clearfix">
 	<div class="fl">
@@ -18,20 +20,4 @@
 </div>
 
 {getContent('editor', 'dispFormInnerData')}
-
-<div id="board-bottom-container" class="clearfix">
-	<ul>
-		<li class="fl">
-			<input type="checkbox" name="is_secret" checked="checked">
-			<label for ="is_secret">비밀글</label>
-		</li>
-		<li class="fl">
-			<input type="checkbox" name="is_notice">
-			<label for ="is_notice">공지</label>
-		</li>
-		<li class="fl">
-			<input type="checkbox" name="allow_comment" checked="checked">
-			<label for ="allow_comment">덧글허용</label>
-		</li>
-	</ul>
-</div>
+{getContent('board', 'dispEditorInnerBottomData')}

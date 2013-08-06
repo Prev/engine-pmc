@@ -1,6 +1,6 @@
 <?php
 	
-	class BoardEditorController extends Controller {
+	class BoardCGIController extends Controller {
 
 		public function init() {
 			if (User::getCurrent() == NULL) {
@@ -10,22 +10,19 @@
 		}
 		
 		public function procSaveArticle() {
-			$boardInfo = DBHandler::for_table('board')
-				->where('id', $_POST['board_id'])
-				->find_one();
+			$boardInfo = $this->model->getBoardInfo($_POST['board_id']);
 
 			$me = User::getCurrent();
-			
 			if (!$me || (isset($boardInfo->writable_group) && !$me->checkGroup(json_decode($boardInfo->writable_group)))) {
 				goBack('글을 쓸 권한이 없습니다', true);
 				return;
-			}	
+			}
 
 			/**
 				TODO : 카테고리
 			*/
 
-			if (strpos($_POST['attach_files'], ',') !== false) {
+			if (!empty($_POST['attach_files'])) {
 				$attachFiles = explode(',', $_POST['attach_files']);
 				for ($i=0; $i<count($attachFiles); $i++)
 					$attachFiles[$i] = (int)$attachFiles[$i];
@@ -62,7 +59,6 @@
 			for ($i=0; $i<count($attachFiles); $i++) { 
 				$record = DBHandler::for_table('article_files')->create();
 				$record->set(array(
-					'is_binary' => 1,
 					'article_no' => $articleNo,
 					'file_id' => $attachFiles[$i]
 				));
@@ -71,6 +67,64 @@
 
 			redirect(RELATIVE_URL .  (USE_SHORT_URL ? '/' : '/?module=board&action=dispArticle&article_no=') . $articleNo);
 		}
+
+
+		public function procUpdateArticle() {
+			if (!$_POST['article_no']) {
+				goBack('오류가 발생했습니다', true);
+				return;
+			}
+
+			$articleData = $this->model->getArticleData($_POST['article_no']);
+
+			if (User::getCurrent()->id != $articleData->writer_id) {
+				goBack('글을 수정 할 권한이 없습니다', true);
+				return;
+			}
+
+			if (!empty($_POST['attach_files'])) {
+				$attachFiles = explode(',', $_POST['attach_files']);
+				for ($i=0; $i<count($attachFiles); $i++)
+					$attachFiles[$i] = (int)$attachFiles[$i];
+			}
+
+			$articleData->set(array(
+				'title' => $_POST['title'],
+				'content' => removeXSS($_POST['content']),
+				'is_secret' => evalCheckbox($_POST['is_secret']) ? 1 : 0 ,
+				'is_notice' => evalCheckbox($_POST['is_notice']) ? 1 : 0 ,
+				'allow_comment' => evalCheckbox($_POST['allow_comment']) ? 1 : 0 ,
+				'upload_time' => date('Y-m-d H:i:s')
+			));
+			$articleData->save();
+
+			$originFiles = $this->model->getOriginFiles($_POST['article_no']);
+
+			for ($i=0; $i<count($originFiles); $i++) {
+				if ($pos = array_search($originFiles[$i]->file_id, $attachFiles)) {
+					array_slice($originFiles, $i);
+					array_slice($attachFiles, $pos);
+					continue;
+				}
+			}
+			for ($i=0; $i<count($attachFiles); $i++) { 
+				$record = DBHandler::for_table('article_files')->create();
+				$record->set(array(
+					'article_no' => $_POST['article_no'],
+					'file_id' => $attachFiles[$i]
+				));
+				$record->save();
+			}
+			for ($i=0; $i<count($originFiles); $i++) { 
+				DBHandler::for_table('article_files')
+					->where('id', $originFiles[$i]->id)
+					->delete_many();
+			}
+			$this->alert('게시글을 성공적으로 수정했습니다');
+			redirect(RELATIVE_URL .  (USE_SHORT_URL ? '/' : '/?module=board&action=dispArticle&article_no=') . $_POST['article_no']);
+		}
+
+
 
 		public function procDeleteArticle() {
 			if (!$_SERVER['HTTP_REFERER']) return;
