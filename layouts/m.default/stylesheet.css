@@ -1,0 +1,73 @@
+@charset "utf-8";
+
+body{
+	margin:0;
+	padding:0;
+	
+	font-size:12px;
+	font-family:나눔고딕,NanumGothic,돋움,Dotum,Arial,Helvetica,sans-serif;
+	
+	background-color:#fcfcfc;
+}
+#wrap{ width:100%; }
+#wrap #header #logo{ padding: 20px 0 10px 0; text-align: center; }
+
+#header #gnb{
+	width:100%;
+	padding:0;
+	
+	background-color:#f9f9f9;
+	background-image:linear-gradient(#f9f9f9, #f3f3f3);
+	
+	text-align: center;
+	border:1px solid #f0f0f0;
+}
+
+#header #gnb ul{
+	list-style:none;
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+}
+
+#header #gnb ul li{
+	margin:8px 20px;
+	padding:0;
+	
+	font-size:14px;
+	float:left;
+}
+
+#header #gnb ul li.selected a{
+	color:#06C !important;
+	font-weight:bold;
+}
+
+#wrap #content{
+	margin:10px 0;
+}
+
+
+#footer{
+	background-color:#f8f8f8;
+}
+#footer #footer-content{
+	width:270px;
+	margin:0 auto;
+	padding:20px 0 180px 0;
+	color:#09C;
+}
+#footer #footer-locale{ padding-left: 10px }
+#footer #footer-locale span{
+	display:inline-block;
+	padding:0 3px;
+	*zoom:1;
+}
+#footer #footer-locale span.selected-locale{
+	font-weight:bold;
+}
+#footer #footer-locale span a:link,
+#footer #footer-locale span a:active,
+#footer #footer-locale span a:visited{ color:#09C; text-decoration:none }
+#footer #footer-locale span a:hover{ color:#09C; text-decoration:underline }
+

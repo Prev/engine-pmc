@@ -1,0 +1,43 @@
+<import path="/static/css/form_beauty.css">
+<import path="/static/css/form_beauty_chrome.css" requiredAgent="chrome">
+
+<import path="stylesheet.css">
+<import path="favicon.ico">
+<div id="wrap">
+	<div id="header">
+		<div id="logo">
+			<a href="/">
+				<img src="./img/logo_150x60.png" width="150" height="60" alt="engine pmc">
+			</a>
+		</div>
+		<div id="gnb">
+			<ul class="clearfix">
+				{getMenuTag(1)}
+			</ul>
+		</div>
+	</div>
+	
+	<div id="content">
+		{getContent()}
+	</div>
+</div>
+<div id="footer">
+	<div id="footer-content" class="clearfix">
+		<div class="fl">&copy; Powered by engine pmc.</div>
+		<div id="footer-locale" class="fl">
+			<condition do="getLocale('en')">
+				<span class="selected-locale">English</span> 
+			</condition>
+			<condition do="!getLocale('en')">
+				<span><a href="{getUrlA('locale=en', REAL_URI)}">English</a></span> 
+			</condition>
+			
+			<condition do="getLocale('kr')">
+				<span class="selected-locale">Korean</span> 
+			</condition>
+			<condition do="!getLocale('kr')">
+				<span><a href="{getUrlA('locale=kr', REAL_URI)}">Korean</a></span> 
+			</condition>
+		</div>
+	</div>
+</div>

@@ -20,6 +20,9 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.3.1
++ 모바일 지원
+
 #### v 0.3.0
 + global.js 파일 추가
  + getUrl(), getUrlA() 함수 지원

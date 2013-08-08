@@ -42,6 +42,13 @@
 		 */
 		public $printAlone;
 
+
+		/**
+		 * mobile mode
+		 */
+		public $mobileMode;
+
+
 		/**
 		 * headerTagHandler obj
 		 * HeaderTagHandler Class
@@ -89,6 +96,30 @@
 			$this->headerTagHandler = new HeaderTagHandler();
 			$this->setLayout(LAYOUT_NAME);
 			$this->printAlone = false;
+
+			if ($_COOKIE['mobile']) $this->mobileMode = true;
+			if (!$_COOKIE['mobile']) $this->mobileMode = false;
+
+			if (isset($_GET['mobile'])) {
+				if ($_GET['mobile']) {
+					$this->mobileMode = true;
+					setcookie('mobile', 1);
+				}else {
+					$this->mobileMode = false;
+					setcookie('mobile', 0);
+				}
+			}
+
+			if (!$this->mobileMode) {
+				$mobileAgents  = array("iphone","lgtelecom","skt","mobile","samsung","nokia","blackberry","android","android","sony","phone");
+				
+				for ($i=0; $i<sizeof($MobileArray); $i++){ 
+					if (preg_match("/$MobileArray[$i]/", strtolower($_SERVER['HTTP_USER_AGENT']))) {
+						$this->mobileMode = true;
+						break;
+					} 
+				}
+			}
 
 			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale']);
 			if (isset($_GET['page']) && !isset($_GET['module'])) $_GET['module'] = 'page';
@@ -535,6 +566,10 @@
 			if (!$this->contentPrintable) return; // if error printed, return
 
 			ob_start();
+			
+			if ($this->mobileMode && is_file(ROOT_DIR . '/layouts/m.' . $this->layout . '/layout.html'))
+				$this->layout = 'm.' . $this->layout;
+
 			CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
 			
 

@@ -24,6 +24,10 @@
 			if (substr($templateName, strlen($templateName)-5, 5) != '.html')
 				$templateName .= '.html';
 			
+			if (Context::getInstance()->mobileMode && substr($templateName, 0, 1) != '/' && is_file(ModuleHandler::getModuleDir($this->module->moduleID) . '/template/m.' . $templateName))
+				$templateName = 'm.' . $templateName;
+
+
 			CacheHandler::execTemplate(
 				(substr($templateName, 0, 1) == '/') ?
 					ROOT_DIR . $templateName :
