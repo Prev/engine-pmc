@@ -2,7 +2,7 @@
 	
 	/**
 	 * @author prevdev@gmail.com
-	 * @2013.05
+	 * @2013.05 - 08
 	 *
 	 *
 	 * TemplateHandler Class

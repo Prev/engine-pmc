@@ -70,6 +70,8 @@
 			{@ $i = 0; }
 			{@ foreach($commentDatas as $key => $comment) : }
 				<li id="comment{$i}"{@ if ($comment->is_reply) echo ' class="comment-reply"'; }>
+					<input type="hidden" id="comment{$i}-top-id" name="top_id" value="{$comment->top_id}"> /* 답글 작성시 사용 */
+
 					<div class="comment-header clearfix">
 						<div class="comment-writer fl">{$comment->writer}</div>
 						<div class="comment-write-time fl" title="{$comment->write_time}">{getRelativeTime($comment->write_time)}</div>
@@ -82,16 +84,16 @@
 
 						<condition do="User::getCurrent()->id == $comment->writer_id">
 							<div class="comment-update-btn fr">
-								<a href="#" class="comment-update-a" onclick="toggleUpdateComment({$i}); return false;">수정</a>
+								<a href="#" id="comment{$i}-update-a" onclick="toggleUpdateComment({$i}); return false;">수정</a>
 							</div>
 						</condition>
 
 						<div class="comment-reply-btn fr">
-							<a href="#" class="comment-reply-a" onclick="toggleReplyComment({$i}, {$comment->id}); return false;">답글</a>
+							<a href="#" id="comment{$i}-reply-a" onclick="toggleReplyComment({$i}, {$comment->id}); return false;">답글</a>
 						</div>
 
 					</div>
-					<div class="comment-content">
+					<div id="comment{$i}-content" class="comment-content">
 						<condition do="$comment->parent_writer">
 							<span class="parent-writer">{$comment->parent_writer}</span>
 						</condition>
@@ -99,16 +101,15 @@
 					</div>
 					
 					<condition do="User::getCurrent()->id == $comment->writer_id">
-						<div class="modify-comment-wrap clearfix">
+						<div id="modify-comment{$i}-wrap" class="modify-comment-wrap clearfix">
 							<form action="{getUrl('board', 'procUpdateComment', 'comment_id='.$comment->id)}" method="post">
 								<input type="hidden" name="comment_id" value="{$comment->id}">
-								<input type="hidden" class="top-id" name="top_id" value="{$comment->top_id}"> /* 답글 작성시 사용 */
 
 								<div class="fl">
 									<textarea name="comment"{@ if ($comment->is_reply) echo ' class="reply"'; }>{$comment->content}</textarea>
 								</div>
 								<div class="fl">
-									<button class="comment-btn" onclick="this.form.submit();">
+									<button class="comment-btn" onclick="this.form.submit(); return false;">
 										<condition do="$comment->is_reply">
 											답글수정
 										<else>
@@ -125,14 +126,14 @@
 		<div id="reply-comment-wrap-ex">
 			<form action="{getUrl('board', 'procWriteComment')}" method="post">
 				<input type="hidden" name="article_no" value="{$articleNo}">
-				<input class="parent-id" type="hidden" name="parent_id">
-				<input class="top-id" type="hidden" name="top_id">
+				<input id="reply-parent-id" type="hidden" name="parent_id">
+				<input id="reply-top-id" type="hidden" name="top_id">
 
 				<div class="fl">
 					<textarea name="comment" class="reply" placeholder="답글을 입력하세요"></textarea>
 				</div>
 				<div class="fl">
-					<button class="comment-btn" onclick="this.form.submit();">답글달기</button>
+					<button class="comment-btn" onclick="this.form.submit(); return false;">답글달기</button>
 				</div>
 			</form>
 		</div>
@@ -152,7 +153,7 @@
 					</condition>
 				</div>
 				<div class="fr">
-					<button class="comment-btn" onclick="if (this.form.comment.value == '') { alert('덧글을 입력 해 주세요'); return false; } this.form.submit();">덧글달기</button>
+					<button class="comment-btn" onclick="if (this.form.comment.value == '') { alert('덧글을 입력 해 주세요'); return false; } this.form.submit(); return false;">덧글달기</button>
 				</div>
 			</form>
 		</div>
