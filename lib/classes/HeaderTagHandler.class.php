@@ -140,7 +140,7 @@
 					break;
 					
 				default:
-					if (strpos('<meta', $stringOrObj) !== false)
+					if (strpos($stringOrObj, '<meta') !== false)
 						$this->insertIntoArray($this->metaTags, $stringOrObj, $index);
 					break;
 			}

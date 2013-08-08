@@ -33,7 +33,7 @@
 			$html = preg_replace_callback('/\#?\s?<import([^>]+)>/', array($this, 'handleImportTags'), $html);
 			
 			// import meta tag
-			$html = preg_replace('/\#?\s?<meta([^>]+)>/', '<?php Context::getInstance()->addMetaTag(\'<meta$1>\')', $html);
+			$html = preg_replace('/\#?\s?<meta([^>]+)>/', '<?php Context::getInstance()->addMetaTag(\'<meta$1>\'); ?>', $html);
 			
 
 			// {# Locale code }
