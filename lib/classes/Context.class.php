@@ -97,19 +97,17 @@
 			$this->headerTagHandler = new HeaderTagHandler();
 			$this->setLayout(LAYOUT_NAME);
 			$this->printAlone = false;
-			
-			if (!$this->mobileMode) {
-				$this->isMobile = true;
-				$mobileAgents  = array('iphone','lgtelecom','skt','mobile','samsung','nokia','blackberry','android','android','sony','phone');
-				
-				for ($i=0; $i<count($mobileAgents); $i++){ 
-					if (preg_match("/{$mobileAgents[$i]}/", strtolower($_SERVER['HTTP_USER_AGENT']))) {
-						$this->mobileMode = true;
-						break;
-					} 
-				}
-			}
 
+			$mobileAgents  = array('iphone','lgtelecom','skt','mobile','samsung','nokia','blackberry','android','android','sony','phone');
+				
+			for ($i=0; $i<count($mobileAgents); $i++){ 
+				if (preg_match("/{$mobileAgents[$i]}/", strtolower($_SERVER['HTTP_USER_AGENT']))) {
+					$this->mobileMode = true;
+					$this->isMobile = true;
+					break;
+				} 
+			}
+			
 			if ($_COOKIE['mobile']) $this->mobileMode = true;
 			if (!$_COOKIE['mobile']) $this->mobileMode = false;
 
