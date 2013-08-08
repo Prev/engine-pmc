@@ -109,12 +109,12 @@
 					setcookie('mobile', 0);
 				}
 			}
-
+			
 			if (!$this->mobileMode) {
-				$mobileAgents  = array("iphone","lgtelecom","skt","mobile","samsung","nokia","blackberry","android","android","sony","phone");
+				$mobileAgents  = array('iphone','lgtelecom','skt','mobile','samsung','nokia','blackberry','android','android','sony','phone');
 				
 				for ($i=0; $i<sizeof($MobileArray); $i++){ 
-					if (preg_match("/$MobileArray[$i]/", strtolower($_SERVER['HTTP_USER_AGENT']))) {
+					if (preg_match("/{$mobileAgents[$i]}/", strtolower($_SERVER['HTTP_USER_AGENT']))) {
 						$this->mobileMode = true;
 						break;
 					} 
