@@ -399,6 +399,7 @@
 					$this->headerTagHandler->setFavicon($path);
 					break;
 					
+					
 				default :
 					self::printWarning(array(
 						'en' => 'Unknown type of file - <b>"'.$path.'"</b>',
