@@ -20,6 +20,12 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.3.0
++ global.js 파일 추가
+ + getUrl(), getUrlA() 함수 지원
++ 덧글 수정 기능 추가
++ 덧글 답글 기능 추가
+
 #### v 0.2.9
 + 게시판 DB 구조 변경 및 프로세스 개선 (top_no 기본 NULL처리)
 

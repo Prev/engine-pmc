@@ -74,6 +74,12 @@
 			"layout":"blank"
 		},
 		{
+			"name":"procUpdateComment",
+			"model":"BoardCommentModel",
+			"controller":"BoardCommentController",
+			"layout":"blank"
+		},
+		{
 			"name":"procDeleteComment",
 			"model":"BoardCommentModel",
 			"controller":"BoardCommentController",

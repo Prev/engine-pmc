@@ -114,9 +114,19 @@
 			
 			$this->initMenu($_REQUEST);
 			
-			$this->addHeaderFile('/static/css/global.css');
-			$this->addHeaderFile('/static/js/lie.js');
+
 			$this->addMetaTag( array('charset'=>TEXT_ENCODING) );
+
+			$this->addHeaderFile('/static/css/global.css');
+			$this->addHeaderFile('/static/js/global.js');
+			
+			$this->addHeaderTag(
+				'<script type="text/javascript">' .
+					'var RELATIVE_URL = "'.RELATIVE_URL . '";' .
+					'var USE_SHORT_URL = "'.USE_SHORT_URL . '";' .
+					'var REAL_URL = "'.REAL_URL . '";' .
+				'</script>'
+			);
 
 			if (DEBUG_MODE)
 				$this->addHeaderFile('/static/js/vdump.js');

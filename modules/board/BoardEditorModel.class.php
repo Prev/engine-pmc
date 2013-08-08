@@ -35,7 +35,7 @@
 
 		public function getArticleFiles($articleNo) {
 			return DBHandler::for_table('article_files')
-				->select('files.*')
+				->select_many('files.*', 'article_files.file_name')
 				->where('article_files.article_no', $articleNo)
 				->join('files', array(
 					'files.id', '=', 'article_files.file_id'

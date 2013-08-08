@@ -131,8 +131,7 @@
 			if (!$articleData->top_no) $articleData->top_no = $articleData->no;
 
 			if ($articleData === false) {
-				$this->alert('게시글이 존재하지 않습니다');
-				goBack();
+				goBack('게시글이 존재하지 않습니다');
 				return;
 			}
 
@@ -143,8 +142,7 @@
 				User::getMasterAdmin();
 
 			if (!$me || ($me->id != $articleData->writer_id) && !$me->checkGroup($adminGroup)) {
-				$this->alert('권한이 없습니다');
-				goBack();
+				goBack('권한이 없습니다');
 				return;
 			}
 			

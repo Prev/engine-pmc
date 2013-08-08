@@ -16,10 +16,10 @@
 	function var_dump2($obj) {
 		$bt = debug_backtrace();
 		
-		echo '<pre class="vdump">';
+		echo '<x y=""><pre class="vdump">';
 		echo '<span class="vdump-first-line">var dumped in "' . getFilePathClear($bt[0]['file']) . '" on line ' . $bt[0]['line'] . "</span>\n";
 		var_dump($obj);
-		echo '</pre>';
+		echo '</x></pre>';
 	}
 
 
@@ -330,33 +330,32 @@
 		$parsedUrl = parse_url($url);
 		$queryObj = new StdClass();
 
-		if (isset($parsedUrl['query'])) {
-			$tempArr = explode('&', $parsedUrl['query']);
-
-			for ($i=0; $i<count($tempArr); $i++) {
-				$tempArr2 = explode('=', $tempArr[$i]);
-				if ($tempArr2[0])
-					$queryObj->{$tempArr2[0]} = $tempArr2[1];
-			}
-		}
+		if (isset($parsedUrl['query']))
+			$queryObj = urlQueryToArray($parsedUrl['query']);
+		
 		if (is_string($queryParam)) $queryParam = urlQueryToArray($queryParam);
 		if ($queryParam) {
-			foreach ($queryParam as $key => $contentue) {
-				if ($key) $queryObj->{$key} = $contentue;
+			foreach ($queryParam as $key => $content) {
+				if ($key) $queryObj->{$key} = $content;
 			}
 		}
-		if (isset($module)) {
-			$queryObj->module = $module;
-			if (isset($action))
-				$queryObj->action = $action;
-		}
-		
+
 		$parsedUrl['query'] = arrayToUrlQuery($queryObj);
+
+		if (isset($module)) {
+			if (isset($action))
+				$parsedUrl['query'] = 'action=' . $action . '&' . $parsedUrl['query'];
+			$parsedUrl['query'] = 'module=' . $module . '&' . $parsedUrl['query'];
+		}
+
 		if ($parsedUrl['query'] == '') $parsedUrl['query'] = NULL;
 		
-		if ($parsedUrl['query'] != NULL)
+		if ($parsedUrl['query'] != NULL) {
 			if (strrpos($parsedUrl['path'], '/') !== strlen($parsedUrl['path'])-1)
 				$parsedUrl['path'] .= '/';
+			if (strrpos($parsedUrl['query'], '&') === strlen($parsedUrl['query'])-1)
+				$parsedUrl['query'] = substr($parsedUrl['query'], 0, strlen($parsedUrl['query']) - 1);
+		}
 
 		return unparse_url($parsedUrl);
 	

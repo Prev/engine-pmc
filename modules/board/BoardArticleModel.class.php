@@ -29,8 +29,8 @@
 				->join('user', array(
 					'user.id', '=', 'article_comment.writer_id'
 				))
-				->order_by_desc('top_id')
-				->order_by_desc('id')
+				->order_by_expr('IF ('.DBHandler::$prefix.'article_comment.top_id, '.DBHandler::$prefix.'article_comment.top_id, '.DBHandler::$prefix.'article_comment.id)')
+				->order_by_asc('id')
 				->find_many();
 		}
 
