@@ -47,6 +47,7 @@
 		 * mobile mode
 		 */
 		public $mobileMode;
+		public $isMobile;
 
 
 		/**
@@ -111,6 +112,7 @@
 			}
 			
 			if (!$this->mobileMode) {
+				$this->isMobile = true;
 				$mobileAgents  = array('iphone','lgtelecom','skt','mobile','samsung','nokia','blackberry','android','android','sony','phone');
 				
 				for ($i=0; $i<count($mobileAgents); $i++){ 
@@ -398,7 +400,7 @@
 				case 'ico' :
 					$this->headerTagHandler->setFavicon($path);
 					break;
-					
+
 					
 				default :
 					self::printWarning(array(

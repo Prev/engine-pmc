@@ -402,7 +402,7 @@
 			foreach($array as $key => $content) {
 				if (!$key)
 					continue;
-				else if ($key && !$content)
+				else if ($key && !isset($content))
 					array_push($tempArr, $key);
 				else
 					array_push($tempArr, $key . '=' . $content);

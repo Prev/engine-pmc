@@ -49,17 +49,16 @@ body{
 	margin:10px 0;
 }
 
-
 #footer{
 	background-color:#f8f8f8;
 }
 #footer #footer-content{
-	width:270px;
+	width:250px;
 	margin:0 auto;
 	padding:20px 0 180px 0;
 	color:#09C;
 }
-#footer #footer-locale{ padding-left: 10px }
+#footer div { padding: 0 5px }
 #footer #footer-locale span{
 	display:inline-block;
 	padding:0 3px;
@@ -68,8 +67,8 @@ body{
 #footer #footer-locale span.selected-locale{
 	font-weight:bold;
 }
-#footer #footer-locale span a:link,
-#footer #footer-locale span a:active,
-#footer #footer-locale span a:visited{ color:#09C; text-decoration:none }
-#footer #footer-locale span a:hover{ color:#09C; text-decoration:underline }
+#footer a:link,
+#footer a:active,
+#footer a:visited{ color:#09C; text-decoration:none }
+#footer a:hover{ color:#09C; text-decoration:underline }
 
