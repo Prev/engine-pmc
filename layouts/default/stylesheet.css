@@ -20,6 +20,7 @@ body{
 }
 #wrap #header{
 }
+#wrap #header #logo a{ display: inline-block; }
 
 #header ul#gnb{
 	width:685px;

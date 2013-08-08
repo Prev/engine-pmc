@@ -1,4 +1,4 @@
-<div style="font-size:14px">
+<div style="font-size:14px; padding:5px 10px">
 	<div style="margin:10px 0">
 		{#
 			'en'=>'Thank you for install "engine pmc"',
@@ -11,12 +11,13 @@
 			'kr'=>'"engine pmc" 는 웹사이트의 개발속도, 유지보수, 공동 작업등을 쉽게 해 주는 모듈 기반의 MVC 코어입니다.'
 		}
 	</div>
-</div>
-<div>
-	<condition do="$loggedin">
-		<a href="{getUrl('login', 'procLogout')}">{# 'en'=>'Sign out', 'kr'=>'로그아웃'}</a>
-	</condition>
-	<condition do="!$loggedin">
-		<a href="{@ echo LOGIN_URL }">{# 'en'=>'Sign in', 'kr'=>'로그인'}</a>
-	</condition>
+
+	<div>
+		<condition do="$loggedin">
+			<a href="{getUrl('login', 'procLogout')}">{# 'en'=>'Sign out', 'kr'=>'로그아웃'}</a>
+		</condition>
+		<condition do="!$loggedin">
+			<a href="{@ echo LOGIN_URL }">{# 'en'=>'Sign in', 'kr'=>'로그인'}</a>
+		</condition>
+	</div>
 </div>

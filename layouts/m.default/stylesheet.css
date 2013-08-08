@@ -11,6 +11,7 @@ body{
 }
 #wrap{ width:100%; }
 #wrap #header #logo{ padding: 20px 0 10px 0; text-align: center; }
+#wrap #header #logo a{ display: inline-block; }
 
 #header #gnb{
 	width:100%;
@@ -20,7 +21,8 @@ body{
 	background-image:linear-gradient(#f9f9f9, #f3f3f3);
 	
 	text-align: center;
-	border:1px solid #f0f0f0;
+	border-top:1px solid #f0f0f0;
+	border-bottom:1px solid #f0f0f0;
 }
 
 #header #gnb ul{

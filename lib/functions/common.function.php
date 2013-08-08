@@ -331,12 +331,12 @@
 		$queryObj = new StdClass();
 
 		if (isset($parsedUrl['query']))
-			$queryObj = urlQueryToArray($parsedUrl['query']);
+			$queryObj = (object) urlQueryToArray($parsedUrl['query']);
 		
 		if (is_string($queryParam)) $queryParam = urlQueryToArray($queryParam);
 		if ($queryParam) {
 			foreach ($queryParam as $key => $content) {
-				if ($key) $queryObj->{$key} = $content;
+				if (isset($key)) $queryObj->{$key} = $content;
 			}
 		}
 
