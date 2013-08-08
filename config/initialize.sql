@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `pmc_article` (
   KEY `board_id` (`board_id`),
   KEY `writer_id` (`writer_id`),
   KEY `top_no` (`top_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- 테이블의 덤프 데이터 `pmc_article`
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `pmc_article_comment` (
   KEY `article_no` (`article_no`),
   KEY `top_id` (`top_id`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- 테이블의 덤프 데이터 `pmc_article_comment`
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `pmc_files` (
   `file_size` int(10) unsigned NOT NULL,
   `file_hash` varchar(40) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
 
 --
