@@ -50,7 +50,6 @@ CREATE TABLE IF NOT EXISTS `pmc_article` (
 
 --
 -- 테이블의 덤프 데이터 `pmc_article`
--
 
 -- --------------------------------------------------------
 
