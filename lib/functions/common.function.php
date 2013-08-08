@@ -333,7 +333,7 @@
 		if (isset($parsedUrl['query']))
 			$queryObj = (object) urlQueryToArray($parsedUrl['query']);
 		
-		if (is_string($queryParam)) $queryParam = urlQueryToArray($queryParam);
+		if (is_string($queryParam)) (object) $queryParam = urlQueryToArray($queryParam);
 		if ($queryParam) {
 			foreach ($queryParam as $key => $content) {
 				if (isset($key)) $queryObj->{$key} = $content;

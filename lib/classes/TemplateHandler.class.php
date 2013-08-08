@@ -30,8 +30,12 @@
 
 			
 			// import css/js... header file
-			$html = preg_replace_callback('/\#? ?<import([^>]+)>/', array($this, 'handleImportTags'), $html);
+			$html = preg_replace_callback('/\#?\s?<import([^>]+)>/', array($this, 'handleImportTags'), $html);
 			
+			// import meta tag
+			$html = preg_replace('/\#?\s?<meta([^>]+)>/', '<?php Context::getInstance()->addMetaTag(\'<meta$1>\')', $html);
+			
+
 			// {# Locale code }
 			// ex) {# 'en'=>'Error on this page', 'kr'=> '이 페이지에 오류가 있습니다' }
 			$html = preg_replace('/{#([\s\S]+?)}/', '{@ echo fetchLocale(array($1)); }', $html);
