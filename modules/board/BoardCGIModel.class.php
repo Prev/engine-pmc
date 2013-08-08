@@ -19,7 +19,7 @@
 				->where('no', $parent_no)
 				->find_one();
 
-			if ($data->no == $data->top_no) return $data->no;
+			if (!$data->top_no) return $data->no;
 			else return $this->getArticleTopId($data->top_no);	
 		}
 
@@ -101,29 +101,30 @@
 		}
 
 		public function getSibingArticle($topNo, $orderKey) {
-			// 형제와 부모 게시글 불러옴
+			// 형제 게시글 불러옴
 
-			// 답글이 없을 경우 경우 본인 자신만 출력됨
-			// 답글이 있을 경우 원글과 답글들이 출력됨
+			// 답글이 없을 경우 경우 빈 배열 반환
+			// 답글이 있을 경우 답글들 반환
 			
 			if (!isset($orderKey)) {
 				// order_key 가 NULL인 경우 : 최상단 글
 				return DBHandler::for_table('article')
 					->select_many('no', 'top_no')
-					->where('top_no', $topNo)
+					->where('no', $topNo)
 					->find_many();
-
+					
 			}else {
 				// 답글
 				$orderKey = substr($orderKey, 0, strlen($orderKey)-2);
-
+				
 				if ($orderKey == '') {
 					return DBHandler::for_table('article')
-					->where('top_no', $topNo)
-					->find_many();
+						->where('top_no', $topNo)
+						->find_many();
 				}else {
 					return DBHandler::for_table('article')
 						->where('top_no', $topNo)
+						->where_not_equal('order_key', $orderKey)
 						->where_like('order_key', $orderKey . '%')
 						->find_many();
 				}
@@ -135,7 +136,7 @@
 
 			if ($orderKey == '') {
 				return DBHandler::for_table('article')
-					->where('top_no', $topNo)
+					->where('no', $topNo)
 					->find_one();
 			}else {
 				return DBHandler::for_table('article')

@@ -25,7 +25,8 @@
 				->join('user', array(
 					'user.id','=','article.writer_id'
 				))
-				->order_by_desc('article.top_no')
+				//->order_by_desc('article.top_no')
+				->order_by_expr('IF ('.DBHandler::$prefix.'article.top_no, '.DBHandler::$prefix.'article.top_no, '.DBHandler::$prefix.'article.no) DESC')
 				->order_by_asc('article.order_key')
 				->limit($limitNum, $this->aop)
 				->find_many();

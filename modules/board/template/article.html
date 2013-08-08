@@ -49,7 +49,7 @@
 		
 		<condition do="User::getCurrent()->id == $writer_id || $isBoardAdmin">
 			<div class="fr left-bar">
-				<a href="{getUrl('board', 'procDeleteArticle', 'article_no='.$articleNo)}">삭제</a>
+				<a href="{getUrl('board', 'procDeleteArticle', 'article_no='.$articleNo)}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
 			</div>
 		</condition>
 
@@ -71,14 +71,23 @@
 					<div class="comment-first clearfix">
 						<div class="comment-writer fl">{$comment->writer}</div>
 						<div class="comment-write-time fl" title="{$comment->write_time}">{getRelativeTime($comment->write_time)}</div>
-						<condition do="User::getCurrent()->id == $comment->writer_id">
+						
+						<condition do="User::getCurrent()->id == $comment->writer_id || $isBoardAdmin">
 							<div class="comment-delete-btn fr">
-								<a href="{getUrl('board', 'procDeleteComment', 'comment_id='.$comment->id)}">삭제</a>
+								<a href="{getUrl('board', 'procDeleteComment', 'comment_id='.$comment->id)}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
 							</div>
-							<div class="comment-delete-btn fr">
+						</condition>
+
+						<condition do="User::getCurrent()->id == $comment->writer_id">
+							<div class="comment-update-btn fr">
 								<a href="{getUrl('board', 'procUpdateComment', 'comment_id='.$comment->id)}">수정</a>
 							</div>
 						</condition>
+
+						<div class="comment-reply-btn fr">
+							<a href="{getUrl('board', 'procReplyComment', 'comment_id='.$comment->id)}">답글</a>
+						</div>
+
 					</div>
 					<div class="comment-content">
 						{$comment->content}

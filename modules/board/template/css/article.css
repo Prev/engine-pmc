@@ -80,8 +80,10 @@
 }
 
 .article-comment-wrap ul.comment-list{ margin: 0; padding: 0; list-style: none }
-.article-comment-wrap ul.comment-list li{ padding: 8px 0; margin-bottom: 7px; border-bottom: 1px dotted #CCC }
-.article-comment-wrap ul.comment-list li .comment-first{ margin-bottom: 2px }
+.article-comment-wrap ul.comment-list li{ padding: 10px 0; margin-bottom: 7px; border-bottom: 1px dotted #CCC }
+.article-comment-wrap ul.comment-list li .comment-first{ margin-bottom: 5px }
+.article-comment-wrap ul.comment-list li .comment-first .comment-update-btn,
+.article-comment-wrap ul.comment-list li .comment-first .comment-delete-btn{ margin-left: 4px; padding-left: 4px; border-left: 1px solid #CCC }
 .article-comment-wrap ul.comment-list li .comment-writer{ font-weight: bold; font-size: 13px }
 .article-comment-wrap ul.comment-list li .comment-write-time{ color: #999; font-size: 10px; margin: 4px 0 0 5px }
 .article-comment-wrap ul.comment-list li .comment-content{ color: #666 }

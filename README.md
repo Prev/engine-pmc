@@ -20,6 +20,9 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.2.9
++ 게시판 DB 구조 변경 및 프로세스 개선 (top_no 기본 NULL처리)
+
 #### v 0.2.8
 + 파일 시스템 개선
 

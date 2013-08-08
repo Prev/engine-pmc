@@ -36,8 +36,12 @@
 			$commentData = $this->model->getCommentData((int)$_GET['comment_id']);
 			
 			$me = User::getCurrent();
-			if (!$me || $me->id != $commentData->writer_id) {
-				$this->alert('덧글을 수정 할 수 없습니다');
+			$adminGroup = isset($articleData->admin_group) ? 
+				array_merge(json_decode($articleData->admin_group), User::getMasterAdmin()) :
+				User::getMasterAdmin();
+
+			if (!$me || ($me->id != $articleData->writer_id) && !$me->checkGroup($adminGroup)) {
+				$this->alert('덧글을 삭제 할 수 없습니다');
 				goBack();
 				return;
 			}

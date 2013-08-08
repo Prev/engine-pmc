@@ -49,11 +49,6 @@
 			$record->save();
 
 			$articleNo = $record->no;
-
-			if (!isset($_POST['parent_no']) || empty($_POST['parent_no'])) {
-				$record->set('top_no', $articleNo);
-				$record->save();
-			}
 			
 			if ($attachFiles) {
 				for ($i=0; $i<count($attachFiles); $i++) { 
@@ -133,6 +128,7 @@
 			if (!$_SERVER['HTTP_REFERER']) return;
 
 			$articleData = $this->model->getArticleDataAndAdminGroup((int)$_GET['article_no']);
+			if (!$articleData->top_no) $articleData->top_no = $articleData->no;
 
 			if ($articleData === false) {
 				$this->alert('게시글이 존재하지 않습니다');
@@ -162,29 +158,25 @@
 
 		private function deleteArticleAndCheckParent($no, $topNo, $orderKey) {
 			$sibingArticles = $this->model->getSibingArticle($topNo, $orderKey);
-			// 형제 글과 부모글(1개)을 불러옴
-			// 길이가 1이면 답글이 없고 본인 자신만 있다는 의미이므로 그냥 삭제
-			// 길이가 2이면 부모글과 답글 하나만 불러옴
-			// 길이가 3이상이면 부모글에 답글이 2개이상있다는 의미
-
-			if (count($sibingArticles) == 1) {
+			
+			if (count($sibingArticles) === 0) {
 				// 답글이 없으면 그냥 삭제함
 				$this->deleteArticle($no);
 			
-			}else if ($orderKey !== NULL && count($sibingArticles) == 2) {
+			}else if ($orderKey !== NULL && count($sibingArticles) == 1) {
 				// 삭제하는 글이 답글이고 부모글에 답글이 하나만 달렸으면
 
 				$row = $this->model->getParentArticle($topNo, $orderKey); // 원본글이 임시삭제 됬는지 (content가 NULL인지)를 체크
+				
 				$this->deleteArticle($no); // 일단 현재 글 삭제
 
-				if ($row != false) {
+				if ($row != false && $row->content === NULL) {
 					// 임시 삭제된 부모글이 있으면 삭제
 					// 부모의 부모까지 처리하기 위해 재귀함수 처리
 					$this->deleteArticleAndCheckParent($row->no, $row->top_no, $row->order_key);
 				}
 			}else {
-				// 부모글에 답글이 두개 이상 달려있으면
-				
+				// 부모글에 답글이 두개 이상 달려있거나 삭제하는 글이 원글이면
 				$childArticles = $this->model->getChildArticleNo($topNo, $orderKey); // 본인 글과 자녀 게시글 (해당 글의 답글) 가져옴
 
 				if (count($childArticles) > 1) {
@@ -202,16 +194,6 @@
 		}
 
 		private function deleteArticle($articleNo) {
-			// top_no 외래키를 NULL로 바꾼 후 게시글 삭제
-			$row = DBHandler::for_table('article')
-				->where('no', $articleNo)
-				->find_one();
-
-			if ($row) {
-				$row->set('top_no', NULL);
-				$row->save();
-			}
-
 			DBHandler::for_table('article')
 				->where('no', $articleNo)
 				->delete_many();

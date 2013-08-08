@@ -29,6 +29,8 @@
 				->join('user', array(
 					'user.id', '=', 'article_comment.writer_id'
 				))
+				->order_by_desc('top_id')
+				->order_by_desc('id')
 				->find_many();
 		}
 
