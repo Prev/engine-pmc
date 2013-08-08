@@ -183,7 +183,7 @@
 			$args = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $args, -1);
 
 			if (function_exists($function))
-				$func = ''.$function.'('.$args.')';
+				$func = $function.'('.$args.')';
 				
 			else if ($this->module && method_exists($this->module, $function))
 				$func = 'ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$function.'('.$args.')';

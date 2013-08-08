@@ -8,7 +8,7 @@
 		 */
 
 		public function getBoardInfo($boardId) {
-			DBHandler::for_table('board')
+			return DBHandler::for_table('board')
 				->where('id', $boardId)
 				->find_one();
 		}

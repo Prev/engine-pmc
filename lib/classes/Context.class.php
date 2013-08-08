@@ -137,7 +137,7 @@
 		 */
 		
 		private function initMenu($getVars) {
-			$moduleID = isset($getVars['module']) ? $getVars['module'] : NULL;
+			$moduleID = isset($getVars['module']) ? basename($getVars['module']) : NULL;
 			$moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
 
 			// get default(index) menu when module and menu not defined

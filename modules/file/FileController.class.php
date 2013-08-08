@@ -79,7 +79,6 @@
 				$fileRecord->set(array(
 					'uploaded_url' => $uploadFileUrl,
 					'is_binary' => ($isBinary ? 1 : 0),
-					'file_name' => $fileName,
 					'file_size' => $fileSize,
 					'file_hash' => $fileHash
 				));

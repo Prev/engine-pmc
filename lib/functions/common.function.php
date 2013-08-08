@@ -400,13 +400,13 @@
 		if (!$array) return NULL;
 		else {
 			$tempArr = array();
-			foreach($array as $key => $contentue) {
+			foreach($array as $key => $content) {
 				if (!$key)
 					continue;
-				else if ($key && !$contentue)
+				else if ($key && !$content)
 					array_push($tempArr, $key);
 				else
-					array_push($tempArr, $key . '=' . $contentue);
+					array_push($tempArr, $key . '=' . $content);
 			}
 			return join('&', $tempArr);
 		}

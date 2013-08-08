@@ -1,5 +1,6 @@
-<import path="css/editor.css" />
-<import path="js/editor_loader.js" />
+<import path="css/editor.css">
+<import path="/static/js/json2.js">
+<import path="js/editor_loader.js">
 
 <div class="body">
 	<form name="tx_editor_form" id="tx_editor_form" action="{$callbackUrl}" method="post" accept-charset="utf-8">
@@ -37,12 +38,12 @@
 		tx_attach_max_size:10,
 		canvas: {
 			styles: {
-				color: "#333333", /* 기본 글자색 */
-				fontFamily: "굴림", /* 기본 글자체 */
-				fontSize: "10pt", /* 기본 글자크기 */
-				backgroundColor: "#fff", /*기본 배경색 */
-				lineHeight: "1.5", /*기본 줄간격 */
-				padding: "8px" /* 위지윅 영역의 여백 */
+				color: "#333333",
+				fontFamily: "굴림",
+				fontSize: "10pt",
+				backgroundColor: "#fff",
+				lineHeight: "1.5",
+				padding: "8px"
 			},
 			showGuideArea: false
 		},
@@ -104,16 +105,19 @@
 		form.createField(textarea);
 
 		var files = Editor.getSidebar().getAttachments("file");
-		var fileIds = [];
+		var fileData = [];
 		for (i = 0; i < files.length; i++) {
 			if (files[i].deletedMark) continue;
 
-			fileIds.push(files[i].data.fileId);
+			fileData.push({
+				"id" : files[i].data.fileId,
+				"name" : files[i].data.filename
+			});
 		}
 		input = document.createElement('input');
 		input.type = 'hidden';
 		input.name = 'attach_files';
-		input.value = fileIds.join(',');
+		input.value = JSON.stringify(fileData);
 
 		form.createField(input);
 		return true;

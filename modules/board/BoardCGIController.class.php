@@ -23,11 +23,10 @@
 			*/
 
 			if (!empty($_POST['attach_files'])) {
-				$attachFiles = explode(',', $_POST['attach_files']);
-				for ($i=0; $i<count($attachFiles); $i++)
-					$attachFiles[$i] = (int)$attachFiles[$i];
+				$attachFiles = $_POST['attach_files'];
+				$attachFiles = join('"', explode("\\\"", $attachFiles));
+				$attachFiles = json_decode($attachFiles);
 			}
-
 			$record = DBHandler::for_table('article')->create();
 			$record->set(array(
 				'board_id' => $boardInfo->id,
@@ -55,14 +54,17 @@
 				$record->set('top_no', $articleNo);
 				$record->save();
 			}
-
-			for ($i=0; $i<count($attachFiles); $i++) { 
-				$record = DBHandler::for_table('article_files')->create();
-				$record->set(array(
-					'article_no' => $articleNo,
-					'file_id' => $attachFiles[$i]
-				));
-				$record->save();
+			
+			if ($attachFiles) {
+				for ($i=0; $i<count($attachFiles); $i++) { 
+					$record = DBHandler::for_table('article_files')->create();
+					$record->set(array(
+						'article_no' => $articleNo,
+						'file_id' => $attachFiles[$i]->id,
+						'file_name' =>  $attachFiles[$i]->name,
+					));
+					$record->save();
+				}
 			}
 
 			redirect(RELATIVE_URL .  (USE_SHORT_URL ? '/' : '/?module=board&action=dispArticle&article_no=') . $articleNo);
@@ -83,9 +85,9 @@
 			}
 
 			if (!empty($_POST['attach_files'])) {
-				$attachFiles = explode(',', $_POST['attach_files']);
-				for ($i=0; $i<count($attachFiles); $i++)
-					$attachFiles[$i] = (int)$attachFiles[$i];
+				$attachFiles = $_POST['attach_files'];
+				$attachFiles = join('"', explode("\\\"", $attachFiles));
+				$attachFiles = json_decode($attachFiles);
 			}
 
 			$articleData->set(array(
@@ -111,7 +113,8 @@
 				$record = DBHandler::for_table('article_files')->create();
 				$record->set(array(
 					'article_no' => $_POST['article_no'],
-					'file_id' => $attachFiles[$i]
+					'file_id' => $attachFiles[$i]->id,
+					'file_name' => $attachFiles[$i]->name
 				));
 				$record->save();
 			}

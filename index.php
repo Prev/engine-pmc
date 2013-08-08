@@ -9,7 +9,7 @@
 	 *	  luaviskang@gmail.com
 	 *
 	 * @ https://github.com/Prev/engine-pmc
-	 * @ 2013.05 ~07
+	 * @ 2013.05 ~ 08
 	 * @ MIT LICENSE
 	 */
 	
