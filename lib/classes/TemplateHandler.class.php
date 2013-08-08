@@ -25,7 +25,7 @@
 			$this->relativePath = $relativePath;
 			
 			// comment ignore
-			$html = preg_replace('`\n(\t)+//(.*)`', ' ', $html);
+			$html = preg_replace('`\n(\t)*//(.*)`', ' ', $html);
 			$html = preg_replace('`/\*([\s\S]*?)\*/`', '', $html);
 
 			
@@ -78,14 +78,6 @@
 			}
 			$html = preg_replace('/<\/condition>/', '<?php } ?>', $html);
 
-			/*while (strpos($html, '<condition') !== false) {
-				// condition tag
-				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
-				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
-				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
-				
-				if (++$count > 15) break;
-			}*/
 			
 			// switch tag
 			$html = preg_replace_callback('/<switch\s+var="([^"]+)"\s*>([\s\S]*?)<\/switch>/i', array($this, 'parseSwitches'), $html);
@@ -206,13 +198,35 @@
 			if (!$matches[1]) return;
 			
 			$c = $matches[1];
-			$c = preg_replace('/([^:>])\$([\>a-zA-Z0-9_-]*)/', '$1\$__attr->$2', $c, -1);
-			$c = preg_replace('/([^:>])\${([\>a-zA-Z0-9_-]*)}/', '$1\${__attr->$2}', $c, -1);
+			$c = preg_replace('/([^:>])\$([\>a-zA-Z0-9_-]*)/', '$1\$__attr->$2', $c);
+			$c = preg_replace('/([^:>])\${([\>a-zA-Z0-9_-]*)}/', '$1\${__attr->$2}', $c);
+
+			$c = preg_replace_callback('/(\w+)\(/', array($this, 'parseFunc2'), $c);
 
 			if (substr($c, 0, 1) != ' ') $c = ' ' . $c;
 			if (substr($c, strlen($c)+1, 1) != ' ')	$c .= '';
 				
 			return '<?php' . $c . '?>';
+		}
+
+		private function parseFunc2($matches) {
+			if (!$matches[1]) return;
+			
+			$function = $matches[1];
+
+			if ($this->module && method_exists($this->module, $function))
+				$func = 'ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$function;
+				
+			foreach (array('model', 'controller', 'view') as $key => $mvc) {
+				if ($this->module && $this->module->{$mvc} && method_exists($this->module->{$mvc}, $function)) {
+					$func = 'ModuleHandler::getModule(\''.$this->module->moduleID.'\', \''.$this->module->action.'\')->'.$mvc.'->'.$function;
+					break;
+				}
+			}
+			if (!$func)
+				$func = $function;
+
+			return $func . '(';
 		}
 		
 		private function parseConditions($matches) {

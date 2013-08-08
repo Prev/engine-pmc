@@ -44,18 +44,19 @@
 
 
 			// 조회수
-			if (!$_SESSION['comment_hits']) $_SESSION['comment_hits'] = array();
-			if (!$_SESSION['comment_hits'][$articleData->no]) {
-				$row = DBHandler::for_table('article')
-					->where('no', $articleData->no)
-					->find_one();
+			if ($articleData) {
+				if (!$_SESSION['comment_hits']) $_SESSION['comment_hits'] = array();
+				if (!$_SESSION['comment_hits'][$articleData->no]) {
+					$row = DBHandler::for_table('article')
+						->where('no', $articleData->no)
+						->find_one();
 
-				$row->set_expr('hits', 'hits + 1');
-				$row->save();
+					$row->set_expr('hits', 'hits + 1');
+					$row->save();
 
-				$_SESSION['comment_hits'][$articleData->no] = 1;
+					$_SESSION['comment_hits'][$articleData->no] = 1;
+				}
 			}
-
 
 			if (User::getCurrent()) {
 				$adminGroup = isset($articleData->admin_group) ? 

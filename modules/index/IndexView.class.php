@@ -8,5 +8,9 @@
 		public function dispDefault() {
 			$this->execTemplate('welcome');
 		}
+
+		public function testFunc() {
+			echo 'test';
+		}
 		
 	}

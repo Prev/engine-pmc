@@ -74,7 +74,7 @@
 
 			$articleData = $this->model->getArticleData($_POST['article_no']);
 
-			if (User::getCurrent()->id != $articleData->writer_id) {
+			if (!$articleData || User::getCurrent()->id != $articleData->writer_id) {
 				goBack('글을 수정 할 권한이 없습니다', true);
 				return;
 			}
@@ -85,7 +85,16 @@
 				$attachFiles = json_decode($attachFiles);
 			}
 
+			if ($articleData->board_id != $_POST['board_id']) {
+				DBHandler::for_table('article')->raw_query('
+					UPDATE '.DBHandler::$prefix.'article
+					SET board_id = "'.$_POST['board_id'].'"
+					WHERE top_no = "'.$_POST['article_no'].'"
+				');
+			}
+
 			$articleData->set(array(
+				'board_id' => $_POST['board_id'],
 				'title' => $_POST['title'],
 				'content' => removeXSS($_POST['content']),
 				'is_secret' => evalCheckbox($_POST['is_secret']) ? 1 : 0 ,
