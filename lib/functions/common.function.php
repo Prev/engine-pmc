@@ -42,7 +42,7 @@
 		$html = '';
 		foreach(Context::getMenu($level) as $key => $menu) {
 			$html .= 
-				'<li class="'.$menu->className.'">' .
+				'<li class="'.$menu->className . ($menu->selected ? ' ' . $menu->className . '-selected selected' : '') . '">' .
 					'<a href="' . RELATIVE_URL . (USE_SHORT_URL ? '' : '?menu=') . $menu->title . '" class="'.($noDeco == true ? 'no-deco' : '').'">' .
 						$menu->title_locale .
 					'</a>' .

@@ -27,7 +27,8 @@
 				'article_no' => (int)$_POST['article_no'],
 				'content' => $comment,
 				'writer_id' => User::getCurrent()->id,
-				'write_time' => date('Y-m-d H:i:s')
+				'write_time' => date('Y-m-d H:i:s'),
+				'is_secret' => evalCheckbox($_POST['is_secret'])
 			));
 
 			if (isset($_POST['parent_id'])) {
@@ -59,7 +60,10 @@
 			$comment = join('&lt;', explode('<', $_POST['comment']));
 			$comment = join('&gt;', explode('>', $comment));
 
-			$commentData->set('content', $comment);
+			$commentData->set(array(
+				'content' => $comment,
+				'is_secret' => evalCheckbox($_POST['is_secret'])
+			));
 			$commentData->save();
 
 			goBack();

@@ -102,18 +102,24 @@
 .article-comment-wrap .reply-comment-wrap textarea{ width: 750px; height: 55px; }
 .article-comment-wrap #reply-comment-wrap-ex{ display: none; }
 
-.article-comment-wrap #write-comment-wrap textarea { width: 770px; height: 65px; }
-.article-comment-wrap .modify-comment-wrap textarea { width: 770px; height: 55px; }
+.article-comment-wrap #write-comment-wrap textarea { width: 765px; height: 65px; }
+.article-comment-wrap .modify-comment-wrap textarea { width: 765px; height: 55px; }
 .article-comment-wrap .modify-comment-wrap textarea.reply{ width: 750px; }
-
 
 .article-comment-wrap .comment-btn{
 	width: 80px;
-	height: 73px;
-	margin-top: 1px;
+	height: 53px;
+	margin-top: 5px;
 	color: white;
 	background-color: #444;
 	border: 1px solid #222;
 }
 .article-comment-wrap .reply-comment-wrap .comment-btn,
-.article-comment-wrap .modify-comment-wrap .comment-btn{ height: 63px }
+.article-comment-wrap .modify-comment-wrap .comment-btn{ height: 43px }
+
+.secret-comment-wrap { padding-top: 1px }
+.secret-comment-wrap input{ vertical-align: middle; }
+.secret-comment-wrap label{ padding-left: 2px; vertical-align: middle; }
+
+.visible-secret-comment{ color: rgb(120, 92, 37); font-size: 11px; margin: 2px 0 4px 0; font-style: italic; }
+.secret-comment{ color: #666; font-style: italic; }

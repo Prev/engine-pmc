@@ -287,10 +287,9 @@
 				$arr[$i] = $arr[$i]->getData();
 				$arr[$i]->className = 'menu-' . $arr[$i]->title;
 				
-				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false) {
+				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false)
 					$arr[$i]->selected = true;
-					$arr[$i]->className .= ' menu-' . $arr[$i]->title . '-selected selected';
-				}
+				
 				if ($arr[$i]->is_index && USE_SHORT_URL)
 					$arr[$i]->title = '';
 				

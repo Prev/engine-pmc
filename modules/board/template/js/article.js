@@ -28,10 +28,14 @@ function toggleUpdateComment(index) {
 	cContent = document.getElementById("comment"+index+"-content");
 	cUpdateBtn = document.getElementById("comment"+index+"-update-a");
 	modifyWrapper = document.getElementById("modify-comment"+index+"-wrap");
+	
+	var isSecret = parseInt(document.getElementById("comment"+index+"-is-secret").value);
 
 	cContent.style.display = "none";
 	modifyWrapper.style.display = "block";
 	cUpdateBtn.innerHTML = "수정 취소";
+
+	document.getElementById("modify-comment"+index+"-secret-checkbox").checked = isSecret;
 
 	last_commentIndex = index;
 }
@@ -56,7 +60,9 @@ function toggleReplyComment(index, parentId) {
 	
 	var tElement = document.getElementById("comment" + index);
 	rUpdateBtn = document.getElementById("comment"+index+"-reply-a");
-	topId = document.getElementById("comment"+index+"-top-id").value;
+
+	var topId = document.getElementById("comment"+index+"-top-id").value;
+	var topIsSecret = parseInt(document.getElementById("comment" + index + "-is-secret").value);
 
 	replyWrapper = document.createElement("div");
 	replyWrapper.setAttribute("class", "reply-comment-wrap");
@@ -64,6 +70,20 @@ function toggleReplyComment(index, parentId) {
 
 	if (nextParentElement) commentLists.insertBefore(replyWrapper, nextParentElement);
 	else commentLists.appendChild(replyWrapper);
+
+
+	var cb = document.getElementById("reply-secret-comment");
+
+	if (topIsSecret) {
+		cb.checked = true;
+		cb.disabled = true;
+		cb.className = "disabled";
+		document.getElementById("reply-textarea").placeholder = "답글을 입력하세요 (비밀 답글만 작성이 가능합니다)";
+	}else {
+		cb.checked = false;
+		cb.disabled = false;
+		cb.className = "";
+	}
 
 	rUpdateBtn.innerHTML = "답글 취소";
 	document.getElementById("reply-parent-id").value = parentId;

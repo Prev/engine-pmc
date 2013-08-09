@@ -4,7 +4,7 @@
 		
 		public function getArticleData($articleNo) {
 			$data = DBHandler::for_table('article')
-				->select_many('article.*', 'board.*', 'user.nick_name')
+				->select_many('article.*', 'board.*', 'user.nick_name', 'user.user_name')
 				->where('article.no', $articleNo)
 				->join('board', array(
 					'board.id', '=', 'article.board_id'

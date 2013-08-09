@@ -30,6 +30,7 @@
 			$commentDatas = $this->model->getArticleComments($articleNo);
 			$fileDatas = $this->model->getArticleFiles($articleNo);
 			
+			$isBoardAdmin = $this->checkIsBoardAdmin($articleData->admin_group);
 
 			for ($i=0; $i<count($commentDatas); $i++) {
 				$commentDatas[$i]->content = join('<br>', explode("\n", $commentDatas[$i]->content));
@@ -40,9 +41,18 @@
 
 					for ($j=0; $j<count($commentDatas); $j++) { 
 						if ($commentDatas[$i]->parent_id == $commentDatas[$j]->id) {
+							$commentDatas[$i]->parent_writer_id = $commentDatas[$j]->writer_id;
 							$commentDatas[$i]->parent_writer = USE_REAL_NAME ? $commentDatas[$j]->user_name : $commentDatas[$j]->nick_name;
 						}
 					}
+				}
+
+				if ($commentDatas[$i]->is_secret) {
+					if ($commentDatas[$i]->writer_id == User::getCurrent()->id || $articleData->writer_id == User::getCurrent()->id || $isBoardAdmin)
+						$commentDatas[$i]->secret_visible = true;
+					
+					else if ($commentDatas[$i]->parent_writer_id && $commentDatas[$i]->parent_writer_id == User::getCurrent()->id)
+						$commentDatas[$i]->secret_visible = true;
 				}
 			}
 
