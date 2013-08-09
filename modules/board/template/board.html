@@ -23,23 +23,28 @@
 						{printArticlePrefix($data->order_key, $data->category)}
 					</condition>
 					
-					<condition do="!$data->is_delete">
-						<true>
-							<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>
-							<span class="comment-counts">[<strong>{$data->comment_counts}</strong>]</span>
+					{@ if ($data->is_delete) : }
+						<i>원글이 사라진 답글입니다</i>
+					{@ elseif ($data->is_secret && !$data->secret_visible) : }
+						<i>비밀글입니다</i>
+					{@ else : }
+						<condition do="$data->is_secret">
+							<i>[비밀글]</i>
+						</condition>
+
+						<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>
+						<span class="comment-counts">[<strong>{$data->comment_counts}</strong>]</span>
 							
-							<condition do="$data->file_counts">
-								<span class="file-icon" title="파일"></span>
-							</condition>
-						</true>
-						<false>
-							<i>원글이 사라진 답글입니다</i>
-						</false>
-					</condition>
+						<condition do="$data->file_counts">
+							<span class="file-icon" title="파일"></span>
+						</condition>
+					{@ endif; }
 				</li>
-				<li class="writer">{$data->user_name}</li>
-				<li class="date">{$data->upload_time2}</li>
-				<li class="hits">{$data->hits}</li>
+				<condition do="!$data->is_delete">
+					<li class="writer">{$data->user_name}</li>
+					<li class="date">{$data->upload_time2}</li>
+					<li class="hits">{$data->hits}</li>
+				</condition>
 			</ul>
 		{@ endforeach; }
 		<condition do="!$articleData">

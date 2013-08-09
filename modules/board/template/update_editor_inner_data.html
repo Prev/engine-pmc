@@ -6,22 +6,22 @@
 	<div class="fl">
 		<select id="board-selector" name="board_id">
 			{@ foreach ($boardLists as $key => $value) : }
-				<option value="{$value->id}"{@ if ($value->id == $boardData->board_id) echo ' selected="selected"';}>
+				<option value="{$value->id}"{@ if ($value->id == $articleData->board_id) echo ' selected="selected"';}>
 					{$value->name_locale}
 				</option>
 			{@ endforeach; }
 		</select>
 	</div>
 	<div class="fl">
-		<input type="text" id="board-title" name="title" value="{$boardData->title}" />
+		<input type="text" id="board-title" name="title" value="{$articleData->title}" />
 	</div>
 </div>
 
 {getContent('editor', 'dispFormInnerData')}
-{getContent('board', 'dispEditorInnerBottomData')}
+{getContent('board', 'dispEditorInnerBottomData', array('articleData' => $articleData))}
 
 <textarea id="origin-content" style="display:none; visibility:hidden">
-	{$boardData->content}
+	{$articleData->content}
 </textarea>
 
 <script type="text/javascript">

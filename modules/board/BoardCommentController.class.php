@@ -1,9 +1,9 @@
 <?php
 
-	class BoardCommentController extends Controller {
+	class BoardCommentController extends BoardController {
 			
 		public function procWriteComment() {
-			$row = $this->model->getCommentableGroup($_POST['article_no']);
+			$row = $this->model->getArticleInfo($_POST['article_no']);
 			if (!$row) return;
 
 			if ($row->commentable_group) {
@@ -12,6 +12,11 @@
 					goBack('덧글을 쓸 권한이 없습니다');
 					return;
 				}
+			}
+
+			if (!$row->allow_comment) {
+				goBack('덧글을 허용하지 않은 게시글입니다');
+				return;
 			}
 
 			$comment = join('&lt;', explode('<', $_POST['comment']));
@@ -66,11 +71,9 @@
 			$commentData = $this->model->getCommentData((int)$_GET['comment_id']);
 			
 			$me = User::getCurrent();
-			$adminGroup = isset($commentData->admin_group) ? 
-				array_merge(json_decode($commentData->admin_group), User::getMasterAdmin()) :
-				User::getMasterAdmin();
+			$isBoardAdmin = $this->checkIsBoardAdmin($articleData->admin_group);
 
-			if (!$me || ($me->id != $commentData->writer_id) && !$me->checkGroup($adminGroup)) {
+			if (!$me || ($me->id != $commentData->writer_id) && !$isBoardAdmin) {
 				goBack('덧글을 삭제 할 수 없습니다');
 				return;
 			}

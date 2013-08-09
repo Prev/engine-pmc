@@ -3,7 +3,7 @@
 	class FileDownController extends Controller {
 
 		public function procDownloadFile() {
-			$data = $this->model->getFileUrl($_GET['file'], $_GET['articleNo']);
+			$data = $this->model->getFileUrl($_GET['file'], $_GET['article_no']);
 			$fileDir = ROOT_DIR . $data->uploaded_url;
 
 			header("Content-Type: application/octet-stream"); 

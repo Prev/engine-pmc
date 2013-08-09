@@ -20,7 +20,7 @@
 				$this->pageNumbers = $this->model->getPageNumbers();
 				$this->articleData = array_merge(
 					$this->model->getNoticeArticles(),
-					$this->model->getArticleDatas()
+					$this->model->getArticleDatas($this->boardInfo)
 				);
 				self::execTemplate('board');
 			}

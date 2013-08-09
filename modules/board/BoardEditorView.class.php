@@ -33,10 +33,19 @@
 		
 		public function dispEditorInnerData() {
 			$this->boardLists = $this->model->getBoardLists();
-			
-			if (isset($_GET['board_name']))
-				$this->boardName = $_GET['board_name'];
+			$boardUseAble = false;
 
+			if (isset($_GET['board_name'])) {
+				for ($i=0; $i<count($this->boardLists); $i++) {
+					if ($_GET['board_name'] == $this->boardLists[$i]->name)
+						$boardUseAble = true;
+				}
+				if (!$boardUseAble) {
+					goBack('권한이 없습니다');
+					return;
+				}
+				$this->boardName = $_GET['board_name'];
+			}
 			if (isset($_GET['parent_no'])) {
 				$data = $this->model->getArticleTitle((int)$_GET['parent_no']);
 				$this->title = 'Re: ' . $data->title;
@@ -50,12 +59,12 @@
 				goBack('알수없는 게시글을 수정하려했습니다');
 				return;
 			}
-
+			
 			$this->boardLists = $this->model->getBoardLists();
-			$this->boardData = $this->model->getArticleData($_GET['article_no']);
+			$this->articleData = $this->model->getArticleData($_GET['article_no']);
 			$this->fileDatas = $this->model->getArticleFiles($_GET['article_no']);
 
-			if (User::getCurrent()->id != $this->boardData->writer_id) {
+			if (User::getCurrent()->id != $this->articleData->writer_id) {
 				goBack('권한이 없습니다');
 				return;
 			}
@@ -64,6 +73,7 @@
 		}
 
 		public function dispEditorInnerBottomData() {
+			$this->articleData = $this->module->articleData;
 			$this->execTemplate('editor_inner_bottom_data');
 		}
 	}

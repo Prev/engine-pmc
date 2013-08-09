@@ -70,7 +70,7 @@
 			
 			$_module->__initBase();
 			$_module->init();
-
+			
 			if ($queryParam) {
 				if (is_string($queryParam))
 					$queryParam = urlQueryToArray($queryParam);

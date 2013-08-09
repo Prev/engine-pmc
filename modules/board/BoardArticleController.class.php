@@ -1,18 +1,24 @@
 <?php
 
-	class BoardArticleController extends Controller {
+	class BoardArticleController extends BoardController {
 			
 		public function init() {
 			$articleNo = $_GET['article_no'] ? escape($_GET['article_no']) : ($_GET['no'] ? escape($_GET['no']) : NULL);
 			$articleData = $this->model->getArticleData($articleNo);
 			$boardName = $articleData->boardName;
 			
+			if (User::getCurrent())
+				$isBoardAdmin = $this->checkIsBoardAdmin($articleData->admin_group);
+
 			if ($articleData->readable_group) {
 				$me = User::getCurrent();
 				if (!$me || !$me->checkGroup($articleData->readable_group)) {
 					goBack('글을 볼 권한이 없습니다');
 				}
 			}
+			
+			if ($articleData->is_secret && !$isBoardAdmin && $articleData->writer_id != User::getCurrent()->id)
+				goBack('글을 볼 권한이 없습니다');
 
 			$this->view->commentable = true;
 			if ($articleData->commentable_group) {
@@ -20,8 +26,6 @@
 				if (!$me || !$me->checkGroup($articleData->commentable_group))
 					$this->view->commentable = false;
 			}
-			
-
 
 			$commentDatas = $this->model->getArticleComments($articleNo);
 			$fileDatas = $this->model->getArticleFiles($articleNo);
@@ -56,14 +60,6 @@
 
 					$_SESSION['comment_hits'][$articleData->no] = 1;
 				}
-			}
-
-			if (User::getCurrent()) {
-				$adminGroup = isset($articleData->admin_group) ? 
-					array_merge(json_decode($articleData->admin_group), User::getMasterAdmin()) :
-					User::getMasterAdmin();
-
-				$isBoardAdmin = User::getCurrent()->checkGroup($adminGroup);
 			}
 
 			$this->view->setProperties(array(

@@ -1,10 +1,10 @@
 <?php
 
 	class BoardCommentModel extends Model {
-			
-		public function getCommentableGroup($articleNo) {
+		
+		public function getArticleInfo($articleNo) {
 			return DBHandler::for_table('article')
-				->select_many('article.board_id', 'board.commentable_group')
+				->select_many('article.board_id', 'article.allow_comment', 'board.commentable_group')
 				->where('article.no', $articleNo)
 				->join('board', array(
 					'board.id','=','article.board_id'

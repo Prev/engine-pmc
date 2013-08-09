@@ -24,28 +24,28 @@
 		}
 
 		public function getArticleOrderKey($parent_no, $top_no) {
-			$currentArticleData = DBHandler::for_table('article')
+			$parentArticleData = DBHandler::for_table('article')
 				->select_many('no', 'order_key')
 				->where('no', $parent_no)
 				->find_one();
-
-			if ($currentArticleData->order_key == NULL) {
+			
+			if ($parentArticleData->order_key == NULL) {
 				$data = DBHandler::for_table('article')
 					->select_many('no', 'order_key')
 					->where('top_no', $parent_no)
+					->where_raw('LENGTH(order_key) = 2')
 					->order_by_desc('order_key')
 					->find_one();
 			}else {
 				$data = DBHandler::for_table('article')
 					->select_many('no', 'order_key')
 					->where('top_no', $top_no)
-					->where_like('order_key', $currentArticleData->order_key.'%')
+					->where_like('order_key', $parentArticleData->order_key.'%')
 					->order_by_desc('order_key')
 					->find_one();
 
-				if ($data->order_key == NULL || $data->order_key == $currentArticleData->order_key)
-					return $currentArticleData->order_key . 'AA';
-					//$data->order_key = $currentArticleData->order_key . 'AA';
+				if ($data->order_key == NULL || $data->order_key == $parentArticleData->order_key)
+					return $parentArticleData->order_key . 'AA';
 			}
 
 			if ($data->order_key == NULL)
@@ -110,7 +110,7 @@
 				// order_key 가 NULL인 경우 : 최상단 글
 				return DBHandler::for_table('article')
 					->select_many('no', 'top_no')
-					->where('no', $topNo)
+					->where('top_no', $topNo)
 					->find_many();
 					
 			}else {
@@ -157,6 +157,7 @@
 					->select('no')
 					->where('top_no', $topNo)
 					->where_like('order_key', $orderKey . '%')
+					->where_not_equal('order_key', $orderKey)
 					->find_many();
 			}
 		}

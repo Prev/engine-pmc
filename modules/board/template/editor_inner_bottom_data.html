@@ -1,15 +1,15 @@
 <div id="board-bottom-container" class="clearfix">
 	<ul>
 		<li class="fl">
-			<input type="checkbox" name="is_secret" checked="checked">
+			<input type="checkbox" name="is_secret" {@ if ($articleData->is_secret) echo 'checked="checked"' }>
 			<label for ="is_secret">비밀글</label>
 		</li>
 		<li class="fl">
-			<input type="checkbox" name="is_notice">
+			<input type="checkbox" name="is_notice"{@ if ($articleData->is_notice) echo 'checked="checked"' }>
 			<label for ="is_notice">공지</label>
 		</li>
 		<li class="fl">
-			<input type="checkbox" name="allow_comment" checked="checked">
+			<input type="checkbox" name="allow_comment" {@ echo ($articleData && !$articleData->allow_comment) ? '' : 'checked="checked"' }>
 			<label for ="allow_comment">덧글허용</label>
 		</li>
 	</ul>

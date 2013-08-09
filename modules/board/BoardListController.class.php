@@ -1,6 +1,6 @@
 <?php
 
-	class BoardListController extends Controller {
+	class BoardListController extends BoardController {
 		
 		const DEFAULT_AOP = 15;
 		
@@ -39,6 +39,8 @@
 			));
 			$this->view->nowPage = $nowPage;
 			$this->view->boardName = $boardName;
+			$this->view->boardInfo = $boardInfo;
+			$this->view->isBoardAdmin = $this->checkIsBoardAdmin($boardInfo->admin_group);
 
 			Context::getInstance()->selectedMenu = $boardName;
 		}

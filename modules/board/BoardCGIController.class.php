@@ -1,6 +1,6 @@
 <?php
 	
-	class BoardCGIController extends Controller {
+	class BoardCGIController extends BoardController {
 
 		public function init() {
 			if (User::getCurrent() == NULL) {
@@ -22,6 +22,14 @@
 				TODO : 카테고리
 			*/
 
+			$isNotice = evalCheckbox($_POST['is_notice']);
+			$isBoardAdmin = $this->checkIsBoardAdmin($boardInfo->admin_group);
+
+			if (!$isBoardAdmin && $isNotice) {
+				goBack('공지사항을 작성 할 권한이 없습니다', true);
+				return;
+			}
+
 			if (!empty($_POST['attach_files'])) {
 				$attachFiles = $_POST['attach_files'];
 				$attachFiles = join('"', explode("\\\"", $attachFiles));
@@ -34,16 +42,19 @@
 				'content' => removeXSS($_POST['content']),
 				'writer_id' => User::getCurrent()->id,
 				'is_secret' => evalCheckbox($_POST['is_secret']) ? 1 : 0 ,
-				'is_notice' => evalCheckbox($_POST['is_notice']) ? 1 : 0 ,
+				'is_notice' => $isNotice ? 1 : 0 ,
 				'allow_comment' => evalCheckbox($_POST['allow_comment']) ? 1 : 0 ,
 				'upload_time' => date('Y-m-d H:i:s')
 			));
 			if (isset($_POST['parent_no']) && !empty($_POST['parent_no'])) {
 				$topNo = $this->model->getArticleTopId((int)$_POST['parent_no']);
+				$orderKey = $this->model->getArticleOrderKey((int)$_POST['parent_no'], $topNo);
 
+				var_dump((int)$_POST['parent_no']);
+				var_dump($orderKey);
 				$record->set(array(
 					'top_no' => $topNo,
-					'order_key' => $this->model->getArticleOrderKey((int)$_POST['parent_no'], $topNo)
+					'order_key' => $orderKey
 				));
 			}
 			$record->save();
@@ -72,10 +83,19 @@
 				return;
 			}
 
+			$articleGroupData = $this->model->getArticleDataAndAdminGroup($_POST['article_no']);
+			$isNotice = evalCheckbox($_POST['is_notice']);
+			$isBoardAdmin = $this->checkIsBoardAdmin($articleGroupData->admin_group);
+
 			$articleData = $this->model->getArticleData($_POST['article_no']);
 
 			if (!$articleData || User::getCurrent()->id != $articleData->writer_id) {
 				goBack('글을 수정 할 권한이 없습니다', true);
+				return;
+			}
+
+			if (!$isBoardAdmin && $isNotice) {
+				goBack('공지사항을 작성 할 권한이 없습니다', true);
 				return;
 			}
 
@@ -145,12 +165,10 @@
 			}
 
 			$me = User::getCurrent();
+			
+			$isBoardAdmin = $this->checkIsBoardAdmin($articleData->admin_group);
 
-			$adminGroup = isset($articleData->admin_group) ? 
-				array_merge(json_decode($articleData->admin_group), User::getMasterAdmin()) :
-				User::getMasterAdmin();
-
-			if (!$me || ($me->id != $articleData->writer_id) && !$me->checkGroup($adminGroup)) {
+			if (!$me || ($me->id != $articleData->writer_id) && !$isBoardAdmin) {
 				goBack('권한이 없습니다');
 				return;
 			}
@@ -185,11 +203,12 @@
 			}else {
 				// 부모글에 답글이 두개 이상 달려있거나 삭제하는 글이 원글이면
 				$childArticles = $this->model->getChildArticleNo($topNo, $orderKey); // 본인 글과 자녀 게시글 (해당 글의 답글) 가져옴
-
-				if (count($childArticles) > 1) {
+				
+				if (count($childArticles) > 0) {
 					// 자녀 게시글이 있으면 임시 삭제
+					
 					$record = DBHandler::for_table('article')
-						->where('no', $_GET['article_no'])
+						->where('no', $no)
 						->find_one();
 					$record->set('content', NULL); // content를 NULL로 설정하면서 임시 삭제 처리
 					$record->save();
