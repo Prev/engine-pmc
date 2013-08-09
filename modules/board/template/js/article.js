@@ -78,6 +78,7 @@ function toggleReplyComment(index, parentId) {
 		cb.checked = true;
 		cb.disabled = true;
 		cb.className = "disabled";
+		document.getElementById("reply-textarea").value = "";
 		document.getElementById("reply-textarea").placeholder = "답글을 입력하세요 (비밀 답글만 작성이 가능합니다)";
 	}else {
 		cb.checked = false;
