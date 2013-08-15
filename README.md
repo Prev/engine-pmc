@@ -20,6 +20,10 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.3.6
++ 게시판 관련 각종 버그 픽스
++ 파일 관련 DB 일부 개편
+
 #### v 0.3.5
 + 덧글 비밀글 기능 추가
 

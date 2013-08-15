@@ -64,6 +64,12 @@
 			"controller":"BoardCGIController",
 			"layout":"blank"
 		},
+		{
+			"name":"procToggleNotice",
+			"model":"BoardCGIModel",
+			"controller":"BoardCGIController",
+			"layout":"blank"
+		},
 
 
 

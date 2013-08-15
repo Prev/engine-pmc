@@ -5,6 +5,9 @@
 	<div class="article-header clearfix">
 		<div class="ah-top clearfix">
 			<div class="title">
+				<condition do="$is_secret">
+					<span class="secret-icon" title="비밀글"><!--비밀글--></span>
+				</condition>
 				{$title}
 			</div>
 			<div class="current-board">
@@ -46,24 +49,40 @@
 
 	<div class="article-buttons clearfix">
 		<div id="comment-label" class="fl">덧글 {count($commentDatas)}개</div>
-		<div class="fl">조회수&nbsp;{$hits+1}</div>
+		<div class="fl">조회수&nbsp;{$hits}</div>
 		
-		<condition do="User::getCurrent()->id == $writer_id || $isBoardAdmin">
-			<div class="fr left-bar">
-				<a href="{getUrl('board', 'procDeleteArticle', 'article_no='.$articleNo)}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
-			</div>
-		</condition>
+		<div class="fr cleafix">
+			<condition do="$isBoardAdmin">
+				<div class="fl right-bar">
+					<a href="{getUrl('board', 'procToggleNotice', 'article_no='.$articleNo)}" onclick="return confirm('{@ echo !$articleData->is_notice ? '이 글을 정말 공지사항으로 등록하시겠습니까?' : '이 글을 공지사항에서 해제하시겠습니까?' }')">
+						<condition do="!$articleData->is_notice">
+							공지&nbsp;등록
+						<else>
+							공지&nbsp;해제
+						</condition>
+					</a>
+				</div>
+			</condition>
 
-		<condition do="User::getCurrent()->id == $writer_id">
-			<div class="fr left-bar">
-				<a href="{getUrl('board', 'dispEditor', 'article_no='.$articleNo)}">수정</a>
+			<div class="fl">
+				<a href="{getUrl('board', 'dispEditor', 'parent_no='.$articleNo)}">답글</a>
 			</div>
-		</condition>
+			
+			<condition do="User::getCurrent()->id == $writer_id">
+				<div class="fl left-bar">
+					<a href="{getUrl('board', 'dispEditor', 'article_no='.$articleNo)}">수정</a>
+				</div>
+			</condition>
 
-		<div class="fr">
-			<a href="{getUrl('board', 'dispEditor', 'parent_no='.$articleNo)}">답글</a>
+			<condition do="User::getCurrent()->id == $writer_id || $isBoardAdmin">
+				<div class="fl left-bar">
+					<a href="{getUrl('board', 'procDeleteArticle', 'article_no='.$articleNo)}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+				</div>
+			</condition>
 		</div>
 	</div>
+	
+	
 
 	<div class="article-comment-wrap">
 		<ul id="comment-list">

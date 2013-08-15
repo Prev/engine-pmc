@@ -99,7 +99,7 @@
 			$this->printAlone = false;
 
 			$mobileAgents  = array('iphone','lgtelecom','skt','mobile','samsung','nokia','blackberry','android','android','sony','phone');
-				
+			
 			for ($i=0; $i<count($mobileAgents); $i++){ 
 				if (preg_match("/{$mobileAgents[$i]}/", strtolower($_SERVER['HTTP_USER_AGENT']))) {
 					$this->mobileMode = true;

@@ -1,6 +1,6 @@
 <?php
 
-	class BoardCommentModel extends Model {
+	class BoardCommentModel extends BoardModel {
 		
 		public function getArticleInfo($articleNo) {
 			return DBHandler::for_table('article')

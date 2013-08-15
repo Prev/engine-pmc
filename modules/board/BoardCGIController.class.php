@@ -49,9 +49,7 @@
 			if (isset($_POST['parent_no']) && !empty($_POST['parent_no'])) {
 				$topNo = $this->model->getArticleTopId((int)$_POST['parent_no']);
 				$orderKey = $this->model->getArticleOrderKey((int)$_POST['parent_no'], $topNo);
-
-				var_dump((int)$_POST['parent_no']);
-				var_dump($orderKey);
+				
 				$record->set(array(
 					'top_no' => $topNo,
 					'order_key' => $orderKey
@@ -157,12 +155,12 @@
 			if (!$_SERVER['HTTP_REFERER']) return;
 
 			$articleData = $this->model->getArticleDataAndAdminGroup((int)$_GET['article_no']);
-			if (!$articleData->top_no) $articleData->top_no = $articleData->no;
-
 			if ($articleData === false) {
 				goBack('게시글이 존재하지 않습니다');
 				return;
 			}
+
+			if (!$articleData->top_no) $articleData->top_no = $articleData->no;
 
 			$me = User::getCurrent();
 			
@@ -223,6 +221,31 @@
 			DBHandler::for_table('article')
 				->where('no', $articleNo)
 				->delete_many();
+		}
+
+		public function procToggleNotice() {
+			if (!$_SERVER['HTTP_REFERER']) return;
+			if (!$_GET['article_no']) {
+				goBack('오류가 발생했습니다', true);
+				return;
+			}
+
+			$articleGroupData = $this->model->getArticleDataAndAdminGroup($_POST['article_no']);
+			$isBoardAdmin = $this->checkIsBoardAdmin($articleGroupData->admin_group);
+			
+			$articleData = $this->model->getArticleData($_GET['article_no']);
+
+			if (!$isBoardAdmin) {
+				goBack('권한이 없습니다', true);
+				return;
+			}
+
+			$articleData->set('is_notice', !$articleData->is_notice);
+			$articleData->save();
+
+			goBack( $articleData->is_notice ?
+				'게시글을 공지사항으로 등록했습니다' : '게시글을 공지사항에서 등록해제했습니다'
+			);
 		}
 
 

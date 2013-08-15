@@ -5,14 +5,10 @@ RewriteEngine On
 RewriteRule ^login(\/?)$ ./index.php?module=login&action=dispLoginPage&%{QUERY_STRING} [L,QSA]
 
 # board acticle short url
-RewriteRule ^([0-9]+)$ ./index.php?module=board&action=dispArticle&article_no=$1&%{QUERY_STRING} [L,QSA]
+RewriteRule ^([0-9]+).*$ ./index.php?module=board&action=dispArticle&article_no=$1&%{QUERY_STRING} [L,QSA]
 
 # menu short url
-RewriteRule ^([a-zA-Z0-9]+)$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]
-
-
-#file down short url
-RewriteRule ^files/attach/([a-zA-Z0-9]+)$ ./index.php?module=file&action=procDownloadFile&file=$1&%{QUERY_STRING} [L,QSA]
+RewriteRule ^([a-zA-Z0-9-_]+)/?$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]
 
 
 

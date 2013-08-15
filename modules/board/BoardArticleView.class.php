@@ -14,6 +14,7 @@
 		var $url;
 		var $content;
 		var $hits;
+		var $is_secret;
 
 		var $commentDatas;
 		var $fileDatas;
@@ -41,7 +42,8 @@
 				);
 				$this->content = $articleData->content;
 				$this->hits = $articleData->hits;
-				
+				$this->is_secret = $articleData->is_secret;
+
 				self::execTemplate('article');
 			}
 		}

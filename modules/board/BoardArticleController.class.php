@@ -16,9 +16,13 @@
 					goBack('글을 볼 권한이 없습니다');
 				}
 			}
-			
-			if ($articleData->is_secret && !$isBoardAdmin && $articleData->writer_id != User::getCurrent()->id)
-				goBack('글을 볼 권한이 없습니다');
+
+			if (!$articleData->is_notice && $articleData->is_secret && !$isBoardAdmin && $articleData->writer_id != User::getCurrent()->id) {
+				$parentArticle = $this->model->getParentArticle($articleData->top_no, $articleData->order_key);
+				
+				if (!$parentArticle || $parentArticle->writer_id != User::getCurrent()->id)
+					goBack('글을 볼 권한이 없습니다');
+			}
 
 			$this->view->commentable = true;
 			if ($articleData->commentable_group) {
@@ -46,7 +50,7 @@
 						}
 					}
 				}
-
+				
 				if ($commentDatas[$i]->is_secret) {
 					if ($commentDatas[$i]->writer_id == User::getCurrent()->id || $articleData->writer_id == User::getCurrent()->id || $isBoardAdmin)
 						$commentDatas[$i]->secret_visible = true;
@@ -65,10 +69,13 @@
 						->where('no', $articleData->no)
 						->find_one();
 
-					$row->set_expr('hits', 'hits + 1');
-					$row->save();
-
-					$_SESSION['comment_hits'][$articleData->no] = 1;
+					if ($row) {
+						$row->set_expr('hits', 'hits + 1');
+						$row->save();
+						
+						$articleData->hits++;
+						$_SESSION['comment_hits'][$articleData->no] = 1;
+					}
 				}
 			}
 

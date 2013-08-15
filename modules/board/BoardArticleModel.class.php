@@ -1,6 +1,6 @@
 <?php
 	
-	class BoardArticleModel extends Model {
+	class BoardArticleModel extends BoardModel {
 		
 		public function getArticleData($articleNo) {
 			$data = DBHandler::for_table('article')
@@ -15,6 +15,7 @@
 				->find_one();
 
 			if ($data) {
+				$data->title = htmlspecialchars($data->title);
 				$data->boardName = $data->name;
 				$data->boardName_locale = fetchLocale($data->name_locales);
 				$data->writer = USE_REAL_NAME ? $data->user_name : $data->nick_name;
@@ -42,5 +43,4 @@
 				))
 				->find_many();
 		}
-		
 	}

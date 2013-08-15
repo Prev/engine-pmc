@@ -19,7 +19,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.3.4');
+	define('PMC_VERSION', '0.3.6');
 	
 	
 	/**
@@ -46,7 +46,7 @@
 	 * ex) menu -> http://engine-pmc.org/freeboard
 	 * ex) article -> http://engine-pmc.org/15
 	 */
-	define('USE_SHORT_URL', false);
+	define('USE_SHORT_URL', true);
 	
 
 	/**

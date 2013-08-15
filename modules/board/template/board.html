@@ -1,11 +1,13 @@
-	<import path="css/board.css">
+<import path="css/board.css">
 
 <div class="board">
 	<div class="board-article">
 		<ul class="first-line">
 			<li class="select-tag">
 				<span>{# 'en'=>'Category', 'kr'=>'말머리 선택'}</span>
-				<button class="select-tag-btn"></button>
+				<button class="select-tag-btn">
+					<span class="hidden">&nabla;</span>
+				</button>
 			</li>
 			<li class="title">{# 'en'=>'Title', 'kr'=>'제목'}</li>
 			<li class="writer">{# 'en'=>'Writer', 'kr'=>'작성자'}</li>
@@ -25,11 +27,11 @@
 					
 					{@ if ($data->is_delete) : }
 						<i>원글이 사라진 답글입니다</i>
-					{@ elseif ($data->is_secret && !$data->secret_visible) : }
+					{@ elseif ($data->is_secret && !$data->secret_visible && !$data->is_notice) : }
 						<i>비밀글입니다</i>
 					{@ else : }
-						<condition do="$data->is_secret">
-							<i>[비밀글]</i>
+						<condition do="$data->is_secret && !$data->is_notice">
+							<span class="secret-icon" title="비밀글"><!--비밀글--></span>
 						</condition>
 
 						<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>
@@ -88,7 +90,9 @@
 			</div>
 		</condition>
 	</div>
-	<div>
-		<a href="{getUrl('board', 'dispEditor', 'board_name='.$boardName)}">글쓰기</a>
+	<div class="clearfix">
+		<div class="board-btn fr">
+			<a href="{getUrl('board', 'dispEditor', 'board_name='.$boardName)}">글쓰기</a>
+		</div>
 	</div>
 </div>

@@ -6,7 +6,8 @@
 		public $nowPage;
 		public $pageNumbers;
 		public $articleDatas;
-
+		public $boardInfo;
+		
 		/**
 			비밀글
 		*/

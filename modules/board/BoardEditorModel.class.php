@@ -1,6 +1,6 @@
 <?php
 	
-	class BoardEditorModel extends Model {
+	class BoardEditorModel extends BoardModel {
 
 		public function getBoardLists() {
 			$arr = DBHandler::for_table('board')

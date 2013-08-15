@@ -50,7 +50,7 @@
 			$fileSize = (int)$_FILES["bifile"]["size"];
 			$fileExtension = substr(strrchr($_FILES['bifile']['name'], '.'), 1);
 			
-			$uploadFileUrl = '/files/attach/' . ($isBinary ? 'binaries' : 'images') . '/' . $fileHash . ($isBinary ? '.file' : '.' . $fileExtension);
+			$uploadFileUrl = '/files/attach/' . ($isBinary ? 'binaries' : 'images') . '/' . $fileHash . ($isBinary ? '' : '.' . $fileExtension);
 			$uploadFileDir = ROOT_DIR . $uploadFileUrl;
 			
 			if ($fileSize > 1024 * 1024 * 20) {
@@ -77,10 +77,9 @@
 			if (move_uploaded_file($_FILES['bifile']['tmp_name'], $uploadFileDir)) {
 				$fileRecord = DBHandler::for_table('files')->create();
 				$fileRecord->set(array(
-					'uploaded_url' => $uploadFileUrl,
 					'is_binary' => ($isBinary ? 1 : 0),
-					'file_size' => $fileSize,
-					'file_hash' => $fileHash
+					'file_hash' => $fileHash,
+					'file_size' => $fileSize
 				));
 				$fileRecord->save();
 

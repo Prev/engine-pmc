@@ -126,6 +126,7 @@
 	var attachers = [];
 
 	function appendImage(imageUrl, fileName, fileSize) {
+		checkDeletedFiles();
 		attachers.push({
 			'attacher': 'image',
 			'data': {
@@ -140,6 +141,7 @@
 		});
 	}
 	function appendFile(attachurl, fileName, fileSize, filemime, fileId) {
+		checkDeletedFiles();
 		attachers.push({
 			'attacher': 'file',
 			'data': {
@@ -153,6 +155,20 @@
 		Editor.modify({
 			"attachments": attachers
 		});
+	}
+
+	function checkDeletedFiles() {
+		var files = Editor.getSidebar().getAttachments("file");
+		for (i = 0; i < files.length; i++) {
+			if (files[i].deletedMark) {
+				for (var j=0; j<attachers.length; j++) {
+					if (files[i].data.fileId == attachers[j].data.fileId) {
+						attachers.splice(j, 1);
+					} 
+				}
+				
+			}
+		}
 	}
 
 	</script>

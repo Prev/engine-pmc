@@ -19,8 +19,8 @@
 				return;
 			}
 
-			$comment = join('&lt;', explode('<', $_POST['comment']));
-			$comment = join('&gt;', explode('>', $comment));
+			$comment = htmlspecialchars($_POST['comment']);
+			$comment = stripslashes($comment);
 
 			$record = DBHandler::for_table('article_comment')->create();
 			$record->set(array(
@@ -57,8 +57,8 @@
 				return;
 			}
 
-			$comment = join('&lt;', explode('<', $_POST['comment']));
-			$comment = join('&gt;', explode('>', $comment));
+			$comment = htmlspecialchars($_POST['comment']);
+			$comment = stripslashes($comment);
 
 			$commentData->set(array(
 				'content' => $comment,

@@ -9,11 +9,6 @@
 			"name":"dispDefault",
 			"view":"IndexView",
 			"default":true
-		},
-		{
-			"name":"dispCredit",
-			"view":"IndexCreditView",
-			"allow_web_access":false
 		}
 	]
 }
