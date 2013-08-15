@@ -1,20 +1,21 @@
 @charset "utf-8";
 
-.board{ width: 900px; margin:20px 0; }
+.board{ width: 900px; margin:20px 0; position: relative }
 .board .pink{ color: #ec137f; font-weight: bold; }
 
 .board .board-article ul{ border-bottom: 1px solid #e0e0e0; margin: 0; padding-left: 10px; padding-top: 8px; }
 .board .board-article ul li{ list-style: none; float: left; text-align: center; font-size: 11px;  }
 .board .board-article .first-line{ height: 22px; background-color: #eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; }
 .board .board-article .first-line li{ font-weight: bold; font-size: 12px; }
-.board .board-article .first-line .select-tag{ width: 95px; }
-.board .board-article .first-line .select-tag .select-tag-btn{ width: 12px; height: 12px; background: transparent url('../img/board_sprite.png') no-repeat -43px 0px; border: 0; padding: 0; margin: 0px 0px 0px 5px; vertical-align: middle; cursor: pointer; }
+.board .board-article .first-line .select-category{ width: 95px; }
+.board .board-article .first-line .select-category a{ color: #333; text-decoration: none }
+.board .board-article .first-line .select-category .select-category-btn{ width: 12px; height: 12px; background: transparent url('../img/board_sprite.png') no-repeat -43px 0px; border: 0; padding: 0; margin: 0px 0px 0px 5px; vertical-align: middle; cursor: pointer; }
 .board .board-article .first-line .title{ width: 485px; text-align: center; }
 .board .board-article .notice{ height:20px; background-color: #f6f6f6; }
 .board .board-article .notice .title{ width: 545px; color: #ec137f; font-weight: bold; }
 .board .board-article .notice-icon{ display: inline-block; float: left; font-size: 11px; padding: 2px 4px; margin: -2px 5px 0 0; background-color:#5269a3; border-radius: 3px; color: white; *zoom:1; }
 .board .board-article .article{ height: 20px; }
-.board .board-article .article .tag-type{ font-size: 10px; color: #b0b0b0; }
+.board .board-article .article .category{ color: #b0b0b0; }
 .board .board-article .article .dot-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
 .board .board-article .article .reply-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
 .board .board-article .article .reply-icon{ width: 11px; height: 9px; background: transparent url('../img/board_sprite.png') no-repeat -32px 0px; display: inline-block; *zoom:1; *display:inline }
@@ -30,10 +31,27 @@
 .board .board-article .title .file-icon{ display: inline-block; width: 16px; height: 16px; vertical-align: middle; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAF1SURBVBgZpcE9axRRFIDh99y5s1nHjawQVEgQGxErIWgES9MGBDuxlrBVfkG6lBEsrUQEEXu7gNgIUSTBQrBSyYdgFjXMktmdmTvniLCB28/ziJnRhqMlR0ueyNrTLzY7A0UVON/r8PNojDjoZQlqwt98zNvdw9vfX97/yJQnMi4m3F26xr3FHm+2D1h/eJ3Yi3dDVOUDIEw5IkVZ82cU+G/r0y9OTQLkJQyPK0SUmCfinJAY1I3yeLCIqmFAgpF5KMuS/KQi5ol0U8ekrNl4/QMnEBpFG8UAMwODLFVinkhQo2wCiUsBQ2gQEUwNMyWEmqoKxDyRUVGTimewMkvQCnBgYKJ0fYfNV3v8zk+IeSKNGgkpyphnO6vMZZcRHMNin0e3nuDoUpQVMU/E+4Qrl+Bib8TyjSX6nXlwcDyZ58LZQNYBL0JMzIxTNwdb768unLnTn+nT9ecIWiOqiDWoFHzd+8ZRXvP5+QNhSsyMNhwtOVr6B/fLolbgemG4AAAAAElFTkSuQmCC); *zoom: 1; }
 .board .board-article .no-article{ padding:30px 0; text-align:center; border-bottom:1px solid #e0e0e0; }
 
-
 .board .board-article .writer{ width: 150px; }
 .board .board-article .date{ width: 100px; }
 .board .board-article .hits{ width: 60px; }
+
+.board #category-selector{
+	position: absolute;
+	top: 25px;
+	left: 20px;
+	visibility: hidden;
+
+	padding: 5px 8px;
+	background-color: white;
+	color: #333;
+	border: 1px solid #999;
+}
+.board #category-selector ul{ margin: 0; padding: 0; list-style: none }
+.board #category-selector ul li{ padding: 2px 0 }
+.board #category-selector ul li a:link,
+.board #category-selector ul li a:active,
+.board #category-selector ul li a:visited{ color: #333; text-decoration: none }
+.board #category-selector ul li a:hover{ color: #333; text-decoration: underline; }
 
 .board .page-numbers{ width: 300px; text-align: center; display: inline-block; *zoom:1; *display:inline; font-size: 11px; margin: 18px 0px 15px 310px; }
 .board .page-numbers div{ display: inline-block; *zoom:1; *display:inline }

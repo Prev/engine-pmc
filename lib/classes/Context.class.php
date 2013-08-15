@@ -526,7 +526,7 @@
 		public function checkSSO() {
 			if (isset($_COOKIE['pmc_sess_key']) && !isset($_SESSION['pmc_sso_data'])) {
 				$urlData = getUrlData(SSO_URL . '?sess_key=' . $_COOKIE['pmc_sess_key'], SSO_AGENT_KEY);
-				
+
 				if (!$urlData) {
 					Context::printErrorPage(array(
 						'en' => 'cannot load sso data',
@@ -537,6 +537,7 @@
 				}
 
 				$ssoData = json_decode($urlData);
+
 				if (!$ssoData || $ssoData->result === 'fail') {
 					Context::printErrorPage(array(
 						'en' => 'fail loading sso data',

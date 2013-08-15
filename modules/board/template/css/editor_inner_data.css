@@ -4,10 +4,18 @@
 	padding: 1px;
 	border: 1px solid #c0c0c0;
 }
+
+#board-top-container #category-selector{
+	width: 100px;
+	padding: 1px;
+	padding-right: 0;
+	border: 1px solid #c0c0c0;
+}
+
 #board-top-container #board-title{
-	width: 752px;
+	width: 652px;
 	margin: 0;
-	margin-left: 7px;
+	margin-left: 5px;
 	padding: 2px 4px;
 	border: 1px solid #c0c0c0;
 	box-shadow: none;
@@ -15,6 +23,5 @@
 	-moz-box-shadow: none;
 }
 
-#board-bottom-container{}
 #board-bottom-container ul{ list-style: none; margin: 0; padding: 0 }
 #board-bottom-container ul li{ margin: 0; padding: 0; margin-right: 20px }

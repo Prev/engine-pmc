@@ -7,10 +7,8 @@
 		public $pageNumbers;
 		public $articleDatas;
 		public $boardInfo;
+		public $categorys;
 		
-		/**
-			비밀글
-		*/
 		function dispList() {
 
 			if (!$this->nowPage)
@@ -40,7 +38,7 @@
 				$html .= '<div class="reply-icon"></div>&nbsp;';
 			}
 			if ($category)
-				$html .= '<span class="tag-type">['.$category.']&nbsp;</span>';
+				$html .= '<span class="category">['.htmlspecialchars($category).']&nbsp;</span>';
 
 			echo $html;
 		}

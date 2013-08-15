@@ -90,9 +90,9 @@
 		 */
 
 
-		public function getArticleDataAndAdminGroup($articleNo) {
+		public function getArticleAndGroupData($articleNo) {
 			return DBHandler::for_table('article')
-				->select_many('article.*', 'board.name', 'board.admin_group')
+				->select_many('article.*', 'board.name', 'board.admin_group', 'board.categorys')
 				->join('board', array(
 					'board.id','=','article.board_id'
 				))

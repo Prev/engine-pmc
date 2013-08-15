@@ -1,6 +1,15 @@
 RewriteEngine On
 
 
+# allow sso-server/index.php
+RewriteRule ^sso-server/index.php$ - [L]
+RewriteRule ^sso-server/?$ - [L]
+
+# allow editor/template/pages
+# RewriteRule ^modules/editor/template/pages/(.+)\.html$ - [L]
+
+
+
 # login module short url
 RewriteRule ^login(\/?)$ ./index.php?module=login&action=dispLoginPage&%{QUERY_STRING} [L,QSA]
 
@@ -9,14 +18,6 @@ RewriteRule ^([0-9]+).*$ ./index.php?module=board&action=dispArticle&article_no=
 
 # menu short url
 RewriteRule ^([a-zA-Z0-9-_]+)/?$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]
-
-
-
-# allow sso-server/index.php
-RewriteRule ^sso-server/index.php$ - [L]
-
-# allow editor/template/pages
-# RewriteRule ^modules/editor/template/pages/(.+)\.html$ - [L]
 
 
 

@@ -21,7 +21,7 @@
 				$parentArticle = $this->model->getParentArticle($articleData->top_no, $articleData->order_key);
 				
 				if (!$parentArticle || $parentArticle->writer_id != User::getCurrent()->id)
-					goBack('글을 볼 권한이 없습니다');
+					goBack('글을 읽을 권한이 없습니다');
 			}
 
 			$this->view->commentable = true;

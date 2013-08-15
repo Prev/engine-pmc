@@ -6,18 +6,57 @@
 
 <div id="board-top-container" class="clearfix">
 	<div class="fl">
-		<select id="board-selector" name="board_id">
-			{@ foreach ($boardLists as $key => $value) : }
-				<option value="{$value->id}"{@ if ($value->name == $boardName) echo ' selected="selected"';}>
-					{$value->name_locale}
+		<select id="board-selector" name="board_id" onclick="selectCategory()">
+			{@ foreach ($boardLists as $key => $board) : }
+				<option value="{$board->id}"{@ if ($board->name == $boardName) echo ' selected="selected"';}>
+					{$board->name_locale}
 				</option>
 			{@ endforeach; }
 		</select>
+		<select id="category-selector" name="category"></select>
 	</div>
 	<div class="fl">
-		<input type="text" id="board-title" name="title"{@ if (isset($title)) echo ' value="'.$title.'"'; } />
+		<input type="text" id="board-title" name="title"{@ if (isset($title)) echo ' value="'.$title.'"'; } placeholder="게시글 제목을 입력하세요" />
 	</div>
 </div>
+
+<script type="text/javascript">
+	var categorys = [];
+	{@ foreach ($boardLists as $key => $board) : }
+		<condition do="$board->categorys">
+			categorys[{$board->id}] = {$board->categorys};
+		<else>
+			categorys[{$board->id}] = null;
+		</condition>
+	{@ endforeach; }
+
+	function selectCategory() {
+		var selector = document.getElementById("category-selector");
+		var boardId = document.getElementById("board-selector").value;
+		var node;
+
+		selector.innerHTML = "";
+
+		node = document.createElement('option');
+		node.value = "none";
+		node.innerHTML = "카테고리 선택";
+
+		selector.appendChild(node);
+
+		if (categorys[boardId]) {
+			for (var i=0; i<categorys[boardId].length; i++) {
+				node = document.createElement('option');
+				node.value = categorys[boardId][i];
+				node.innerHTML =categorys[boardId][i];
+
+				selector.appendChild(node);
+			}
+		}
+	}
+
+	selectCategory();
+
+</script>
 
 {getContent('editor', 'dispFormInnerData')}
 {getContent('board', 'dispEditorInnerBottomData')}

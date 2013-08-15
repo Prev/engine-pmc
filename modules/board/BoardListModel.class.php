@@ -49,7 +49,7 @@
 							)
 						)
 
-						" . (isset($_REQUEST['category']) ? 'AND a2.category = "'.$_REQUEST['category'].'"' : '') . "
+						" . (isset($_REQUEST['category']) && $_REQUEST['category'] ? 'AND a2.category = "'.$_REQUEST['category'].'"' : '') . "
 						ORDER BY IF(a2.top_no, a2.top_no, a2.no) DESC, order_key ASC
 						LIMIT {$limitNum}, {$this->aop}"
 					);
@@ -68,7 +68,7 @@
 					->order_by_asc('article.order_key')
 					->limit($limitNum, $this->aop);
 
-				if (isset($_REQUEST['category']))
+				if (isset($_REQUEST['category']) && $_REQUEST['category'])
 					$row->where('article.category', $_REQUEST['category']);
 			}
 
@@ -87,6 +87,9 @@
 							$data[$i]->secret_visible = true;
 					}
 				}
+
+				if ($data[$i]->category)
+					$data[$i]->category = htmlspecialchars($data[$i]->category);
 
 				$data[$i]->is_reply = isset($data[$i]->parent_no);
 				$data[$i]->upload_time2 = getRelativeTime(strtotime($data[$i]->upload_time));
@@ -146,7 +149,7 @@
 								AND a2.no = a1.no
 							)
 						)
-						" . (isset($_REQUEST['category']) ? 'AND a2.category = "'.$_REQUEST['category'].'"' : '')
+						" . (isset($_REQUEST['category']) && $_REQUEST['category'] ? 'AND a2.category = "'.$_REQUEST['category'].'"' : '')
 					);
 				//$row->where('article.is_secret', 0);
 			}else {
@@ -154,7 +157,7 @@
 					->select('no')
 					->where('board_id', $this->boardId);
 
-				if (isset($_REQUEST['category']))
+				if (isset($_REQUEST['category']) && $_REQUEST['category'])
 					$row->where('article.category', $_REQUEST['category']);
 			}
 			

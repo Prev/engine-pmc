@@ -18,7 +18,7 @@
 				$data->title = htmlspecialchars($data->title);
 				$data->boardName = $data->name;
 				$data->boardName_locale = fetchLocale($data->name_locales);
-				$data->writer = USE_REAL_NAME ? $data->user_name : $data->nick_name;
+				$data->writer = htmlspecialchars(USE_REAL_NAME ? $data->user_name : $data->nick_name);
 			}
 			return $data;
 		}

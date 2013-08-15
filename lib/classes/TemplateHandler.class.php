@@ -56,24 +56,24 @@
 			$html = preg_replace_callback('`(src|href|action)="(.*?)"`i', array($this, 'parseUrl'), $html);
 			
 			// targetie condition
-			$html = preg_replace('`<condition\s+targetie="([^"]+)"\s*>([\s\S]*?)</condition>`i', '<!--[if $1]>$2<![endif]-->', $html);
+			$html = preg_replace('`<condition\s+targetie\s*=\s*"([^"]+)"\s*>([\s\S]*?)</condition>`i', '<!--[if $1]>$2<![endif]-->', $html);
 			
 			$count = 0;
 			
-			while (preg_match('/<condition\s+do="([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', $html)) {
-				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
+			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
 				if (++$count > 30) break;
 			}
-			while (preg_match('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', $html)) {
-				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
+			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do\s*=\s*"([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
 				if (++$count > 30) break;
 			}
-			while (preg_match('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', $html)) {
-				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
+			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>([\s\S]*?)<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do\s*=\s*"([^"]+)"\s*>([\s\S]*?)<\/condition>/i', array($this, 'parseConditions'), $html);
 				if (++$count > 30) break;
 			}
-			while (preg_match('/<condition\s+do="([^"]+)"\s*>/i', $html)) {
-				$html = preg_replace_callback('/<condition\s+do="([^"]+)"\s*>/i', array($this, 'parseConditions'), $html);
+			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do\s*=\s*"([^"]+)"\s*>/i', array($this, 'parseConditions'), $html);
 				if (++$count > 30) break;
 			}
 			$html = preg_replace('/<\/condition>/', '<?php } ?>', $html);

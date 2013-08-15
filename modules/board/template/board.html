@@ -1,13 +1,29 @@
 <import path="css/board.css">
+<import path="js/board.js">
 
 <div class="board">
+	<div id="category-selector">
+		<ul>
+			<li>
+				<a href="{getUrlA('category=', getCurrentUrl())}">전체보기</a>
+			</li>
+			{@ foreach ($categorys as $key => $category) : }
+				<li>
+					<a href="{getUrlA('category='.$category, getCurrentUrl())}">{$category}</a>
+				</li>
+			{@ endforeach; }
+		</ul>
+	</div>
+
 	<div class="board-article">
 		<ul class="first-line">
-			<li class="select-tag">
-				<span>{# 'en'=>'Category', 'kr'=>'말머리 선택'}</span>
-				<button class="select-tag-btn">
-					<span class="hidden">&nabla;</span>
-				</button>
+			<li class="select-category">
+				<a href="#" onclick="toggleCategorySelector(); return false;">
+					<span>{# 'en'=>'Category', 'kr'=>'말머리 선택'}</span>
+					<button class="select-category-btn">
+						<span class="hidden">&nabla;</span>
+					</button>
+				</a>
 			</li>
 			<li class="title">{# 'en'=>'Title', 'kr'=>'제목'}</li>
 			<li class="writer">{# 'en'=>'Writer', 'kr'=>'작성자'}</li>
@@ -34,7 +50,9 @@
 							<span class="secret-icon" title="비밀글"><!--비밀글--></span>
 						</condition>
 
-						<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">{$data->title}</a>
+						<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">
+							{$data->title}
+						</a>
 						<span class="comment-counts">[<strong>{$data->comment_counts}</strong>]</span>
 							
 						<condition do="$data->file_counts">
@@ -43,7 +61,7 @@
 					{@ endif; }
 				</li>
 				<condition do="!$data->is_delete">
-					<li class="writer">{$data->user_name}</li>
+					<li class="writer">{htmlspecialchars($data->user_name)}</li>
 					<li class="date">{$data->upload_time2}</li>
 					<li class="hits">{$data->hits}</li>
 				</condition>

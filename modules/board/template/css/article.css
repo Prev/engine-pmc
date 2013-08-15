@@ -15,6 +15,12 @@
 	font-weight:bold;
 	float:left;
 }
+
+.article .ah-top .title .category{
+	font-size: 11px;
+	color: #b0b0b0;
+}
+
 .article .ah-top .current-board{
 	padding:0 10px;
 	margin:0 10px;

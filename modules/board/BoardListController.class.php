@@ -41,6 +41,7 @@
 			$this->view->boardName = $boardName;
 			$this->view->boardInfo = $boardInfo;
 			$this->view->isBoardAdmin = $this->checkIsBoardAdmin($boardInfo->admin_group);
+			$this->view->categorys = $boardInfo->categorys ? json_decode($boardInfo->categorys) : NULL;
 
 			Context::getInstance()->selectedMenu = $boardName;
 		}

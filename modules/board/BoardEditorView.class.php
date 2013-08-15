@@ -6,10 +6,6 @@
 		var $boardName;
 		var $title;
 
-		/**
-			게시판 카테고리
-		*/
-
 		public function init() {
 			if (User::getCurrent() == NULL) {
 				goLogin();
