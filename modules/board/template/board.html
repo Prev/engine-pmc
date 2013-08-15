@@ -7,11 +7,13 @@
 			<li>
 				<a href="{getUrlA('category=', getCurrentUrl())}">전체보기</a>
 			</li>
-			{@ foreach ($categorys as $key => $category) : }
-				<li>
-					<a href="{getUrlA('category='.$category, getCurrentUrl())}">{$category}</a>
-				</li>
-			{@ endforeach; }
+			<condition do="$categorys">
+				{@ foreach ($categorys as $key => $category) : }
+					<li>
+						<a href="{getUrlA('category='.$category, getCurrentUrl())}">{$category}</a>
+					</li>
+				{@ endforeach; }
+			</condition>
 		</ul>
 	</div>
 
