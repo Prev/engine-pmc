@@ -36,15 +36,15 @@
 									(
 										IF (a1.top_no, a1.top_no, a1.no) = a2.top_no
 										AND a1.order_key <=> IF( LENGTH(a2.order_key)=2, NULL , SUBSTR(a2.order_key, 1, LENGTH(a2.order_key)-2)) 
-										AND a1.writer_id = {$userId}
+										AND a1.writer_id = '{$userId}'
 									)OR (
-										a2.writer_id = {$userId}
+										a2.writer_id = '{$userId}'
 										AND a2.no = a1.no
 									)
 								)
 							)
 							OR (
-								a2.is_secret = 0
+								a2.is_secret = '0'
 								AND a2.no = a1.no
 							)
 						)
@@ -137,15 +137,15 @@
 									(
 										IF (a1.top_no, a1.top_no, a1.no) = a2.top_no
 										AND a1.order_key <=> IF( LENGTH(a2.order_key)=2, NULL , SUBSTR(a2.order_key, 1, LENGTH(a2.order_key)-2)) 
-										AND a1.writer_id = {$userId}
+										AND a1.writer_id = '{$userId}'
 									)OR (
-										a2.writer_id = {$userId}
+										a2.writer_id = '{$userId}'
 										AND a2.no = a1.no
 									)
 								)
 							)
 							OR (
-								a2.is_secret = 0
+								a2.is_secret = '0'
 								AND a2.no = a1.no
 							)
 						)
