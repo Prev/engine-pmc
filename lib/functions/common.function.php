@@ -2,7 +2,7 @@
 	
 	/**
 	 * @author prevdev@gmail.com
-	 * @2013.05 ~ 07
+	 * @2013.05 ~ 08
 	 *
 	 * common functions
 	 */
@@ -376,6 +376,18 @@
 	 */
 	function getCurrentUrl() {
 		return REAL_URL;
+	}
+
+
+	/**
+	 * 실제 url 반환
+	 * @param $module이 NULL일시 현재 url을 반환하며, NULL이 아닐시 해당 모듈의 실제 url을 반환
+	 */
+	function getRealUrl($module=NULL) {
+		if ($module === NULL)
+			return REAL_URL;
+		else
+			return RELATIVE_URL . '/modules/' . $module;
 	}
 
 	/**

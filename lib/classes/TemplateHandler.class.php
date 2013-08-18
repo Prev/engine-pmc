@@ -142,7 +142,7 @@
 				$importVals->{$keys[$i]} = $values[$i];
 			
 			if (!$importVals->path) {
-				return '<!-- Error loading imports ->';
+				return '<!-- Error loading imports -->';
 			}
 			
 			if (substr($importVals->path, 0, 1) == '/')
