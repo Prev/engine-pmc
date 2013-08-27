@@ -16,14 +16,17 @@
 		public $moduleID;
 		public $action;
 		public $actionData;
+
 		public $moduleInfo;
+		public $moduleDir;
 
 		public $controller;
 		public $view;
 		public $model;
 		
 		final public function __construct($moduleID) {
-			$this->moduleID = $moduleID;	
+			$this->moduleID = $moduleID;
+			$this->moduleDir = ROOT_DIR . '/modules/' . $moduleID;
 		}
 
 		final public function __initBase() {

@@ -35,6 +35,8 @@
 			// import meta tag
 			$html = preg_replace('/\#?\s?<meta([^>]+)>/', '<?php Context::getInstance()->addMetaTag(\'<meta$1>\'); ?>', $html);
 			
+			// <title>title</title>
+			$html = preg_replace_callback('`<title>(.*?)</title>`', array($this, 'parseTitle'), $html);
 
 			// {# Locale code }
 			// ex) {# 'en'=>'Error on this page', 'kr'=> '이 페이지에 오류가 있습니다' }
@@ -43,8 +45,11 @@
 			// {@ PHPCode }
 			$html = preg_replace_callback('/{@([\s\S]+?)}/', array($this, 'parseCode'), $html);
 			
-			// {$a} -> echo  $__attr->a ( Context::get('a') or View->a )
-			$html = preg_replace_callback('/{\s*(\$.*?)}/', array($this, 'parseVar'), $html);
+			/*
+			 * {$a} -> <?php echo $__attr->a ( Context::get('a') or View->a ) ?> 
+			 * {&a} -> $__attr->a ( Context::get('a') or View->a )
+			 */
+			$html = preg_replace_callback('/{\s*(\$|&)([^}]+?)}/', array($this, 'parseVar'), $html);
 			
 			// {func()} -> Context::execFunction('func', array())
 			$html = preg_replace_callback("`{\s*([a-zA-Z0-9_\s]+)\((.*?)\)}`", array($this, 'parseFunc'), $html);
@@ -85,10 +90,7 @@
 			// <link>http://google.com</link> -> <a href="http://google.com">http://google.com</a>
 			$html = preg_replace('`<link(.*?)>(.*?)</link>`', '<a href="$2"$1>$2</a>', $html);
 			
-			// <title>title</title> proc
-			$html = preg_replace_callback('`<title>(.*?)</title>`', create_function('$matches', 'Context::getInstance()->setTitle($matches[1]);'), $html);
-
-
+			
 			$html = join('$_SERVER', explode('$__attr->_SERVER', $html));
 			$html = join('$_COOKIE', explode('$__attr->_COOKIE', $html));
 			$html = join('$GLOBALS', explode('$__attr->GLOBALS', $html));
@@ -163,11 +165,19 @@
 			
 		}
 
-		private function parseVar($matches) {
-			$args = $matches[1];
-			$args = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $args, -1);
+		private function parseTitle($matches) {
+			$matches[1] = preg_replace('/{\$(.*?)}/', '{&$1}', $matches[1]);
+			return '<?php Context::getInstance()->setTitle("'.$matches[1].'"); ?>';
+		}
 
-			return '<?php echo ' . $args . '; ?>';
+		private function parseVar($matches) {
+			$varname = $matches[1] . $matches[2];
+			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $varname, -1);
+			$varname = preg_replace('/&([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $varname, -1);
+
+			return $matches[1] == '&' ?
+				'{' . $varname . '}' :
+				'<?php echo ' . $varname . '; ?>';
 		}
 
 		private function parseFunc($matches) {
