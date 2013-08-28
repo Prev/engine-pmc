@@ -4,13 +4,13 @@
 	 * @ proj P.M.C
 	 *	(Parameter MVC Core)
 	 *
-	 * @ author
-	 *	  prevdev@gmail.com,
-	 *	  luaviskang@gmail.com
+	 * @ author prevdev@gmail.com
 	 *
 	 * @ https://github.com/Prev/engine-pmc
 	 * @ 2013.05 ~ 08
 	 * @ MIT LICENSE
+	 *
+	 * @ thanks to luaviskang@gmail.com
 	 */
 	
 	define('PMC', true);

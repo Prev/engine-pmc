@@ -2,7 +2,7 @@
 
 	/**
 	 * @author prevdev@gmail.com
-	 * @2013.05 ~ 07
+	 * @2013.05 ~ 08
 	 *
 	 *
 	 * Context Class
@@ -570,13 +570,15 @@
 			
 			if ($this->mobileMode && is_file(ROOT_DIR . '/layouts/m.' . $this->layout . '/layout.html'))
 				$this->layout = 'm.' . $this->layout;
-
-			CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
 			
 
 			if ($this->printAlone) {
+				$this->getModuleContent();
 				ob_end_flush();
+				
 			}else {
+				CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
+
 				$content = ob_get_clean();
 				OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
 			
