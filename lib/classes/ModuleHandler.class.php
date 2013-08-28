@@ -152,8 +152,10 @@
 				));
 				return NULL;
 			}
-			if (isset($moduleInfo->print_alone)) 
+			if (isset($moduleInfo->print_alone)) {
+				Context::getInstance()->setLayout('blank');
 				Context::getInstance()->printAlone = true;
+			}
 
 			if (isset($moduleInfo->layout))
 				Context::getInstance()->setLayout($moduleInfo->layout);
@@ -216,8 +218,11 @@
 							));
 							return NULL;
 						}
-						if (isset($actions[$i]->print_alone))
+						if (isset($actions[$i]->print_alone)) {
 							Context::getInstance()->printAlone = true;
+							Context::getInstance()->setLayout('blank');
+						}
+						
 						if (isset($actions[$i]->layout))
 							Context::getInstance()->setLayout($actions[$i]->layout);
 

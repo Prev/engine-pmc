@@ -38,6 +38,7 @@
 			// <title>title</title>
 			$html = preg_replace_callback('`<title>(.*?)</title>`', array($this, 'parseTitle'), $html);
 
+
 			// {# Locale code }
 			// ex) {# 'en'=>'Error on this page', 'kr'=> '이 페이지에 오류가 있습니다' }
 			$html = preg_replace('/{#([\s\S]+?)}/', '{@ echo fetchLocale(array($1)); }', $html);
@@ -49,7 +50,8 @@
 			 * {$a} -> <?php echo $__attr->a ( Context::get('a') or View->a ) ?> 
 			 * {&a} -> $__attr->a ( Context::get('a') or View->a )
 			 */
-			$html = preg_replace_callback('/{\s*(\$|&)([^}]+?)}/', array($this, 'parseVar'), $html);
+			$html = preg_replace_callback('/{\s*(\$[^}]+?)}/', array($this, 'parseVar'), $html);
+			//$html = preg_replace_callback('/{\s*(\$|&)([^}]+?)}/', array($this, 'parseVar'), $html);
 			
 			// {func()} -> Context::execFunction('func', array())
 			$html = preg_replace_callback("`{\s*([a-zA-Z0-9_\s]+)\((.*?)\)}`", array($this, 'parseFunc'), $html);
@@ -89,7 +91,7 @@
 			
 			// <link>http://google.com</link> -> <a href="http://google.com">http://google.com</a>
 			$html = preg_replace('`<link(.*?)>(.*?)</link>`', '<a href="$2"$1>$2</a>', $html);
-			
+
 			
 			$html = join('$_SERVER', explode('$__attr->_SERVER', $html));
 			$html = join('$_COOKIE', explode('$__attr->_COOKIE', $html));
@@ -109,7 +111,7 @@
 		private function parseUrl($matches) {
 			$url = $matches[2];
 			
-			if (strpos($url, '://') !== false || substr($url, 0, 1) == '#' || substr($url, 0, 5) == '<?php')
+			if (strpos($url, '://') !== false || substr($url, 0, 1) == '#' || substr($url, 0, 7) == 'mailto:' || substr($url, 0, 5) == '<?php')
 				$url = $matches[2];
 			else if (substr($url, 0, 1) == '/')
 				$url = RELATIVE_URL . $matches[2];
@@ -166,18 +168,18 @@
 		}
 
 		private function parseTitle($matches) {
-			$matches[1] = preg_replace('/{\$(.*?)}/', '{&$1}', $matches[1]);
-			return '<?php Context::getInstance()->setTitle("'.$matches[1].'"); ?>';
+			$matches[1] = preg_replace('/{\$(.*?)}/', '\'.\$__attr->$1.\'', $matches[1]);
+			$matches[1] = preg_replace('/{#(.*?)}/', '\'.fetchLocale(array($1)).\'', $matches[1]);
+
+			return '<?php Context::getInstance()->setTitle(\''.$matches[1].'\'); ?>';
 		}
 
 		private function parseVar($matches) {
-			$varname = $matches[1] . $matches[2];
+			$varname = $matches[1];
 			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $varname, -1);
 			$varname = preg_replace('/&([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $varname, -1);
 
-			return $matches[1] == '&' ?
-				'{' . $varname . '}' :
-				'<?php echo ' . $varname . '; ?>';
+			return '<?php echo ' . $varname . '; ?>';
 		}
 
 		private function parseFunc($matches) {

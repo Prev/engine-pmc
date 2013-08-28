@@ -15,7 +15,7 @@
 
 			header("Content-Type: application/octet-stream"); 
 			header("Content-Disposition: attachment; filename=". $data->file_name); 
-			header("Content-Length: ".$data->file_hash); 
+			header("Content-Length: ".$data->file_size); 
 			header("Content-Transfer-Encoding: binary "); 
 			header("Pragma: no-cache");
 			header("Expires: 0");
