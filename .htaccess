@@ -39,4 +39,4 @@ RewriteRule ^(layouts)/(.+)\.html$ - [L,F]
 
 
 # pmc_error.log access denied
-RewriteRule ^pmc_error.log$ - [L,F]
+RewriteRule ^files/pmc_error.log$ - [L,F]

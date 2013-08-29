@@ -19,7 +19,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.3.7');
+	define('PMC_VERSION', '0.3.8');
 	
 	
 	/**
@@ -90,7 +90,7 @@
 	/**
 	 * Define log file's path
 	 */
-	define('LOG_FILE_PATH', (ROOT_DIR . '/pmc_error.log'));
+	define('LOG_FILE_PATH', (ROOT_DIR . '/files/pmc_error.log'));
 	
 	
 	/**

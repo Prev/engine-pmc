@@ -167,8 +167,6 @@
 					array('http-equiv'=>'X-UA-Compatible', 'content'=>X_UA_Compatible)
 				);
 			}
-			
-			$this->setTitle('engine pmc');
 		}
 		
 		/**

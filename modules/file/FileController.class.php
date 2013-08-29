@@ -18,6 +18,11 @@
 		}
 
 		public function procFileUpload() {
+			if (!$_FILES['bifile']['size']) {
+				$this->close();
+				return;
+			}
+			
 			$data = $this->_procUpload(true);
 
 			echo '<script type="text/javascript">
@@ -27,6 +32,10 @@
 		}
 
 		public function procImageUpload() {
+			if (!$_FILES['bifile']['size']) {
+				$this->close();
+				return;
+			}
 			$imageKind = array('image/pjpeg', 'image/jpeg', 'image/JPG', 'image/X-PNG', 'image/PNG', 'image/png', 'image/x-png');
 			$imageExtensions = array('png', 'jpg', 'jpeg', 'gif', 'bmp');
 

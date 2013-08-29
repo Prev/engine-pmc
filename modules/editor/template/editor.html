@@ -102,6 +102,7 @@
 		var textarea = document.createElement('textarea');
 		textarea.name = 'content';
 		textarea.value = content;
+		textarea.style.display = 'none';
 		form.createField(textarea);
 
 		var files = Editor.getSidebar().getAttachments("file");

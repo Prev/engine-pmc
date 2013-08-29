@@ -30,7 +30,7 @@
 		<div class="footer">
 			<p><a href="#" onclick="closeWindow();" title="닫기" class="close">닫기</a></p>
 			<ul>
-				<li class="submit"><a href="#" onclick="form1.submit();" title="등록" class="btnlink">등록</a> </li>
+				<li class="submit"><a href="#" onclick="if (!form1.bifile.value) return false; form1.submit();" title="등록" class="btnlink">등록</a> </li>
 				<li class="cancel"><a href="#" onclick="closeWindow();" title="취소" class="btnlink">취소</a></li>
 			</ul>
 		</div>
