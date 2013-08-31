@@ -111,7 +111,7 @@
 		private function parseUrl($matches) {
 			$url = $matches[2];
 			
-			if (strpos($url, '://') !== false || substr($url, 0, 1) == '#' || substr($url, 0, 7) == 'mailto:' || substr($url, 0, 5) == '<?php')
+			if (strpos($url, '://') !== false || substr($url, 0, 1) == '#' || substr($url, 0, 2) == '//' || substr($url, 0, 7) == 'mailto:' || substr($url, 0, 5) == '<?php')
 				$url = $matches[2];
 			else if (substr($url, 0, 1) == '/')
 				$url = RELATIVE_URL . $matches[2];
@@ -149,7 +149,7 @@
 				return '<!-- Error loading imports -->';
 			}
 			
-			if (substr($importVals->path, 0, 1) == '/')
+			if (substr($importVals->path, 0, 1) == '/' || strpos($importVals->path, '://') !== false)
 				$absolutePath = $importVals->path;
 			else if (substr($importVals->path, 0, 2) == './')
 				$absolutePath = $this->relativePath . substr($importVals->path, 2);

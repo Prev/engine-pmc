@@ -367,15 +367,17 @@
 		 * @param $targetie : target of added ie, if @param is not NULL, header tag is reaplaced to <!--[if @param]>HEADER_TAG<![endif]-->
 		 */
 		public function addHeaderFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
-			if (substr($path, 0, 1) != '/')
-				$path = '/' . $path;
+			if (substr($path, 0, 2) != '//' && strpos($path, '://') === false) {
+				if (substr($path, 0, 1) != '/')
+					$path = '/' . $path;
 
-			if (!is_file(ROOT_DIR . '/' . $path)) {
-				self::printWarning(array(
-					'en' => 'fail to load file "<b>'.$path.'"</b>',
-					'kr' => '파일을 불러오는데 실패했습니다 - "<b>'.$path.'"</b>'
-				));
-				return;
+				if (!is_file(ROOT_DIR . '/' . $path)) {
+					self::printWarning(array(
+						'en' => 'fail to load file "<b>'.$path.'"</b>',
+						'kr' => '파일을 불러오는데 실패했습니다 - "<b>'.$path.'"</b>'
+					));
+					return;
+				}
 			}
 			
 			switch ($extension = substr(strrchr($path, '.'), 1)) {

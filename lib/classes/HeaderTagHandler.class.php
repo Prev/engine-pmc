@@ -201,15 +201,21 @@
 			$headerFiles = array_merge(($this->cssFiles ? $this->cssFiles : array()), ($this->jsFiles ? $this->jsFiles : array()));
 			
 			for ($i=0; $i<count($headerFiles); $i++) {
-				$path = ROOT_DIR . $headerFiles[$i]->path;
-				$url = RELATIVE_URL . $headerFiles[$i]->path.'?'.filemtime($path);
+				if (substr($headerFiles[$i]->path, 0, 2) == '//' || strpos($headerFiles[$i]->path, '://') !== false) {
+					$path = $headerFiles[$i]->path;
+					$url = $headerFiles[$i]->path;
+
+				}else {
+					$path = ROOT_DIR . $headerFiles[$i]->path;
+					$url = RELATIVE_URL . $headerFiles[$i]->path.'?'.filemtime($path);
 				
-				if (!is_file($path)) {
-					Context::printWarning(array(
-						'en'=>"Fail to load file '$path'",
-						'kr'=>"파일 '$path' 을 불러올 수 없음"
-					));
-					continue;
+					if (!is_file($path)) {
+						Context::printWarning(array(
+							'en'=>"Fail to load file '$path'",
+							'kr'=>"파일 '$path' 을 불러올 수 없음"
+						));
+						continue;
+					}
 				}
 
 				if ($headerFiles[$i]->position !== $position) continue;
