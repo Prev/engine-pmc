@@ -7,11 +7,11 @@
 	"actions":[
 		{
 			"name":"procFileUpload",
-			"controller":"FileController"
+			"controller":"FileUploadController"
 		},
 		{
 			"name":"procImageUpload",
-			"controller":"FileController"
+			"controller":"FileUploadController"
 		},
 		{
 			"name":"procDownloadFile",

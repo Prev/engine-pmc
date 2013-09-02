@@ -10,7 +10,6 @@
 		public $categorys;
 		
 		function dispList() {
-
 			if (!$this->nowPage)
 				self::execTemplate('board_not_found');
 
@@ -21,7 +20,7 @@
 					$this->model->getNoticeArticles(),
 					$this->model->getArticleDatas($this->boardInfo)
 				);
-				self::execTemplate('board');
+				self::execTemplate('board_list');
 			}
 		}
 

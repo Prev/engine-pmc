@@ -20,6 +20,17 @@
 		{
 			"name":"dispFilePopup",
 			"layout":"blank"
+		},
+
+		{
+			"name":"procFileUpload",
+			"controller":"EditorUploadController",
+			"layout":"blank"
+		},
+		{
+			"name":"procImageUpload",
+			"controller":"EditorUploadController",
+			"layout":"blank"
 		}
 	]
 }

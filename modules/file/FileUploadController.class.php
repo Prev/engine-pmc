@@ -1,6 +1,6 @@
 <?php
 	
-	class FileController extends Controller {
+	class FileUploadController extends Controller {
 
 		public function init() {
 			if (!is_dir(ROOT_DIR . '/files/attach/')) {
@@ -23,12 +23,7 @@
 				return;
 			}
 			
-			$data = $this->_procUpload(true);
-
-			echo '<script type="text/javascript">
-				window.opener.appendFile("'.getUrl() . '/' . substr($data->uploadedUrl, 1).'", "'.$data->fileName.'", '.$data->fileSize.', "'.$data->fileMimeType.'", '.$data->fileId.');
-				window.close();
-			</script>';
+			return $this->_procUpload(true);
 		}
 
 		public function procImageUpload() {
@@ -36,7 +31,7 @@
 				$this->close();
 				return;
 			}
-			$imageKind = array('image/pjpeg', 'image/jpeg', 'image/JPG', 'image/X-PNG', 'image/PNG', 'image/png', 'image/x-png');
+			$imageKind = array('image/pjpeg', 'image/jpeg', 'image/JPG', 'image/X-PNG', 'image/PNG', 'image/png', 'image/x-png', 'image/gif', 'image/GIF');
 			$imageExtensions = array('png', 'jpg', 'jpeg', 'gif', 'bmp');
 
 			if (!in_array($_FILES['bifile']['type'], $imageKind) || !in_array(substr(strrchr($_FILES['bifile']['name'], '.'), 1), $imageExtensions)) {
@@ -44,11 +39,7 @@
 				$this->close('Cannot upload this file as image');
 				return;
 			}
-			$data = $this->_procUpload(false);
-			echo '<script type="text/javascript">
-				window.opener.appendImage("'.getUrl() . '/' . substr($data->uploadedUrl, 1).'", "'.$data->fileName.'", '.$data->fileSize.');
-				window.close();
-			</script>';
+			return $this->_procUpload(false);
 		}
 
 		private function _procUpload($isBinary) {

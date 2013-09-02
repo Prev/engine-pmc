@@ -20,6 +20,10 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.3.9
++ 게시판 검색 기능
++ 파일 업로드 에디터 모듈에서 상속
+
 #### v 0.3.8
 + 각종 버그 픽스
 
