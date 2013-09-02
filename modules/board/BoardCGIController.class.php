@@ -121,8 +121,8 @@
 			if ($articleData->board_id != $_POST['board_id']) {
 				DBHandler::for_table('article')->raw_query('
 					UPDATE '.DBHandler::$prefix.'article
-					SET board_id = "'.$_POST['board_id'].'"
-					WHERE top_no = "'.$_POST['article_no'].'"
+					SET board_id = "'.escape($_POST['board_id']).'"
+					WHERE top_no = "'.escape($_POST['article_no']).'"
 				');
 			}
 

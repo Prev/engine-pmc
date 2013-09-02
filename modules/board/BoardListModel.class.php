@@ -13,9 +13,9 @@
 		}
 
 		function getArticleDatas($boardInfo) {
-			$limitNum = ($this->nowPage - 1) * $this->aop;
+			$limitNum = (int)(($this->nowPage - 1) * $this->aop);
 
-			$userId = User::getCurrent()->id;
+			$userId = (int)User::getCurrent()->id;
 			$pfx = DBHandler::$prefix;
 			$isBoardAdmin = $this->controller->checkIsBoardAdmin($boardInfo->admin_group);
 
@@ -49,7 +49,7 @@
 							)
 						)
 
-						" . (isset($_REQUEST['category']) && $_REQUEST['category'] ? 'AND a2.category = "'.$_REQUEST['category'].'"' : '') . "
+						" . (isset($_REQUEST['category']) && $_REQUEST['category'] ? 'AND a2.category = "'.escape($_REQUEST['category']).'"' : '') . "
 						ORDER BY IF(a2.top_no, a2.top_no, a2.no) DESC, order_key ASC
 						LIMIT {$limitNum}, {$this->aop}"
 					);
@@ -120,7 +120,7 @@
 		function getPageNumbers() {
 			$obj = (object) array();
 
-			$userId = User::getCurrent()->id;
+			$userId = (int)User::getCurrent()->id;
 			$pfx = DBHandler::$prefix;
 
 			if ($this->view->boardInfo->hide_secret_article) {
@@ -149,7 +149,7 @@
 								AND a2.no = a1.no
 							)
 						)
-						" . (isset($_REQUEST['category']) && $_REQUEST['category'] ? 'AND a2.category = "'.$_REQUEST['category'].'"' : '')
+						" . (isset($_REQUEST['category']) && $_REQUEST['category'] ? 'AND a2.category = "'.escape($_REQUEST['category']).'"' : '')
 					);
 				//$row->where('article.is_secret', 0);
 			}else {
