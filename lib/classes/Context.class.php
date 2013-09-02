@@ -47,7 +47,7 @@
 		 * mobile mode
 		 */
 		public $mobileMode;
-		public $isMobile;
+		public $isRealMobile;
 
 
 		/**
@@ -97,20 +97,20 @@
 			$this->headerTagHandler = new HeaderTagHandler();
 			$this->setLayout(LAYOUT_NAME);
 			$this->printAlone = false;
+			$this->mobileMode = false;
 
 			$mobileAgents  = array('iphone','lgtelecom','skt','mobile','samsung','nokia','blackberry','android','android','sony','phone');
 			
 			for ($i=0; $i<count($mobileAgents); $i++){ 
 				if (preg_match("/{$mobileAgents[$i]}/", strtolower($_SERVER['HTTP_USER_AGENT']))) {
 					$this->mobileMode = true;
-					$this->isMobile = true;
+					$this->isRealMobile = true;
 					break;
 				} 
 			}
 			
 			if ($_COOKIE['mobile']) $this->mobileMode = true;
-			if (!$_COOKIE['mobile']) $this->mobileMode = false;
-
+			
 			if (isset($_GET['mobile'])) {
 				if ($_GET['mobile']) {
 					$this->mobileMode = true;
@@ -371,7 +371,11 @@
 				if (substr($path, 0, 1) != '/')
 					$path = '/' . $path;
 
-				if (!is_file(ROOT_DIR . '/' . $path)) {
+				$pos = strrpos($path, '/');
+				if ($this->mobileMode && is_file(ROOT_DIR . substr($path, 0, $pos) . '/m.' . substr($path, $pos+1)))
+					$path = substr($path, 0, $pos) . '/m.' . substr($path, $pos+1);
+				
+				if (!is_file(ROOT_DIR . $path)) {
 					self::printWarning(array(
 						'en' => 'fail to load file "<b>'.$path.'"</b>',
 						'kr' => '파일을 불러오는데 실패했습니다 - "<b>'.$path.'"</b>'
@@ -379,6 +383,7 @@
 					return;
 				}
 			}
+			
 			
 			switch ($extension = substr(strrchr($path, '.'), 1)) {
 				case 'css' :

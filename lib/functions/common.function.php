@@ -367,7 +367,7 @@
 	/**
 	 * getUrl함수에서 @param $module, @param $action이 빠진 하수
 	 */
-	function getUrlA($queryParam, $url) {
+	function getUrlA($queryParam, $url=NULL) {
 		return getUrl(NULL, NULL, $queryParam, $url);
 	}
 	

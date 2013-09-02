@@ -33,7 +33,7 @@
 			$html = preg_replace_callback('/\#?\s?<import([^>]+)>/', array($this, 'handleImportTags'), $html);
 			
 			// import meta tag
-			$html = preg_replace('/\#?\s?<meta([^>]+)>/', '<?php Context::getInstance()->addMetaTag(\'<meta$1>\'); ?>', $html);
+			$html = preg_replace_callback('/\#?\s?<meta([^>]+)>/', array($this, 'parseMeta'), $html);
 			
 			// <title>title</title>
 			$html = preg_replace_callback('`<title>(.*?)</title>`', array($this, 'parseTitle'), $html);
@@ -165,6 +165,13 @@
 				'' . (isset($importVals->targetie) ? '\''.$importVals->targetie.'\'' : 'NULL') . '' .
 			'); ?>';
 			
+		}
+
+		private function parseMeta($matches) {
+			$matches[1] = preg_replace('/{\$(.*?)}/', '\'.\$__attr->$1.\'', $matches[1]);
+			$matches[1] = preg_replace('/{#(.*?)}/', '\'.fetchLocale(array($1)).\'', $matches[1]);
+
+			return '<?php Context::getInstance()->addMetaTag(\'<meta'.$matches[1].'>\'); ?>';
 		}
 
 		private function parseTitle($matches) {
