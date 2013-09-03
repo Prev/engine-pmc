@@ -30,7 +30,7 @@
 
 			
 			// import css/js... header file
-			$html = preg_replace_callback('/\#?\s?<import([^>]+)>/', array($this, 'handleImportTags'), $html);
+			$html = preg_replace_callback('/\#?\s?<import([^>]+)>/', array($this, 'parseImportTags'), $html);
 			
 			// import meta tag
 			$html = preg_replace_callback('/\#?\s?<meta([^>]+)>/', array($this, 'parseMeta'), $html);
@@ -69,6 +69,14 @@
 			
 			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', $html)) {
 				$html = preg_replace_callback('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
+				if (++$count > 30) break;
+			}
+			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+()<false>([\s\S]*?)<\/false>\s+<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+()<false>([\s\S]*?)<\/false>\s+<\/condition>/i', array($this, 'parseConditions'), $html);
+				if (++$count > 30) break;
+			}
+			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+()<\/condition>/i', $html)) {
+				$html = preg_replace_callback('/<condition\s+do\s*=\s*"([^"]+)"\s*>\s+<true>\s+([\s\S]*?)<\/true>\s+()<\/condition>/i', array($this, 'parseConditions'), $html);
 				if (++$count > 30) break;
 			}
 			while (preg_match('/<condition\s+do\s*=\s*"([^"]+)"\s*>([\s\S]*?)<else>([\s\S]*?)<\/condition>/i', $html)) {
@@ -125,7 +133,7 @@
 			return $matches[1] . '="' . $url . '"';
 		}
 
-		private function handleImportTags($matches) {
+		private function parseImportTags($matches) {
 			if (substr($matches[0], 0, 1) == '#') return;
 			
 			preg_match_all('/([a-zA-Z0-9]+)="([^"]+)"/', $matches[1], $output);
