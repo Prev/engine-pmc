@@ -21,7 +21,16 @@
 		<ul class="first-line">
 			<li class="select-category">
 				<a href="#" onclick="toggleCategorySelector(); return false;">
-					<span>{# 'en'=>'Category', 'kr'=>'말머리 선택'}</span>
+					<span>
+						<condition do="isset($_GET['category']) && $_GET['category']">
+							<true>
+								{$_GET['category']}
+							</true>
+							<false>
+								{# 'en'=>'Category', 'kr'=>'말머리 선택'}
+							</false>
+						</condition>
+					</span>
 					<button class="select-category-btn">
 						<span class="hidden">&nabla;</span>
 					</button>

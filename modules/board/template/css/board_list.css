@@ -7,9 +7,11 @@
 .board .board-article ul li{ list-style: none; float: left; text-align: center; font-size: 11px;  }
 .board .board-article .first-line{ height: 22px; background-color: #eeeeee; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; }
 .board .board-article .first-line li{ font-weight: bold; font-size: 12px; }
-.board .board-article .first-line .select-category{ width: 95px; }
+
+.board .board-article .first-line .select-category{ width: 90px; text-align: left; padding-left: 5px }
 .board .board-article .first-line .select-category a{ color: #333; text-decoration: none }
 .board .board-article .first-line .select-category .select-category-btn{ width: 12px; height: 12px; background: transparent url('../img/board_sprite.png') no-repeat -43px 0px; border: 0; padding: 0; margin: 0px 0px 0px 5px; vertical-align: middle; cursor: pointer; }
+
 .board .board-article .first-line .title{ width: 485px; text-align: center; }
 
 .board .board-article .notice{ height:20px; background-color: #f6f6f6; }
