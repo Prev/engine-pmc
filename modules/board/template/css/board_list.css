@@ -11,9 +11,11 @@
 .board .board-article .first-line .select-category a{ color: #333; text-decoration: none }
 .board .board-article .first-line .select-category .select-category-btn{ width: 12px; height: 12px; background: transparent url('../img/board_sprite.png') no-repeat -43px 0px; border: 0; padding: 0; margin: 0px 0px 0px 5px; vertical-align: middle; cursor: pointer; }
 .board .board-article .first-line .title{ width: 485px; text-align: center; }
+
 .board .board-article .notice{ height:20px; background-color: #f6f6f6; }
 .board .board-article .notice .title{ width: 545px; color: #ec137f; font-weight: bold; }
 .board .board-article .notice-icon{ display: inline-block; float: left; font-size: 11px; padding: 2px 4px; margin: -2px 5px 0 0; background-color:#5269a3; border-radius: 3px; color: white; *zoom:1; }
+
 .board .board-article .article{ height: 20px; }
 .board .board-article .article .category{ color: #b0b0b0; }
 .board .board-article .article .dot-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
@@ -21,6 +23,8 @@
 .board .board-article .article .reply-icon{ width: 11px; height: 9px; background: transparent url('../img/board_sprite.png') no-repeat -32px 0px; display: inline-block; *zoom:1; *display:inline }
 .board .board-article .article .attachment{ width: 16px; height: 16px; background: transparent url('../img/board_sprite.png') no-repeat 0px 0px; vertical-align: middle; display: inline-block; *zoom:1; *display:inline }
 .board .board-article .article .attach-image{ width: 16px; height: 16px; background: transparent url('../img/board_sprite.png') no-repeat -16px 0px; vertical-align: middle; display: inline-block; *zoom:1; *display:inline }
+.board .board-article .article strong.search{ background-color: yellow }
+
 .board .board-article .title{ width: 580px; text-align: left; }
 .board .board-article .title a:link,
 .board .board-article .title a:visited,
@@ -29,6 +33,7 @@
 .board .board-article .title i{ color: #999 }
 .board .board-article .title span.comment-counts{ font-size: 10px; color: #5269a3 }
 .board .board-article .title .file-icon{ display: inline-block; width: 16px; height: 16px; vertical-align: middle; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAF1SURBVBgZpcE9axRRFIDh99y5s1nHjawQVEgQGxErIWgES9MGBDuxlrBVfkG6lBEsrUQEEXu7gNgIUSTBQrBSyYdgFjXMktmdmTvniLCB28/ziJnRhqMlR0ueyNrTLzY7A0UVON/r8PNojDjoZQlqwt98zNvdw9vfX97/yJQnMi4m3F26xr3FHm+2D1h/eJ3Yi3dDVOUDIEw5IkVZ82cU+G/r0y9OTQLkJQyPK0SUmCfinJAY1I3yeLCIqmFAgpF5KMuS/KQi5ol0U8ekrNl4/QMnEBpFG8UAMwODLFVinkhQo2wCiUsBQ2gQEUwNMyWEmqoKxDyRUVGTimewMkvQCnBgYKJ0fYfNV3v8zk+IeSKNGgkpyphnO6vMZZcRHMNin0e3nuDoUpQVMU/E+4Qrl+Bib8TyjSX6nXlwcDyZ58LZQNYBL0JMzIxTNwdb768unLnTn+nT9ecIWiOqiDWoFHzd+8ZRXvP5+QNhSsyMNhwtOVr6B/fLolbgemG4AAAAAElFTkSuQmCC); *zoom: 1; }
+
 .board .board-article .no-article{ padding:30px 0; text-align:center; border-bottom:1px solid #e0e0e0; }
 
 .board .board-article .writer{ width: 150px; }

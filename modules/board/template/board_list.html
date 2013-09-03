@@ -63,13 +63,13 @@
 					{@ endif; }
 				</li>
 				<condition do="!$data->is_delete">
-					<li class="writer">{htmlspecialchars($data->writer)}</li>
+					<li class="writer">{$data->writer}</li>
 					<li class="date">{$data->upload_time2}</li>
 					<li class="hits">{$data->hits}</li>
 				</condition>
 			</ul>
 		{@ endforeach; }
-		<condition do="!$articleData">
+		<condition do="!$articleData || count($articleData) == 0">
 			<div class="no-article">
 				{#
 					'en'=>'There is no article',
@@ -122,7 +122,7 @@
 				<option value="title"{@ if ($_GET['search_type'] == 'title') echo ' selected'; }>제목</option>
 				<option value="writer"{@ if ($_GET['search_type'] == 'writer') echo ' selected'; }>글작성자</option>
 			</select>
-			<input name="search" class="search-text" type="text">
+			<input name="search" class="search-text" type="text"{@ if (!empty($_GET['search'])) echo ' value="'.$_GET['search'].'"'; }>
 			<input class="search-submit" type="submit" value="검색">
 		</form>
 	</div>

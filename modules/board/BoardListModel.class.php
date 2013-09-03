@@ -6,6 +6,11 @@
 		public $aop;
 		public $nowPage;
 
+		public function init() {
+			if (isset($_REQUEST['search']) && $_REQUEST['search'])
+				$_REQUEST['search'] = trim($_REQUEST['search']);
+		}
+
 		public function getBoardInfo($boardName) {
 			return DBHandler::for_table('board')
 				->where('name', $boardName)
@@ -50,22 +55,27 @@
 					$query .= 'AND a2.category = "'.escape($_REQUEST['category']).'"';
 				
 				if (isset($_REQUEST['search']) && $_REQUEST['search']) {
+					$searchKey = escape(str_replace(' ', '%', $_REQUEST['search']));
+
 					switch ($_REQUEST['search_type']) {
 						case 'all':
-							$query .= 'AND ((a2.title LIKE "%' . escape($_REQUEST['search']) . '%") OR (a2.content LIKE "%' . escape($_REQUEST['search']) . '%"))';
+							$query .= 'AND ((a2.title LIKE "%' . $searchKey . '%") OR (a2.content LIKE "%' . $searchKey . '%"))';
 							break;
 						
 						case 'title':
-							$query .= 'AND a2.title LIKE "%' . escape($_REQUEST['search']) . '%"';
+							$query .= 'AND a2.title LIKE "%' . $searchKey . '%"';
 							break;
 
 						case 'writer':
-							$query .= 'AND ' . $pfx . (USE_REAL_NAME ? 'user.user_name' : 'user.nick_name') . ' LIKE "%' . escape($_REQUEST['search']) . '%"';
+							$query .= 'AND ' . $pfx . (USE_REAL_NAME ? 'user.user_name' : 'user.nick_name') . ' LIKE "%' . $searchKey . '%"';
 							break;
 					}
-				}
+					$query .= 'ORDER BY a2.no DESC';
+				}else
+					$query .= 'ORDER BY IF(a2.top_no, a2.top_no, a2.no) DESC, order_key ASC';
 				
-				$query .= "ORDER BY IF(a2.top_no, a2.top_no, a2.no) DESC, order_key ASC LIMIT {$limitNum}, {$this->aop}";
+
+				$query .= " LIMIT {$limitNum}, {$this->aop}";
 
 				$row = DBHandler::for_table('article')
 					->raw_query($query);
@@ -79,8 +89,6 @@
 					->join('user', array(
 						'user.id','=','article.writer_id'
 					))
-					->order_by_expr('IF ('.$pfx.'article.top_no, '.$pfx.'article.top_no, '.$pfx.'article.no) DESC')
-					->order_by_asc('article.order_key')
 					->limit($limitNum, $this->aop);
 
 
@@ -88,50 +96,36 @@
 					$row->where('article.category', $_REQUEST['category']);
 
 				if (isset($_REQUEST['search']) && $_REQUEST['search']) {
+					$searchKey = escape(str_replace(' ', '%', $_REQUEST['search']));
+
 					switch ($_REQUEST['search_type']) {
 						case 'all':
-							$row->where_raw('(('.$pfx.'article.title LIKE "%' . escape($_REQUEST['search']) . '%") OR ('.$pfx.'article.content LIKE "%' . escape($_REQUEST['search']) . '%"))');
+							$row->where_raw('(('.$pfx.'article.title LIKE "%' . $searchKey . '%") OR ('.$pfx.'article.content LIKE "%' . $searchKey . '%"))');
 							break;
 						
 						case 'title':
-							$row->where_like('article.title', '%'.escape($_REQUEST['search']).'%');
+							$row->where_like('article.title', '%'.$searchKey.'%');
 							break;
-
+							
 						case 'writer':
-							$row->where_like(USE_REAL_NAME ? 'user.user_name' : 'user.nick_name', '%'.escape($_REQUEST['search']).'%');
+							$row->where_like(USE_REAL_NAME ? 'user.user_name' : 'user.nick_name', '%'.$searchKey.'%');
 							break;
 					}
+					$row = $row->order_by_desc('article.no');
+				}else {
+					$row = $row
+						->order_by_expr('IF ('.$pfx.'article.top_no, '.$pfx.'article.top_no, '.$pfx.'article.no) DESC')
+						->order_by_asc('article.order_key');
 				}
 			}
 
-			$data = $row->find_many();
-			
-			for ($i=0; $i<count($data); $i++) {
-				if ($data[$i]->content === NULL)
-					$data[$i]->is_delete = true;
-
-				if ($data[$i]->is_secret) {
-					if ($data[$i]->writer_id == User::getCurrent()->id || $this->view->isBoardAdmin)
-						$data[$i]->secret_visible = true;
-					else {
-						$parentArticle = $this->getParentArticle($data[$i]->top_no, $data[$i]->order_key);
-						if ($parentArticle && $parentArticle->writer_id == User::getCurrent()->id)
-							$data[$i]->secret_visible = true;
-					}
-				}
-
-				if ($data[$i]->category)
-					$data[$i]->category = htmlspecialchars($data[$i]->category);
-
-				$data[$i]->writer = USE_REAL_NAME ? $data[$i]->user_name : $data[$i]->nick_name;
-				$data[$i]->is_reply = isset($data[$i]->parent_no);
-				$data[$i]->upload_time2 = getRelativeTime(strtotime($data[$i]->upload_time));
-				$data[$i]->title = htmlspecialchars($data[$i]->title);
-			}
-			return $data;
+			return $row->find_many();
 		}
 		
 		public function getNoticeArticles() {
+			if ((isset($_REQUEST['category']) && $_REQUEST['category']) || (isset($_REQUEST['search']) && $_REQUEST['search']))
+				return array();
+
 			$data = DBHandler::for_table('article')
 				->select_many('article.*', 'user.user_name', 'user.nick_name')
 				->select_expr('(SELECT COUNT( * ) FROM '.DBHandler::$prefix.'article_comment WHERE article_no = '.DBHandler::$prefix.'article.no)', 'comment_counts')
@@ -144,7 +138,7 @@
 				->find_many();
 			
 			for ($i=0; $i<count($data); $i++) {
-				$data[$i]->writer = USE_REAL_NAME ? $data[$i]->user_name : $data[$i]->nick_name;
+				$data[$i]->writer = htmlspecialchars(USE_REAL_NAME ? $data[$i]->user_name : $data[$i]->nick_name);
 				$data[$i]->top_notice = true;
 				$data[$i]->upload_time2 = getRelativeTime(strtotime($data[$i]->upload_time));
 			}
@@ -188,20 +182,23 @@
 						$query .= 'AND a2.category = "'.escape($_REQUEST['category']).'"';
 					
 					if (isset($_REQUEST['search']) && $_REQUEST['search']) {
+						$searchKey = escape(str_replace(' ', '%', $_REQUEST['search']));
+						
 						switch ($_REQUEST['search_type']) {
 							case 'all':
-								$query .= 'AND ((a2.title LIKE "%' . escape($_REQUEST['search']) . '%") OR (a2.content LIKE "%' . escape($_REQUEST['search']) . '%"))';
+								$query .= 'AND ((a2.title LIKE "%' . $searchKey . '%") OR (a2.content LIKE "%' . $searchKey . '%"))';
 								break;
 							
 							case 'title':
-								$query .= 'AND a2.title LIKE "%' . escape($_REQUEST['search']) . '%"';
+								$query .= 'AND a2.title LIKE "%' . $searchKey . '%"';
 								break;
 
 							case 'writer':
-								$query .= 'AND ' . $pfx . (USE_REAL_NAME ? 'user.user_name' : 'user.nick_name') . ' LIKE "%' . escape($_REQUEST['search']) . '%"';
+								$query .= 'AND ' . $pfx . (USE_REAL_NAME ? 'user.user_name' : 'user.nick_name') . ' LIKE "%' . $searchKey . '%"';
 								break;
 						}
 					}
+
 					$row = DBHandler::for_table('article')->raw_query($query);
 
 			}else {
@@ -216,17 +213,19 @@
 					$row->where('article.category', $_REQUEST['category']);
 
 				if (isset($_REQUEST['search']) && $_REQUEST['search']) {
+					$searchKey = escape(str_replace(' ', '%', $_REQUEST['search']));
+
 					switch ($_REQUEST['search_type']) {
 						case 'all':
-							$row->where_raw('(('.$pfx.'article.title LIKE "%' . escape($_REQUEST['search']) . '%") OR ('.$pfx.'article.content LIKE "%' . escape($_REQUEST['search']) . '%"))');
+							$row->where_raw('(('.$pfx.'article.title LIKE "%' . $searchKey . '%") OR ('.$pfx.'article.content LIKE "%' . $searchKey . '%"))');
 							break;
 						
 						case 'title':
-							$row->where_like('article.title', '%'.escape($_REQUEST['search']).'%');
+							$row->where_like('article.title', '%'.$searchKey.'%');
 							break;
 
 						case 'writer':
-							$row->where_like(USE_REAL_NAME ? 'user.user_name' : 'user.nick_name', '%'.escape($_REQUEST['search']).'%');
+							$row->where_like(USE_REAL_NAME ? 'user.user_name' : 'user.nick_name', '%'.$searchKey.'%');
 							break;
 					}
 				}

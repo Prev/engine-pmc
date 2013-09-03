@@ -46,5 +46,40 @@
 			Context::getInstance()->selectedMenu = $boardName;
 		}
 
+		public function manufactureArticleDatas($articles) {
+			for ($i=0; $i<count($articles); $i++) {
+				if ($articles[$i]->content === NULL)
+					$articles[$i]->is_delete = true;
+
+				if ($articles[$i]->is_secret) {
+					if ($articles[$i]->writer_id == User::getCurrent()->id || $this->view->isBoardAdmin)
+						$articles[$i]->secret_visible = true;
+					else {
+						$parentArticle = $this->getParentArticle($articles[$i]->top_no, $articles[$i]->order_key);
+						if ($parentArticle && $parentArticle->writer_id == User::getCurrent()->id)
+							$articles[$i]->secret_visible = true;
+					}
+				}
+
+				$articles[$i]->writer = htmlspecialchars(USE_REAL_NAME ? $articles[$i]->user_name : $articles[$i]->nick_name);
+				$articles[$i]->is_reply = isset($articles[$i]->parent_no);
+				$articles[$i]->upload_time2 = getRelativeTime(strtotime($articles[$i]->upload_time));
+				$articles[$i]->title = htmlspecialchars($articles[$i]->title);
+
+				if ($articles[$i]->category)
+					$articles[$i]->category = htmlspecialchars($articles[$i]->category);
+				
+				if (isset($_REQUEST['search']) && $_REQUEST['search']) {
+					$regexp = '/(' . str_replace(' ', '|', $_REQUEST['search']) . ')/i';
+
+					if ($_REQUEST['search_type'] == 'writer')
+						$articles[$i]->writer = preg_replace($regexp, '<strong class="search">$1</strong>', $articles[$i]->writer);
+					else
+						$articles[$i]->title = preg_replace($regexp, '<strong class="search">$1</strong>', $articles[$i]->title);
+				}
+			}
+			return $articles;
+		}
+
 	}
 
