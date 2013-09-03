@@ -42,8 +42,8 @@
 			$record = DBHandler::for_table('article')->create();
 			$record->set(array(
 				'board_id' => $boardInfo->id,
-				'title' => $_POST['title'],
-				'content' => removeXSS($_POST['content']),
+				'title' => stripslashes($_POST['title']),
+				'content' => removeXSS(stripslashes($_POST['content'])),
 				'writer_id' => User::getCurrent()->id,
 				'is_secret' => evalCheckbox($_POST['is_secret']) ? 1 : 0 ,
 				'is_notice' => $isNotice ? 1 : 0 ,
@@ -128,8 +128,8 @@
 
 			$articleData->set(array(
 				'board_id' => $_POST['board_id'],
-				'title' => $_POST['title'],
-				'content' => removeXSS($_POST['content']),
+				'title' => stripslashes($_POST['title']),
+				'content' => removeXSS(stripslashes($_POST['content'])),
 				'is_secret' => evalCheckbox($_POST['is_secret']) ? 1 : 0 ,
 				'is_notice' => evalCheckbox($_POST['is_notice']) ? 1 : 0 ,
 				'allow_comment' => evalCheckbox($_POST['allow_comment']) ? 1 : 0 ,

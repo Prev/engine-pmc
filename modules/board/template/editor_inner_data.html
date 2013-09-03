@@ -8,7 +8,7 @@
 	<div class="fl">
 		<select id="board-selector" name="board_id" onclick="selectCategory()">
 			{@ foreach ($boardLists as $key => $board) : }
-				<option value="{$board->id}"{@ if ($boardName == $boardName) echo ' selected="selected"';}>
+				<option value="{$board->id}"{@ if ($board->name == $boardName) echo ' selected="selected"';}>
 					{$board->name_locale}
 				</option>
 			{@ endforeach; }

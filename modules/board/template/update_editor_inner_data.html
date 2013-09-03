@@ -14,7 +14,7 @@
 		<select id="category-selector" name="category"></select>
 	</div>
 	<div class="fl">
-		<input type="text" id="board-title" name="title" value="{$articleData->title}" />
+		<input type="text" id="board-title" name="title" value="{htmlspecialchars($articleData->title)}" />
 	</div>
 </div>
 
@@ -22,7 +22,7 @@
 {getContent('board', 'dispEditorInnerBottomData', array('articleData' => $articleData))}
 
 <textarea id="origin-content" style="display:none; visibility:hidden">
-	{$articleData->content}
+	{htmlspecialchars($articleData->content)}
 </textarea>
 
 <script type="text/javascript">
@@ -65,8 +65,6 @@
 	}
 
 	selectCategory();
-
-
 
 	window.addEventListener("load", function () {
 
