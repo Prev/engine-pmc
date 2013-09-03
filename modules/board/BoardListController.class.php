@@ -55,7 +55,7 @@
 					if ($articles[$i]->writer_id == User::getCurrent()->id || $this->view->isBoardAdmin)
 						$articles[$i]->secret_visible = true;
 					else {
-						$parentArticle = $this->getParentArticle($articles[$i]->top_no, $articles[$i]->order_key);
+						$parentArticle = $this->model->getParentArticle($articles[$i]->top_no, $articles[$i]->order_key);
 						if ($parentArticle && $parentArticle->writer_id == User::getCurrent()->id)
 							$articles[$i]->secret_visible = true;
 					}
