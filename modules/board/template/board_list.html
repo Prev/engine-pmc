@@ -118,14 +118,21 @@
 				</a>
 			</div>
 		</condition>
-	</div>
-	<div class="clearfix">
-		<div class="board-btn fr">
-			<a href="{getUrl('board', 'dispEditor', 'board_name='.$boardName)}">글쓰기</a>
+
+		<div class="board-btn-wrap">
+			<a href="{getUrl('board', 'dispEditor', 'board_name='.$boardName)}">
+				<button class="board-btn">
+					<span class="hidden">글쓰기</span>
+				</button>
+			</a>
 		</div>
 	</div>
+
 	<div class="search-box">
 		<form method="GET">
+			{@ foreach($_GET as $key => $value): }
+				<input type="hidden" name="{$key}" value="{$value}">
+			{@ endforeach;}
 			<select name="search_type">
 				<option value="all"{@ if ($_GET['search_type'] == 'all') echo ' selected'; }>제목 + 내용</option>
 				<option value="title"{@ if ($_GET['search_type'] == 'title') echo ' selected'; }>제목</option>

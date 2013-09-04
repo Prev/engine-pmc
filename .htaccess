@@ -2,11 +2,11 @@ RewriteEngine On
 
 
 # allow sso-server/index.php
-RewriteRule ^sso-server/index.php$ [L]
-RewriteRule ^sso-server/?$ [L]
+RewriteRule ^sso-server/index.php$ - [L]
+RewriteRule ^sso-server/?$ - [L]
 
 # allow editor/template/pages
-# RewriteRule ^modules/editor/template/pages/(.+)\.html$ L]
+# RewriteRule ^modules/editor/template/pages/(.+)\.html$ [L]
 
 
 

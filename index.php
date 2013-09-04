@@ -10,7 +10,7 @@
 	 * @ 2013.05 ~ 08
 	 * @ MIT LICENSE
 	 *
-	 * @ thanks to luaviskang@gmail.com
+	 * @ thanks to luaviskang@gmail.com, teampure.co.kr
 	 */
 	
 	define('PMC', true);

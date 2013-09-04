@@ -216,7 +216,7 @@
 					if ($extraVars && $extraVars->linkToSubMenu == true) {
 						$subMenu = self::getMenu(2);
 						if ($subMenu && count($subMenu) > 0)
-							redirect(getUrl() . (USE_SHORT_URL ? '/' : '/?menu=') . $subMenu[0]->title);
+							redirect(getUrl() . (USE_SHORT_URL ? '/'.$data->title.'/' : '/?menu=') . $subMenu[0]->title);
 					}
 				}
 				if ($data && $data->module && $data->action && !$moduleAction)
@@ -288,6 +288,11 @@
 				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false)
 					$arr[$i]->selected = true;
 				
+				if (!empty($arr[$i]->extra_vars)) {
+					$arr[$i]->extra_vars = json_decode($arr[$i]->extra_vars);
+					$arr[$i]->extraVars = $arr[$i]->extra_vars;
+				}
+
 				if ($arr[$i]->is_index && USE_SHORT_URL)
 					$arr[$i]->title = '';
 				
