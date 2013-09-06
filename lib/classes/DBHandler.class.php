@@ -161,7 +161,7 @@
 			
 			if ($e) Context::printErrorPage(array(
 				'en' => 'Fail connecting database - ' . $e,
-				'kr' => '데이터베이스에 연결에 실패하였습니다 - ' . $e
+				'ko' => '데이터베이스에 연결에 실패하였습니다 - ' . $e
 			));
 
 			self::configure('mysql:host=' . $info->host . ';dbname=' . $info->database_name);

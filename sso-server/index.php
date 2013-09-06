@@ -55,11 +55,13 @@
 
 	foreach ($userData as $key => $value) {
 		if ($key === 'password' || $key === 'password_salt') continue;
-		if ($key == 'input_id')
+		if ($key == 'input_id') {
 			$obj->userData->userId = $value;
-
-		$key = preg_replace_callback('/(.)_([a-z])/', create_function('$m', 'return $m[1].strtoupper($m[2]);'), $key);
+			$obj->userData->user_id = $value;
+		}
+		$key2 = preg_replace_callback('/(.)_([a-z])/', create_function('$m', 'return $m[1].strtoupper($m[2]);'), $key);
 		$obj->userData->{$key} = $value;
+		$obj->userData->{$key2} = $value;
 	}
 
 	$groupDatas = execQuery("
@@ -78,8 +80,9 @@
 				$tmp->nameLocales = json_decode($value);
 				continue;
 			}
-			$key = preg_replace_callback('/(.)_([a-z])/', create_function('$m', 'return $m[1].strtoupper($m[2]);'), $key);
+			$key2 = preg_replace_callback('/(.)_([a-z])/', create_function('$m', 'return $m[1].strtoupper($m[2]);'), $key);
 			$tmp->{$key} = $value;
+			$tmp->{$key2} = $value;
 		}
 		array_push($obj->userData->groups, $tmp);
 	}

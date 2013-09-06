@@ -14,13 +14,21 @@
 
 		private $id;
 		private $inputId;
+		private $input_id;
 		private $userId;
+		private $user_id;
 		private $nickName;
+		private $nick_name;
 		private $userName;
+		private $user_name;
 		private $emailAddress;
+		private $email_address;
 		private $phoneNumber;
+		private $phone_number;
 		private $lastLoginedIp;
+		private $last_logined_ip;
 		private $extraVars;
+		private $extra_vars;
 		private $groups;
 
 		public function __construct($data) {
@@ -30,8 +38,10 @@
 						$this->{$key} = $value;
 					}
 					if (isset($this->groups)) {
-						for ($i=0; $i<count($this->groups); $i++) 
+						for ($i=0; $i<count($this->groups); $i++) {
 							$this->groups[$i]->nameLocale = fetchLocale($this->groups[$i]->nameLocales);
+							$this->groups[$i]->name_locale = $this->groups[$i]->nameLocale;
+						}
 					}
 					$this->id = (int) $this->id;
 				}

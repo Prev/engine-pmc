@@ -17,14 +17,14 @@
 				if (!$boardInfo) {
 					Context::printErrorPage(array(
 						'en' => 'Cannot excute board - current menu is not connected with any board',
-						'kr' => '게시판을 실행 할 수 없습니다 - 해당 메뉴와 연결된 게시판이 없습니다'
+						'ko' => '게시판을 실행 할 수 없습니다 - 해당 메뉴와 연결된 게시판이 없습니다'
 					));
 					return;
 				}
 			}else if ($boardName === NULL) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot excute board - board ID not defined',
-					'kr' => '게시판을 실행 할 수 없습니다 - 게시판 ID가 지정되지 않음'
+					'ko' => '게시판을 실행 할 수 없습니다 - 게시판 ID가 지정되지 않음'
 				));
 				return;
 			}else

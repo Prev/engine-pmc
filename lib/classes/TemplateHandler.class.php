@@ -40,7 +40,7 @@
 
 
 			// {# Locale code }
-			// ex) {# 'en'=>'Error on this page', 'kr'=> '이 페이지에 오류가 있습니다' }
+			// ex) {# 'en'=>'Error on this page', 'ko'=> '이 페이지에 오류가 있습니다' }
 			$html = preg_replace('/{#([\s\S]+?)}/', '{@ echo fetchLocale(array($1)); }', $html);
 			
 			// {@ PHPCode }
@@ -143,7 +143,7 @@
 			if (count($output) !== 3) {
 				Context::printWarning(array(
 					'en'=>'Complie layout error - matches length error',
-					'kr'=>'레이아웃 컴파일 에러 - 정규식 길이가 올바르지 않음'
+					'ko'=>'레이아웃 컴파일 에러 - 정규식 길이가 올바르지 않음'
 				));
 				return;
 			}

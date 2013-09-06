@@ -5,7 +5,12 @@
 	<div id="category-selector">
 		<ul>
 			<li>
-				<a href="{getUrlA('category=', getCurrentUrl())}">전체보기</a>
+				<a href="{getUrlA('category=', getCurrentUrl())}">
+					{#
+						'en' => 'Show All',
+						'ko' => '전체보기'
+					}
+				</a>
 			</li>
 			<condition do="$categorys">
 				{@ foreach ($categorys as $key => $category) : }
@@ -27,7 +32,7 @@
 								{$_GET['category']}
 							</true>
 							<false>
-								{# 'en'=>'Category', 'kr'=>'말머리 선택'}
+								{# 'en'=>'Category', 'ko'=>'말머리 선택'}
 							</false>
 						</condition>
 					</span>
@@ -36,18 +41,18 @@
 					</button>
 				</a>
 			</li>
-			<li class="title">{# 'en'=>'Title', 'kr'=>'제목'}</li>
-			<li class="writer">{# 'en'=>'Writer', 'kr'=>'작성자'}</li>
-			<li class="date">{# 'en'=>'Uploaded time', 'kr'=>'작성일'}</li>
-			<li class="hits">{# 'en'=>'Hits', 'kr'=>'조회수'}</li>
+			<li class="title">{# 'en'=>'Title', 'ko'=>'제목'}</li>
+			<li class="writer">{# 'en'=>'Writer', 'ko'=>'작성자'}</li>
+			<li class="date">{# 'en'=>'Uploaded time', 'ko'=>'작성일'}</li>
+			<li class="hits">{# 'en'=>'Hits', 'ko'=>'조회수'}</li>
 		</ul>
 		{@ foreach ($articleData as $key => $data): }
 			<ul class="{@ echo isset($data->top_notice) ? 'notice' : 'article' }">
-				<condition do="isset($data->top_notice)">
-					<li class="notice-icon">{# 'en'=>'Notice', 'kr'=>'공지'}</li>
-				</condition>
-				
 				<li class="title">
+					<condition do="isset($data->top_notice)">
+						<span class="notice-icon">{# 'en'=>'Notice', 'ko'=>'공지'}</span>
+					</condition>
+
 					<condition do="!isset($data->top_notice)">
 						{printArticlePrefix($data->order_key, $data->category)}
 					</condition>
@@ -82,7 +87,7 @@
 			<div class="no-article">
 				{#
 					'en'=>'There is no article',
-					'kr'=>'게시글이 없습니다'
+					'ko'=>'게시글이 없습니다'
 				}
 			</div>
 		</condition>
@@ -119,11 +124,9 @@
 			</div>
 		</condition>
 
-		<div class="board-btn-wrap">
+		<div class="board-btn">
 			<a href="{getUrl('board', 'dispEditor', 'board_name='.$boardName)}">
-				<button class="board-btn">
-					<span class="hidden">글쓰기</span>
-				</button>
+				{#'en'=>'Post Article','ko'=>'글쓰기'}
 			</a>
 		</div>
 	</div>
@@ -134,12 +137,27 @@
 				<input type="hidden" name="{$key}" value="{$value}">
 			{@ endforeach;}
 			<select name="search_type">
-				<option value="all"{@ if ($_GET['search_type'] == 'all') echo ' selected'; }>제목 + 내용</option>
-				<option value="title"{@ if ($_GET['search_type'] == 'title') echo ' selected'; }>제목</option>
-				<option value="writer"{@ if ($_GET['search_type'] == 'writer') echo ' selected'; }>글작성자</option>
+				<option value="all"{@ if ($_GET['search_type'] == 'all') echo ' selected'; }>
+					{#
+						'en'=>'Title + Content',
+						'ko'=>'제목 + 내용'
+					}
+				</option>
+				<option value="title"{@ if ($_GET['search_type'] == 'title') echo ' selected'; }>
+					{#
+						'en'=>'Title',
+						'ko'=>'제목'
+					}
+				</option>
+				<option value="writer"{@ if ($_GET['search_type'] == 'writer') echo ' selected'; }>
+					{#
+						'en'=>'Writer',
+						'ko'=>'글작성자'
+					}
+				</option>
 			</select>
 			<input name="search" class="search-text" type="text"{@ if (!empty($_GET['search'])) echo ' value="'.$_GET['search'].'"'; }>
-			<input class="search-submit" type="submit" value="검색">
+			<input class="search-submit" type="submit" value="{#'en'=>'Search','ko'=>'검색'}">
 		</form>
 	</div>
 </div>

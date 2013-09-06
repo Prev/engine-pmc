@@ -14,16 +14,17 @@
 
 .board .board-article .first-line .title{ width: 485px; text-align: center; }
 
-.board .board-article .notice{ height:20px; background-color: #f6f6f6; }
-.board .board-article .notice .title{ width: 545px; color: #ec137f; font-weight: bold; }
-.board .board-article .notice-icon{ display: inline-block; float: left; font-size: 11px; padding: 2px 4px; margin: -2px 5px 0 0; background-color:#5269a3; border-radius: 3px; color: white; *zoom:1; }
+.board .board-article ul{ height: 20px; }
+.board .board-article ul .category{ color: #b0b0b0; }
+.board .board-article ul .dot-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
+.board .board-article ul .reply-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
+.board .board-article ul .reply-icon{ width: 11px; height: 9px; background: transparent url('../img/board_sprite.png') no-repeat -22px 0px; display: inline-block; *zoom:1; *display:inline }
+.board .board-article ul .secret-icon{ display: inline-block; *zoom:1; background: transparent url('../img/board_sprite.png') no-repeat -33px 0px; width: 9px; height: 11px; }
 
-.board .board-article .article{ height: 20px; }
-.board .board-article .article .category{ color: #b0b0b0; }
-.board .board-article .article .dot-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
-.board .board-article .article .reply-blank{ width: 10px; display: inline-block; *zoom:1; *display:inline }
-.board .board-article .article .reply-icon{ width: 11px; height: 9px; background: transparent url('../img/board_sprite.png') no-repeat -22px 0px; display: inline-block; *zoom:1; *display:inline }
-.board .board-article .article .secret-icon{ display: inline-block; *zoom:1; background: transparent url('../img/board_sprite.png') no-repeat -33px 0px; width: 9px; height: 11px; }
+.board .board-article ul.notice{ background-color: #f6f6f6; }
+.board .board-article ul.notice .title{ color: #ec137f; font-weight: bold; }
+.board .board-article ul.notice .notice-icon{ display: inline-block; float: left; font-size: 11px; padding: 2px 4px; margin: -2px 5px 0 0; background-color:#5269a3; border-radius: 3px; color: white; *zoom:1; }
+
 
 .board .board-article .article strong.search{ background-color: yellow }
 
@@ -76,8 +77,11 @@
 .board .page-numbers .prev-btn a:hover,		.board .page-numbers .next-btn a:hover	{ text-decoration:none; color:#3a3a3a; }
 .board .page-numbers #prev-btn a:active,	.board .page-numbers .next-btn a:active	{ text-decoration:none; color:#3a3a3a; }
 
-.board .board-btn-wrap{ position: absolute; right: 5px; top: 0px }
-.board .board-btn-wrap .board-btn{ width: 71px; height: 26px; background: white url('../img/board_sprite.png') no-repeat 0 -12px; border: none }
+.board .board-btn{ position: absolute; right: 5px; top: 3px }
+.board .board-btn a:link,
+.board .board-btn a:active,
+.board .board-btn a:visited{ color: #09C; text-decoration: none; }
+.board .board-btn a:hover{ color: #09C; text-decoration: underline; }
 
 .board .search-box{ text-align: center; }
 .board .search-box select{ padding: 1px; }

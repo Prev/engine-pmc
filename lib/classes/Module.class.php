@@ -60,7 +60,7 @@
 			}
 			Context::printErrorPage(array(
 				'en' => 'Cannot find module action',
-				'kr' => '모듈 액션을 찾을 수 없습니다'
+				'ko' => '모듈 액션을 찾을 수 없습니다'
 			));
 		}
 		
@@ -73,7 +73,7 @@
 				if (!is_file($classPath)) {
 					Context::printErrorPage(array(
 						'en'=>'Cannot load lass "'. $className . '" - cannot load file',
-						'kr'=>'클래스 "'. $className . '" 를 불러 올 수 없습니다. - 파일을 불러 올 수 없음'
+						'ko'=>'클래스 "'. $className . '" 를 불러 올 수 없습니다. - 파일을 불러 올 수 없음'
 					)); 
 				}else {
 					if (!class_exists($className))
@@ -82,7 +82,7 @@
 					if (!class_exists($className)) {
 						Context::printErrorPage(array(
 							'en'=>'Cannot load lass "'. $className . '" - cannot find class',
-							'kr'=>'클래스 "'. $className . '" 를 불러 올 수 없습니다. - 클래스를 찾을 수 없음'
+							'ko'=>'클래스 "'. $className . '" 를 불러 올 수 없습니다. - 클래스를 찾을 수 없음'
 						)); 
 					}
 					$_loader = create_function('', 'return new '. $className .'();');

@@ -19,7 +19,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.4.1');
+	define('PMC_VERSION', '0.4.2');
 	
 	
 	/**
@@ -58,7 +58,7 @@
 	  * Define default locale
 	  * Get current locale by calling getLocale() func
 	  */
-	define('DEFAULT_LOCALE', 'kr');
+	define('DEFAULT_LOCALE', 'en');
 	
 	
 	/**

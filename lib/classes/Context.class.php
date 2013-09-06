@@ -114,19 +114,20 @@
 			if (isset($_GET['mobile'])) {
 				if ($_GET['mobile']) {
 					$this->mobileMode = true;
-					setcookie('mobile', 1, getServerInfo()->uri, SESSION_DOMAIN);
+					setcookie('mobile', 1, 0, getServerInfo()->uri, SESSION_DOMAIN);
 				}else {
 					$this->mobileMode = false;
-					setcookie('mobile', 0, getServerInfo()->uri, SESSION_DOMAIN);
+					setcookie('mobile', 0, 0, getServerInfo()->uri, SESSION_DOMAIN);
 				}
 			}
 
-			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale']);
+			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale'], 0, getServerInfo()->uri, SESSION_DOMAIN);
+			
 			if (isset($_GET['page']) && !isset($_GET['module'])) $_GET['module'] = 'page';
 			if (!isset($GLOBALS['serverInfo'])) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot find connected server with the server defined in config/server_info.json',
-					'kr' => 'config/server_info.json 파일에서 현재 서버와 연결된 서버를 찾을 수 없습니다'
+					'ko' => 'config/server_info.json 파일에서 현재 서버와 연결된 서버를 찾을 수 없습니다'
 				));
 				return;
 			}
@@ -134,7 +135,7 @@
 			if (!class_exists('PDO')) {
 				Context::printErrorPage(array(
 					'en' => 'php extension "PDO" does not exists',
-					'kr' => 'php 확장 모듈 "PDO"가 존재하지 않습니다'
+					'ko' => 'php 확장 모듈 "PDO"가 존재하지 않습니다'
 				));
 				return;
 			}
@@ -198,7 +199,7 @@
 			if (!isset($data) && !isset($moduleID)) {
 				self::printErrorPage(array(
 					'en' => 'Cannot find requested menu',
-					'kr' => '해당 메뉴를 찾을 수 없습니다'
+					'ko' => '해당 메뉴를 찾을 수 없습니다'
 				));
 			}else {
 				$this->selectedMenu = $getVars['menu'];				
@@ -206,7 +207,7 @@
 					if ($moduleID) {
 						Context::printErrorPage(array(
 							'en' => 'Cannot excute module "'.$moduleID.'" in menu "'.$getVars['menu'].'"',
-							'kr' => '해당 메뉴 "'.$getVars['menu'].'" 에서 연결된 모듈 '.$moduleID.'"" 을 실행 할 수 없습니다'
+							'ko' => '해당 메뉴 "'.$getVars['menu'].'" 에서 연결된 모듈 '.$moduleID.'"" 을 실행 할 수 없습니다'
 						));
 					}else
 						$moduleID = $data->module;
@@ -248,7 +249,7 @@
 					->find_many();
 			}else {
 				if (empty($selectedMenuData)) {
-					self::printErrorPage(array('en' => 'fail parsing menu', 'kr' => '메뉴 파싱에 실패했습니다.'));
+					self::printErrorPage(array('en' => 'fail parsing menu', 'ko' => '메뉴 파싱에 실패했습니다.'));
 					return;
 				}
 				// current selected menu's level is equal with requested menu's level
@@ -345,7 +346,7 @@
 			if (!is_file(ROOT_DIR . '/layouts/' . $name . '/layout.html')) {
 				Context::printErrorPage(array(
 					'en' => 'layout "'.$name.'" does not exist',
-					'kr' => '레이아웃 파일 "'.$name.'" 이 존재하지 않습니다'
+					'ko' => '레이아웃 파일 "'.$name.'" 이 존재하지 않습니다'
 				));
 				return;
 			}
@@ -383,7 +384,7 @@
 				if (!is_file(ROOT_DIR . $path)) {
 					self::printWarning(array(
 						'en' => 'fail to load file "<b>'.$path.'"</b>',
-						'kr' => '파일을 불러오는데 실패했습니다 - "<b>'.$path.'"</b>'
+						'ko' => '파일을 불러오는데 실패했습니다 - "<b>'.$path.'"</b>'
 					));
 					return;
 				}
@@ -412,7 +413,7 @@
 				default :
 					self::printWarning(array(
 						'en' => 'Unknown type of file - <b>"'.$path.'"</b>',
-						'kr' => '알수없는 파일을 불러오려했습니다 - <b>"'.$path.'"</b>'
+						'ko' => '알수없는 파일을 불러오려했습니다 - <b>"'.$path.'"</b>'
 					));
 					break;
 			}
@@ -540,7 +541,7 @@
 				if (!$urlData) {
 					Context::printErrorPage(array(
 						'en' => 'cannot load sso data',
-						'kr' => 'SSO 데이터를 불러올 수 없습니다'
+						'ko' => 'SSO 데이터를 불러올 수 없습니다'
 					));
 					unset($_SESSION['pmc_sso_data']);
 					return false;
@@ -551,7 +552,7 @@
 				if (!$ssoData || $ssoData->result === 'fail') {
 					Context::printErrorPage(array(
 						'en' => 'fail loading sso data',
-						'kr' => 'SSO 데이터를 불러오는데 실패하였습니다.'
+						'ko' => 'SSO 데이터를 불러오는데 실패하였습니다.'
 					));
 					unset($_SESSION['pmc_sso_data']);
 					return false;
@@ -627,7 +628,7 @@
 			if (!$module)
 				$this->printWarning(array(
 					'en'=>'Cannot load module content',
-					'kr'=>'모듈 콘텐츠를 불러올 수 없습니다'
+					'ko'=>'모듈 콘텐츠를 불러올 수 없습니다'
 				));
 			else {
 				$module->exec();

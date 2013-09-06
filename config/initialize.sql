@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 호스트: localhost
--- 처리한 시간: 13-08-13 21:54
+-- 처리한 시간: 13-09-06 20:35
 -- 서버 버전: 5.1.41-community
 -- PHP 버전: 5.2.12
 
@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `pmc_article` (
   KEY `writer_id` (`writer_id`),
   KEY `top_no` (`top_no`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
@@ -104,7 +105,12 @@ CREATE TABLE IF NOT EXISTS `pmc_board` (
   `extra_vars` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_en` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+INSERT INTO `pmc_board` (`id`, `name`, `name_locales`, `categorys`, `readable_group`, `commentable_group`, `writable_group`, `admin_group`, `hide_secret_article`, `extra_vars`) VALUES
+(1, 'freeboard', '{"en":"Freeboard", "ko":"자유게시판"}', '["안내","뻘글"]', NULL, NULL, NULL, NULL, 1, NULL),
+(2, 'notice', '{"en":"Notice", "ko":"공지사항"}', NULL, NULL, NULL, '["admin"]', NULL, 0, NULL);
+
 
 -- --------------------------------------------------------
 
@@ -115,11 +121,12 @@ CREATE TABLE IF NOT EXISTS `pmc_board` (
 CREATE TABLE IF NOT EXISTS `pmc_files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `is_binary` tinyint(1) NOT NULL,
-  `uploaded_url` tinytext NOT NULL,
-  `file_size` int(10) unsigned NOT NULL,
   `file_hash` varchar(40) NOT NULL,
+  `file_size` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- 테이블 구조 `pmc_login_log`
@@ -134,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `pmc_login_log` (
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
@@ -156,17 +164,13 @@ CREATE TABLE IF NOT EXISTS `pmc_menu` (
   KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
---
--- 테이블의 덤프 데이터 `pmc_menu`
---
-
 INSERT INTO `pmc_menu` (`id`, `title`, `title_locales`, `level`, `is_index`, `visible`, `parent_id`, `module`, `action`, `extra_vars`) VALUES
-(1, 'home', '{"en":"Home", "kr":"홈"}', 1, 1, 1, NULL, 'index', NULL, NULL),
-(2, 'notice', '{"en":"Notice", "kr":"공지사항"}', 1, 0, 1, NULL, 'board', NULL, NULL),
-(3, 'freeboard', '{"en":"Free Board", "kr":"자유게시판"}', 1, 0, 1, NULL, 'board', NULL, NULL),
-(4, 'others', '{"en":"Others", "kr":"기타"}', 1, 0, 1, NULL, 'page', NULL, NULL),
-(5, 'about', '{"en":"About", "kr":"정보"}', 2, 0, 1, 4, 'page', NULL, NULL),
-(6, 'libraries', '{"en":"Libraries", "kr":"라이브러리"}', 2, 0, 1, 4, 'page', NULL, NULL);
+(1, 'home', '{"en":"Home", "ko":"홈"}', 1, 1, 1, NULL, 'index', NULL, NULL),
+(2, 'notice', '{"en":"Notice", "ko":"공지사항"}', 1, 0, 1, NULL, 'board', NULL, NULL),
+(3, 'freeboard', '{"en":"Free Board", "ko":"자유게시판"}', 1, 0, 1, NULL, 'board', NULL, NULL),
+(4, 'others', '{"en":"Others", "ko":"기타"}', 1, 0, 1, NULL, 'page', NULL, NULL),
+(5, 'about', '{"en":"About", "ko":"정보"}', 2, 0, 1, 4, 'page', NULL, NULL),
+(6, 'libraries', '{"en":"Libraries", "ko":"라이브러리"}', 2, 0, 1, 4, 'page', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -184,29 +188,6 @@ CREATE TABLE IF NOT EXISTS `pmc_session` (
   PRIMARY KEY (`session_key`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- 테이블의 덤프 데이터 `pmc_session`
---
-
-INSERT INTO `pmc_session` (`session_key`, `expire_time`, `ip_address`, `last_update`, `user_id`, `extra_vars`) VALUES
-('3030def0203532dd85d03fba07f999cd80347952', '2013-08-16 09:25:23', '127.0.0.1', '2013-08-09 00:25:23', 2, NULL),
-('369dc0b58de16c55a60d30a56082b8d61d506705', '2013-08-16 09:26:24', '127.0.0.1', '2013-08-09 00:26:24', 2, NULL),
-('406708941d532943d0a95919a15a8d0f554994e3', '2013-08-07 14:30:23', '127.0.0.1', '2013-07-31 05:30:23', 2, NULL),
-('5205a5800b6f2fdacd73a677166bd6cfe03fe417', '2013-08-15 19:46:31', '127.0.0.1', '2013-08-08 10:46:31', 1, NULL),
-('5e82e7e89ab342bc0d1e480169d8a808f1c680e9', '2013-08-07 14:30:08', '127.0.0.1', '2013-07-31 05:30:08', 2, NULL),
-('791ef1272c7de2e216654b8b363cb128d32ef17f', '2013-08-07 14:45:19', '127.0.0.1', '2013-07-31 05:45:19', 2, NULL),
-('8245d4d24fbcba5c9c503d7801906d061dc3aa8e', '2013-08-16 14:37:27', '127.0.0.1', '2013-08-09 05:37:27', 2, NULL),
-('9bbc08f7e378e67b879608a67c50f2fcb613596d', '2013-08-07 14:29:55', '127.0.0.1', '2013-07-31 05:29:55', 2, NULL),
-('a98afe8006bbf79a7f196972442c34c3b1c4df96', '2013-08-05 15:43:12', '127.0.0.1', '2013-07-29 06:43:12', 2, NULL),
-('afe440666b9b70a06d684007b83d1ed2e2c576f8', '2013-08-05 14:44:21', '127.0.0.1', '2013-07-29 05:44:21', 2, NULL),
-('cd486c4eb0753040cee902e94621b2d359a68709', '2013-08-12 17:52:56', '127.0.0.1', '2013-08-05 08:52:56', 2, NULL),
-('db1c46dc3b36b08792d0b3be8e611b54ca3b4367', '2013-08-19 17:05:17', '127.0.0.1', '2013-08-12 08:05:17', 2, NULL),
-('ee35cf57302a69d2914a33028221217646c3b519', '2013-08-07 14:29:33', '127.0.0.1', '2013-07-31 05:29:33', 2, NULL),
-('f16fa49230be4d717ed0ffb09f2f3387d59880cb', '2013-08-16 10:14:52', '127.0.0.1', '2013-08-09 01:14:52', 2, NULL),
-('f51ba7c08ef35411eaf3a3a7fd02009d9ab27fa0', '2013-08-15 10:14:11', '127.0.0.1', '2013-08-08 01:14:11', 2, NULL),
-('f734592e67b679102c78dd13eece420ac3158502', '2013-08-16 14:37:05', '127.0.0.1', '2013-08-09 05:37:05', 1, NULL),
-('f97300330ecaffb16b3c83f6975472e640c89482', '2013-08-09 09:35:28', '127.0.0.1', '2013-08-02 00:35:28', 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -229,13 +210,10 @@ CREATE TABLE IF NOT EXISTS `pmc_user` (
   UNIQUE KEY `user_id` (`input_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
---
--- 테이블의 덤프 데이터 `pmc_user`
---
-
 INSERT INTO `pmc_user` (`id`, `input_id`, `password`, `password_salt`, `nick_name`, `user_name`, `email_address`, `phone_number`, `last_logined_ip`, `extra_vars`) VALUES
 (1, 'admin', '875bdbdd2cdb7326981de9c27bf9d76d52c75cd9bb1299417b1135b69a748b69', 'f98c94ebb87dc80be2a26991e3d5cc62', '어드민', '어드민', 'admin@parmeter.kr', '010-1234-5678', '127.0.0.1', NULL),
 (2, 'tester', '2827e05770ec174da512daf5af4ce49f5e07209d82e2ed90b2ee565886e7b521', '8f4031bfc7640c5f267b11b6fe0c2507', '테스터', '테스터', 'tester@parameter.kr', '010-1234-5678', '127.0.0.1', NULL);
+
 
 -- --------------------------------------------------------
 
@@ -252,13 +230,9 @@ CREATE TABLE IF NOT EXISTS `pmc_user_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
---
--- 테이블의 덤프 데이터 `pmc_user_group`
---
-
 INSERT INTO `pmc_user_group` (`id`, `name`, `name_locales`, `is_default`, `is_admin`) VALUES
-(1, 'admin', '{"en":"Admin Group", "kr":"관리그룹"}', 0, 1),
-(2, 'general', '{"en":"General","kr":"일반회원"}', 1, 0);
+(1, 'admin', '{"en":"Admin Group", "ko":"관리그룹"}', 0, 1),
+(2, 'general', '{"en":"General","ko":"일반회원"}', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -274,10 +248,6 @@ CREATE TABLE IF NOT EXISTS `pmc_user_group_user` (
   UNIQUE KEY `user_id` (`user_id`),
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- 테이블의 덤프 데이터 `pmc_user_group_user`
---
 
 INSERT INTO `pmc_user_group_user` (`id`, `group_id`, `user_id`) VALUES
 (1, 1, 1),

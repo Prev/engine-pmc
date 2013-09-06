@@ -53,14 +53,14 @@
 			if (!$moduleID) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot load module - module not defined',
-					'kr' => '모듈을 불러올 수 없습니다 - 모듈이 정의되지 않음'
+					'ko' => '모듈을 불러올 수 없습니다 - 모듈이 정의되지 않음'
 				));
 				return;
 				
 			}else if (!self::moduleExists($moduleID)) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot load module - module not found',
-					'kr' => '모듈을 불러올 수 없습니다 - 모듈을 찾을 수 없음'
+					'ko' => '모듈을 불러올 수 없습니다 - 모듈을 찾을 수 없음'
 				));
 				return;
 			}
@@ -69,7 +69,7 @@
 			if ($_module === NULL) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot load module in self::procModule',
-					'kr' => '모듈을 불러올 수 없습니다 - self::procModule'
+					'ko' => '모듈을 불러올 수 없습니다 - self::procModule'
 				));
 				return;
 			}
@@ -117,13 +117,13 @@
 			if (!class_exists($classID)) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot initialize module - Cannot find module class',
-					'kr' => '모듈을 초기화 할 수 없습니다 - 클래스를 찾을 수 없습니다.'
+					'ko' => '모듈을 초기화 할 수 없습니다 - 클래스를 찾을 수 없습니다.'
 				));
 			}
 			if (!is_file($moduleDir . '/info.json')) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot initialize module - info.json file not exists',
-					'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않습니다'
+					'ko' => '모듈을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않습니다'
 				));
 				return;
 			}
@@ -134,21 +134,21 @@
 			if ($moduleInfo === NULL) {
 				Context::printWarning(array(
 					'en' => 'Cannot initialize module - Unexpected token ILLEGAL in info.json',
-					'kr' => '모듈을 초기화 할 수 없습니다 - info.json 파일 파싱에 실패했습니다'
+					'ko' => '모듈을 초기화 할 수 없습니다 - info.json 파일 파싱에 실패했습니다'
 				));
 			}
 			
 			if (isset($moduleInfo->allow_web_access) && $moduleInfo->allow_web_access == false && isset(Context::getInstance()->moduleID) && Context::getInstance()->moduleID == $moduleID){
 				Context::printErrorPage(array(
 					'en' => 'Cannot initialize module - web access is not allowed',
-					'kr' => '모듈을 초기화 할 수 없습니다 - 웹 접근이 허용되지않음'
+					'ko' => '모듈을 초기화 할 수 없습니다 - 웹 접근이 허용되지않음'
 				));
 				return NULL;
 			}
 			if (isset($moduleInfo->accessible_group) && (is_null(User::getCurrent()) || !User::getCurrent()->checkGroup($moduleInfo->accessible_group))) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot initialize module - Operation not permitted',
-					'kr' => '모듈을 초기화 할 수 없습니다 - 권한이 없습니다'
+					'ko' => '모듈을 초기화 할 수 없습니다 - 권한이 없습니다'
 				));
 				return NULL;
 			}
@@ -181,7 +181,7 @@
 				if (!$moduleInfo->actions && $moduleInfo->action) {
 					Context::printErrorPage(array(
 						'en' => 'Action property in "info.json" is not "action" : "actions" (caution "s")',
-						'kr' => 'info.json 에서 정의하는 액션 속성은 action이 아닌 actions 속성입니다. ("s" 주의)'
+						'ko' => 'info.json 에서 정의하는 액션 속성은 action이 아닌 actions 속성입니다. ("s" 주의)'
 					));
 				}
 				$actions = $moduleInfo->actions; //array
@@ -205,14 +205,14 @@
 						if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && Context::getInstance()->moduleID == $moduleID && Context::getInstance()->moduleAction == $action){
 							Context::printErrorPage(array(
 								'en' => 'Cannot execute module action - web access is not allowed',
-								'kr' => '모듈 액션을 실행할 수 없습니다 - 웹 접근이 허용되지않음'
+								'ko' => '모듈 액션을 실행할 수 없습니다 - 웹 접근이 허용되지않음'
 							));
 							return NULL;
 						}
 						if (isset($actions[$i]->accessible_group) && (is_null(User::getCurrent()) || !User::getCurrent()->checkGroup($actions[$i]->accessible_group))) {
 							Context::printErrorPage(array(
 								'en' => 'Cannot execute module action - Operation not permitted',
-								'kr' => '모듈 액션을 실행할 수 없습니다 - 권한이 없습니다'
+								'ko' => '모듈 액션을 실행할 수 없습니다 - 권한이 없습니다'
 							));
 							return NULL;
 						}
@@ -228,12 +228,12 @@
 				if ($action === NULL) {
 					Context::printErrorPage(array(
 						'en' => 'Module action is not defined',
-						'kr' => '모듈 액션이 정의되지 않았습니다.'
+						'ko' => '모듈 액션이 정의되지 않았습니다.'
 					));
 				}
 				Context::printErrorPage(array(
 					'en' => 'Cannot execute module action - permission denined by configuration file',
-					'kr' => '모듈 액션을 실행할 수 없습니다 - Cofiguration 파일에 의해 권한이 거부됨'
+					'ko' => '모듈 액션을 실행할 수 없습니다 - Cofiguration 파일에 의해 권한이 거부됨'
 				));
 				return NULL;
 			}

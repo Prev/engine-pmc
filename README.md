@@ -20,6 +20,13 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.4.2
++ 다국어 기능 일부 변경
+ + HTTP_ACCEPT_LANGUAGE 헤더로 언어 자동 탐색
+ + kr -> ko 로 언어셋 변경
++ 게시판 일부 변경
++ 쿠키 관련 버그 픽스
+
 #### v 0.4.1
 + 에디터 템플릿 최적화
 

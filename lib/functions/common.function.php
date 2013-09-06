@@ -106,11 +106,11 @@
 		if (is_string($time)) $time = strtotime($time);
 
 		if ($time + 60 > time())
-			return '방금 전';
+			return fetchLocale(array('en'=>'Now', 'ko'=>'방금 전'));
 		else if ($time + 3600 > time())
-			return (int)((time() - $time) / 60)  . '분 전';
+			return (int)((time() - $time) / 60)  . fetchLocale(array('en'=>'minute ago', 'ko'=>'분 전'));
 		else if ($time + 86400 > time())
-			return (int)((time() - $time) / 3600) . '시간 전';
+			return (int)((time() - $time) / 3600) . fetchLocale(array('en'=>'hour ago', 'ko'=>'시간 전'));
 		else
 			return date('Y.m.d', $time);	
 	}
@@ -124,6 +124,8 @@
 			$locale = $_GET['locale'];
 		else if (isset($_COOKIE['locale']))
 			$locale = $_COOKIE['locale'];
+		else if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+			$locale = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
 		else
 			$locale = DEFAULT_LOCALE;
 		
@@ -137,9 +139,9 @@
 	 * @param $data 에는 object, array, string(json), string(raw) 등이 올 수 있음
 	 * @param $data 에 raw string 값이 올 시 그대로 출력함
 	 * 
-	 * object: (object) array('en' => 'Freeboard', 'kr' => '자유게시판')
-	 * array: array('en' => 'Freeboard', 'kr' => '자유게시판')
-	 * string(json): {"en":"Freeboard", "kr":"자유게시판"}
+	 * object: (object) array('en' => 'Freeboard', 'ko' => '자유게시판')
+	 * array: array('en' => 'Freeboard', 'ko' => '자유게시판')
+	 * string(json): {"en":"Freeboard", "ko":"자유게시판"}
 	 * string(raw): "자유게시판"
 	 */
 	function fetchLocale($data) {
@@ -148,22 +150,22 @@
 			case 'object' :
 				if (isset($data->{$locale}))
 					return $data->{$locale};
-				else if (isset($data->en))
-					return $data->en;
+				else if (isset($data->{DEFAULT_LOCALE}))
+					return $data->{DEFAULT_LOCALE};
 				else {
-					foreach ($key as $data => $contentue)
-						return $contentue;
+					foreach ($data as $key => $content)
+						return $content;
 				}
 			break;
 			
 			case 'array' :
 				if (isset($data[$locale]))
 					return $data[$locale];
-				else if (isset($data['en']))
-					return $data['en'];
+				else if (isset($data[DEFAULT_LOCALE]))
+					return $data[DEFAULT_LOCALE];
 				else {
-					foreach ($key as $data => $contentue)
-						return $contentue;
+					foreach ($data as $key => $content)
+						return $content;
 				}
 			break;
 			

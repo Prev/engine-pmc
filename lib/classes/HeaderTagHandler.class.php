@@ -212,7 +212,7 @@
 					if (!is_file($path)) {
 						Context::printWarning(array(
 							'en'=>"Fail to load file '$path'",
-							'kr'=>"파일 '$path' 을 불러올 수 없음"
+							'ko'=>"파일 '$path' 을 불러올 수 없음"
 						));
 						continue;
 					}
@@ -236,7 +236,7 @@
 					default :
 						Context::printWarning(array(
 							'en'=>'Unknown type of file',
-							'kr'=>'알수없는 종류의 파일임'
+							'ko'=>'알수없는 종류의 파일임'
 						));
 						break;
 				}

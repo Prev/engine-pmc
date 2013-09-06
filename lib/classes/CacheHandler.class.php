@@ -53,7 +53,7 @@
 			if (!is_file(ROOT_DIR . $filePath)) {
 				Context::printWarning(array(
 					'en'=>'Error exec cache - cannot find original file("'.$filePath.'"")',
-					'kr'=>'캐시 생성 실패 - 원본 파일("'.$filePath.'"")을 찾을 수 없음'
+					'ko'=>'캐시 생성 실패 - 원본 파일("'.$filePath.'"")을 찾을 수 없음'
 				));
 				return;
 			}
