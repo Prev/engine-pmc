@@ -20,6 +20,9 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.4.1
++ 에디터 템플릿 최적화
+
 #### v 0.4
 + 템플릿 <condition> 태그 일부 수정
 + 코어 안정화

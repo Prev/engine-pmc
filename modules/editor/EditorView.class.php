@@ -20,11 +20,11 @@
 		}
 
 		public function dispImagePopup() {
-			self::execTemplate('pages/trex/image.html');
+			self::execTemplate('attach_image.html');
 		}
 
 		public function dispFilePopup() {
-			self::execTemplate('pages/trex/file.html');
+			self::execTemplate('attach_file.html');
 		}
 		
 	}
