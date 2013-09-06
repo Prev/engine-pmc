@@ -60,8 +60,10 @@
 			// insert RELATIVE_URL in absolute src (/.*), href and action
 			// insert module realitve url in upper relative src (../.*), href and action
 			// insert module realitve url in relative src (./.*), href and action
-			$html = preg_replace_callback('`(src|href|action)="(.*?)"`i', array($this, 'parseUrl'), $html);
-			
+			$html = preg_replace_callback('`((?:src|href|action)=(?:\"|\'))(.*?)((?:\"|\'))`i', array($this, 'parseUrl'), $html);
+			$html = preg_replace_callback('/(<style[\s\S]*?url\((?:\'|\")?)(.*?)((?:\'|\")\))/i', array($this, 'parseUrl'), $html);
+			$html = preg_replace_callback('/(style=".*?url\((?:\'|\"))(.*?)((?:\'|\")\)")/i', array($this, 'parseUrl'), $html);
+
 			// targetie condition
 			$html = preg_replace('`<condition\s+targetie\s*=\s*"([^"]+)"\s*>([\s\S]*?)</condition>`i', '<!--[if $1]>$2<![endif]-->', $html);
 			
@@ -130,13 +132,13 @@
 			else
 				$url = RELATIVE_URL . $this->relativePath . $matches[2];
 
-			return $matches[1] . '="' . $url . '"';
+			return $matches[1] . $url . ($matches[3] ? $matches[3] : '');
 		}
 
 		private function parseImportTags($matches) {
 			if (substr($matches[0], 0, 1) == '#') return;
 			
-			preg_match_all('/([a-zA-Z0-9]+)="([^"]+)"/', $matches[1], $output);
+			preg_match_all('/([a-zA-Z0-9]+)=(?:\"|\')([^"]+)(?:\"|\')/', $matches[1], $output);
 			
 			if (count($output) !== 3) {
 				Context::printWarning(array(
@@ -227,7 +229,6 @@
 			$c = $matches[1];
 			$c = preg_replace('/([^:>])\$([\>a-zA-Z0-9_-]*)/', '$1\$__attr->$2', $c);
 			$c = preg_replace('/([^:>])\${([\>a-zA-Z0-9_-]*)}/', '$1\${__attr->$2}', $c);
-
 			$c = preg_replace_callback('/(\w+)\(/', array($this, 'parseFunc2'), $c);
 
 			if (substr($c, 0, 1) != ' ') $c = ' ' . $c;
@@ -262,6 +263,7 @@
 			$c = $matches[1];
 			$c = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $c, -1);
 			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
+			$c = preg_replace_callback('/(\w+)\(/', array($this, 'parseFunc2'), $c);
 			
 			$code = $matches[2];
 

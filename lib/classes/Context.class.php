@@ -114,10 +114,10 @@
 			if (isset($_GET['mobile'])) {
 				if ($_GET['mobile']) {
 					$this->mobileMode = true;
-					setcookie('mobile', 1);
+					setcookie('mobile', 1, getServerInfo()->uri, SESSION_DOMAIN);
 				}else {
 					$this->mobileMode = false;
-					setcookie('mobile', 0);
+					setcookie('mobile', 0, getServerInfo()->uri, SESSION_DOMAIN);
 				}
 			}
 
