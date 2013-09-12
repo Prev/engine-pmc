@@ -22,23 +22,7 @@
 			$comment = htmlspecialchars($_POST['comment']);
 			$comment = stripslashes($comment);
 
-			$record = DBHandler::for_table('article_comment')->create();
-			$record->set(array(
-				'article_no' => (int)$_POST['article_no'],
-				'content' => $comment,
-				'writer_id' => User::getCurrent()->id,
-				'write_time' => date('Y-m-d H:i:s'),
-				'is_secret' => evalCheckbox($_POST['is_secret'])
-			));
-
-			if (isset($_POST['parent_id'])) {
-				$record->set(array(
-					'top_id' => $_POST['top_id'],
-					'parent_id' => $_POST['parent_id']
-				));
-			}
-
-			$record->save();
+			$this->model->insertNewComment((int)$_POST['article_no'], $comment, evalCheckbox($_POST['is_secret']), $_POST['top_id'], $_POST['parent_id']);
 
 			goBack();
 		}
@@ -60,11 +44,7 @@
 			$comment = htmlspecialchars($_POST['comment']);
 			$comment = stripslashes($comment);
 
-			$commentData->set(array(
-				'content' => $comment,
-				'is_secret' => evalCheckbox($_POST['is_secret'])
-			));
-			$commentData->save();
+			$this->model->updateComment($commentData, $comment, evalCheckbox($_POST['is_secret']));
 
 			goBack();
 		}
@@ -82,11 +62,9 @@
 				return;
 			}
 			
-			$commentData
-				->where('id', (int)$_GET['comment_id'])
-				->delete_many();
-
-			goBack('덧글을 삭제했습니다');
+			$this->model->deleteComment($commentData);
+			
+			goBack();
 		}
 
 	}

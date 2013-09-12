@@ -2,6 +2,9 @@
 	"name":"login module",
 	"version":"1.0.0",
 	"author":"prevdev@gmail.com",
+
+	"model":"LoginModel",
+
 	"actions":[
 		{
 			"name":"dispLoginPage",

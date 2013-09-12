@@ -63,22 +63,14 @@
 
 			// 조회수
 			if ($articleData) {
-				if (!$_SESSION['comment_hits']) $_SESSION['comment_hits'] = array();
-				if (!$_SESSION['comment_hits'][$articleData->no]) {
-					$row = DBHandler::for_table('article')
-						->where('no', $articleData->no)
-						->find_one();
-
-					if ($row) {
-						$row->set_expr('hits', 'hits + 1');
-						$row->save();
-						
-						$articleData->hits++;
-						$_SESSION['comment_hits'][$articleData->no] = 1;
-					}
+				if (!$_SESSION['article_hits']) $_SESSION['article_hits'] = array();
+				if (!$_SESSION['article_hits'][$articleData->no]) {
+					$this->model->increaseArticleHits($articleData->no);
+					$articleData->hits++;
+					$_SESSION['article_hits'][$articleData->no] = 1;
 				}
 			}
-
+			
 			$this->view->setProperties(array(
 				'articleNo' => $articleNo,
 				'articleData' => $articleData,

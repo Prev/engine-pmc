@@ -20,6 +20,9 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.4.3
+모듈별 MVC 기능 재분리
+
 #### v 0.4.2
 + 다국어 기능 일부 변경
  + HTTP_ACCEPT_LANGUAGE 헤더로 언어 자동 탐색

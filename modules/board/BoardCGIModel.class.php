@@ -69,6 +69,48 @@
 
 
 
+		public function insertNewArtile($boardId, $title, $content, $isSecret, $isNotice, $allowComment, $parentNo=NULL, $category=NULL) {
+			$record = DBHandler::for_table('article')->create();
+			$record->set(array(
+				'board_id' => $boardId,
+				'title' => $title,
+				'content' => $content,
+				'writer_id' => User::getCurrent()->id,
+				'is_secret' => $isSecret,
+				'is_notice' => $isNotice,
+				'allow_comment' => $allowComment,
+				'upload_time' => date('Y-m-d H:i:s')
+			));
+
+			if (isset($parentNo) && !empty($parentNo)) {
+				$topNo = $this->getArticleTopId($parentNo);
+				$orderKey = $this->getArticleOrderKey($parentNo, $topNo);
+				
+				$record->set(array(
+					'top_no' => $topNo,
+					'order_key' => $orderKey
+				));
+			}
+			if (isset($category) && $category != 'none') {
+				$record->set('category', $category);
+			}
+			$record->save();
+
+			return $record;
+		}
+
+
+		public function insertArticleFiles($articleNo, $fileId, $fileName) {
+			$record = DBHandler::for_table('article_files')->create();
+			$record->set(array(
+				'article_no' => $articleNo,
+				'file_id' => $fileId,
+				'file_name' => $fileName
+			));
+			$record->save();
+		}
+
+
 		/**
 		 * 수정 프로세스
 		 */
@@ -83,6 +125,39 @@
 			return DBHandler::for_table('article_files')
 				->where('article_no', $articleNo)
 				->find_many();
+		}
+
+
+		public function moveChildArticles($boardId, $topArticleNo) {
+			DBHandler::for_table('article')->raw_query('
+				UPDATE '.DBHandler::$prefix.'article
+				SET board_id = "'.escape($boardId).'"
+				WHERE top_no = "'.escape($topArticleNo).'"
+			');
+		}
+
+		public function updateArticle($articleData, $boardId, $title, $content, $isSecret, $isNotice, $allowComment, $category=NULL) {
+			$articleData->set(array(
+				'board_id' => $boardId,
+				'title' => $title,
+				'content' => $content,
+				'is_secret' => $isSecret,
+				'is_notice' => $isNotice,
+				'allow_comment' => $allowComment,
+				'upload_time' => date('Y-m-d H:i:s')
+			));
+
+			if (isset($category) && !empty($category) && $category != 'none') {
+				$articleData->set('category', $category);
+			}
+
+			$articleData->save();
+		}
+
+		public function deleteArticleFiles($id) {
+			DBHandler::for_table('article_files')
+				->where('id', $id)
+				->delete_many();
 		}
 
 		/**
@@ -132,8 +207,7 @@
 		}
 
 		// 상속받음
-		/*public function getParentArticle($topNo, $orderKey) {
-		}*/
+		/* public function getParentArticle($topNo, $orderKey) */
 
 		public function getChildArticleNo($topNo, $orderKey) {
 			if ($orderKey == NULL) {
@@ -149,5 +223,21 @@
 					->where_not_equal('order_key', $orderKey)
 					->find_many();
 			}
+		}
+
+		public function deleteArticle($articleNo) {
+			DBHandler::for_table('article')
+				->where('no', $articleNo)
+				->delete_many();
+		}
+
+
+		/**
+		 * 공지사항 등록 프롯스
+		 */
+
+		public function updateNoticeInfo($articleData, $isNotice) {
+			$articleData->set('is_notice', $isNotice);
+			$articleData->save();
 		}
 	}

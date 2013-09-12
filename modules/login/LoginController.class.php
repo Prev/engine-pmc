@@ -41,17 +41,14 @@
 			
 			if (isset($_COOKIE['pmc_sess_key'])) {
 				$sessionKey = $_COOKIE['pmc_sess_key'];
-				
-				DBHandler::for_table('session')
-					->where('session_key', $sessionKey)
-					->delete_many();
+				$this->model->removeSession($sessionKey);
 
 				setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
 			}
 			unset($_SESSION['pmc_sso_data']);
 			setcookie('pmc_logout_key', '0', time()-60);
 
-			goBack();
+			redirect(RELATIVE_URL);
 		}
 		
 		private function generateSessionKey() {
@@ -59,69 +56,36 @@
 			return sha1(uniqid(mt_rand(), true));
 		}
 		
-		private function insertLoginlog($inputId, $succeed, $autoLogin) {
-			$ipAdress = $_SERVER['REMOTE_ADDR'];
-			$autoLogin = $autoLogin ? 1 : 0;
-			$succeed = $succeed ? 1 : 0;
-			
-			$logRecord = DBHandler::for_table('login_log')->create();
-			$logRecord->set(array(
-				'ip_address' => $ipAdress,
-				'input_id' => $inputId,
-				'succeed' => $succeed,
-				'auto_login' => $autoLogin
-			));
-			$logRecord->save();
-
-		}
-		
 		private function login($id, $pw, $autoLogin) {
 			$next = !empty($_REQUEST['next']) ? urldecode($_REQUEST['next']) : getUrl();
 
-			$r = DBHandler::for_table('user')
-				->select_many('id', 'input_id', 'password', 'password_salt')
-				->where('input_id', $id)
-				->find_one();
+			$userData = $this->model->getUserData($id);
 
 			// ID does not exist OR password do not match
-			if (!$r || ($r->password != hash('sha256', $pw . $r->password_salt))) {
-				$this->insertLoginlog($id, false, $autoLogin);
+			if (!$userData || ($userData->password != hash('sha256', $pw . $userData->password_salt))) {
+				$this->model->insertIntoLoginlog($id, false, $autoLogin);
 				$this->goBackToLoginPage('result=fail', urldecode($next));
 			}else {
 				do {
 					$sessionKey = $this->generateSessionKey();
-					$r2 = DBHandler::for_table('session')
-						->select('session_key')
-						->where('session_key', $sessionKey)
-						->find_many();
-				}while(count($r2) !== 0);
+					$sessionData = $this->model->getSessionData($sessionKey);
+
+				}while(count($sessionData) !== 0);
 
 				$expireTime = time() + ($autoLogin ? 604800 : 10800); // auto login: 7day /else: 3hour
-				$ipAddr = $_SERVER['REMOTE_ADDR'];
-
-				$newSessionRecord = DBHandler::for_table('session')
-					->create();
-
-				$newSessionRecord->set(array(
-					'session_key' => $sessionKey,
-					'expire_time' => date('Y-m-d H:i:s', $expireTime),
-					'ip_address' => $ipAddr,
-					'user_id' => $r->id
-				));
-
-				$newSessionRecord->save();
-
-				$user = DBHandler::for_table('user')
-					->find_one($r->id);
 				
-				$user->set('last_logined_ip', $ipAddr);
-				$user->save();
+				$this->model->createSession(
+					$sessionKey,
+					$expireTime,
+					$userData->id
+				);
 
-				$this->insertLoginlog($id, true, $autoLogin);
+				$this->model->updateLastLoginedIp($userData->id);
+				$this->model->insertIntoLoginlog($id, true, $autoLogin);
+
 				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), getServerInfo()->uri, SESSION_DOMAIN);
 				
 				redirect($next);
-
 			}
 		}
 		

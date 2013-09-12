@@ -34,7 +34,9 @@
 			$imageKind = array('image/pjpeg', 'image/jpeg', 'image/JPG', 'image/X-PNG', 'image/PNG', 'image/png', 'image/x-png', 'image/gif', 'image/GIF');
 			$imageExtensions = array('png', 'jpg', 'jpeg', 'gif', 'bmp');
 
-			if (!in_array($_FILES['bifile']['type'], $imageKind) || !in_array(substr(strrchr($_FILES['bifile']['name'], '.'), 1), $imageExtensions)) {
+			$fileExtension = strtolower(substr(strrchr($_FILES['bifile']['name'], '.'), 1));
+
+			if (!in_array($_FILES['bifile']['type'], $imageKind) || !in_array($fileExtension, $imageExtensions)) {
 				ErrorLogger::log('Attempt upload '.$_FILES['upload']['type'].' file as image');
 				$this->close('Cannot upload this file as image');
 				return;
@@ -48,7 +50,7 @@
 			$fileName = $_FILES['bifile']['name'];
 			$fileHash = sha1_file($_FILES['bifile']['tmp_name']);
 			$fileSize = (int)$_FILES["bifile"]["size"];
-			$fileExtension = substr(strrchr($_FILES['bifile']['name'], '.'), 1);
+			$fileExtension = strtolower(substr(strrchr($_FILES['bifile']['name'], '.'), 1));
 			
 			$uploadFileUrl = '/files/attach/' . ($isBinary ? 'binaries' : 'images') . '/' . $fileHash . ($isBinary ? '' : '.' . $fileExtension);
 			$uploadFileDir = ROOT_DIR . $uploadFileUrl;
@@ -58,14 +60,12 @@
 				return;
 			}
 
-			$record = DBHandler::for_table('files')
-				->where('file_hash', $fileHash)
-				->find_one();
+			$fileData = $this->model->getFileData($fileHash);
 			
-			if ($record !== false) {
+			if ($fileData !== false) {
 				// hash exists
 				return (object) array(
-					'fileId' => $record->id,
+					'fileId' => $fileData->id,
 					'fileName' => $fileName,
 					'fileHash' => $fileHash,
 					'fileSize' => $fileSize,
@@ -75,13 +75,7 @@
 			}
 
 			if (move_uploaded_file($_FILES['bifile']['tmp_name'], $uploadFileDir)) {
-				$fileRecord = DBHandler::for_table('files')->create();
-				$fileRecord->set(array(
-					'is_binary' => ($isBinary ? 1 : 0),
-					'file_hash' => $fileHash,
-					'file_size' => $fileSize
-				));
-				$fileRecord->save();
+				$this->model->insertFileData(($isBinary ? 1 : 0), $fileHash, $fileSize);
 
 				return (object) array(
 					'fileId' => $fileRecord->id,

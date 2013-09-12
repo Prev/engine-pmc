@@ -43,4 +43,18 @@
 				))
 				->find_many();
 		}
+
+		public function increaseArticleHits($articleNo) {
+			$row = DBHandler::for_table('article')
+				->where('no', $articleNo)
+				->find_one();
+
+			if ($row) {
+				$row->set_expr('hits', 'hits + 1');
+				$row->save();
+				
+				return true;
+			}
+			return false;
+		}
 	}

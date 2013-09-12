@@ -18,5 +18,36 @@
 				->find_one();
 		}
 
+		public function insertNewComment($articleNo, $comment, $isSecret, $topId=NULL, $parentId=NULL) {
+			$record = DBHandler::for_table('article_comment')->create();
+			$record->set(array(
+				'article_no' => $articleNo,
+				'content' => $comment,
+				'writer_id' => User::getCurrent()->id,
+				'write_time' => date('Y-m-d H:i:s'),
+				'is_secret' => $isSecret
+			));
+
+			if (isset($topId) && $topId) {
+				$record->set(array(
+					'top_id' => $topId,
+					'parent_id' => $parentId
+				));
+			}
+
+			$record->save();
+		}
+
+		public function updateComment($commentData, $comment, $isSecret) {
+			$commentData->set(array(
+				'content' => $comment,
+				'is_secret' => $isSecret
+			));
+			$commentData->save();
+		}
+
+		public function deleteComment($commentData) {
+			$commentData->delete();
+		}
 	}
 
