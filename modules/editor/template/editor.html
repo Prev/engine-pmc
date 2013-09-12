@@ -81,10 +81,16 @@
 	EditorJSLoader.ready(function(Editor) {
 		editor = new Editor(config);
 	});	
-
+	
 	function validForm(editor) {
 		var validator = new Trex.Validator();
 		var content = editor.getContent();
+		
+		if (!document.forms.tx_editor_form.title.value) {
+			alert('제목을 입력하세요');
+			return false;
+		}
+
 		if (!validator.exists(content)) {
 			alert('내용을 입력하세요');
 			return false;

@@ -501,6 +501,8 @@
 		static public function printErrorPage($content) {
 			ob_clean();
 			
+			$content = str_replace("\r\n", '<br>', $content);
+			$content = str_replace("\n", '<br>', $content);
 			$content = fetchLocale($content);
 			Context::set('errorMessage', $content);
 			

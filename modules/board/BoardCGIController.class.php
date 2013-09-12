@@ -34,6 +34,11 @@
 				return;
 			}
 
+			if (!stripslashes($_POST['title'])) {
+				goBack('제목을 입력하세요.', true);
+				return;
+			}
+
 			if (!empty($_POST['attach_files'])) {
 				$attachFiles = $_POST['attach_files'];
 				$attachFiles = join('"', explode("\\\"", $attachFiles));

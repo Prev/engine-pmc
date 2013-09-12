@@ -43,14 +43,16 @@
 			// ex) {# 'en'=>'Error on this page', 'ko'=> '이 페이지에 오류가 있습니다' }
 			$html = preg_replace('/{#([\s\S]+?)}/', '{@ echo fetchLocale(array($1)); }', $html);
 			
-			// {@ PHPCode }
+			// {@ PHPCode } or {@ PHPCode @}
+			//$html = preg_replace_callback('/{@((?:[^(?:{@)]|\W)+?)@}/', array($this, 'parseCode'), $html);
+			$html = preg_replace_callback('/{@([^@]+?)@}/', array($this, 'parseCode'), $html);
 			$html = preg_replace_callback('/{@([\s\S]+?)}/', array($this, 'parseCode'), $html);
 			
 			/*
 			 * {$a} -> <?php echo $__attr->a ( Context::get('a') or View->a ) ?> 
 			 * {&a} -> $__attr->a ( Context::get('a') or View->a )
 			 */
-			$html = preg_replace_callback('/{\s*(\$[^}]+?)}/', array($this, 'parseVar'), $html);
+			$html = preg_replace_callback('/{\s*(\$[^}]+?)\s*}/', array($this, 'parseVar'), $html);
 			//$html = preg_replace_callback('/{\s*(\$|&)([^}]+?)}/', array($this, 'parseVar'), $html);
 			
 			// {func()} -> Context::execFunction('func', array())
@@ -192,6 +194,8 @@
 		}
 
 		private function parseVar($matches) {
+			if (substr($matches[1], 0, 7) == '$__attr') return '{'.$matches[1].'}';
+
 			$varname = $matches[1];
 			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $varname, -1);
 			$varname = preg_replace('/&([\>a-zA-Z0-9_-]*)/', '\$__attr->$1', $varname, -1);
@@ -297,32 +301,31 @@
 		
 
 		private function deleteWhiteSpace($content) {
-			if (strpos($content, "> ") !== false) {
-				$content = join('>', explode("> ", $content));
+			if (strpos($content, '> ') !== false) {
+				$content = str_replace('> ', '>', $content);
 				return $this->deleteWhiteSpace($content);
 			}
 			if (strpos($content, ">\t") !== false) {
-				$content = join('>', explode(">\t", $content));
+				$content = str_replace(">\t", '>', $content);
 				return $this->deleteWhiteSpace($content);
 			}
 			if (strpos($content, ">\r\n") !== false) {
-				$content = join('>', explode(">\r\n", $content));
+				$content = str_replace(">\r\n", '>', $content);
 				return $this->deleteWhiteSpace($content);
 			}
-			
-			if (strpos($content, " <") !== false) {
-				$content = join('<', explode(" <", $content));
+
+			if (strpos($content, '< ') !== false) {
+				$content = str_replace('< ', '<', $content);
 				return $this->deleteWhiteSpace($content);
 			}
-			if (strpos($content, "\t<") !== false) {
-				$content = join('<', explode("\t<", $content));
+			if (strpos($content, "<\t") !== false) {
+				$content = str_replace("<\t", '<', $content);
 				return $this->deleteWhiteSpace($content);
 			}
-			if (strpos($content, "\r\n<") !== false) {
-				$content = join('<', explode("\r\n<", $content));
+			if (strpos($content, "<\r\n") !== false) {
+				$content = str_replace("<\r\n", '<', $content);
 				return $this->deleteWhiteSpace($content);
 			}
-			
 			return $content;
 		}
 

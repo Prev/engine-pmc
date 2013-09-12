@@ -2,7 +2,7 @@
 	
 	/**
 	 * @ author prevdev@gmail.com
-	 * @ 2013.05
+	 * @ 2013.05 ~ 09
 	 */
 	
 	if (!defined('PMC')) {
@@ -10,6 +10,7 @@
 	}
 	
 	session_start();
+	error_reporting(E_ALL & ~E_NOTICE);
 	date_default_timezone_set('Asia/Seoul');
 
 
