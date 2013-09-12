@@ -53,8 +53,10 @@
 			else {
 				$orderKey = $data->order_key;
 				
-				if (substr($orderKey, strlen($orderKey)-1, 1) == 'Z')
-					return substr($orderKey . strlen($orderKey)-2) . $this->_getNextAlphabet(substr($orderKey, strlen($orderKey)-1, 1)) . 'A';
+				if ($orderKey == 'ZZ')
+					return NULL;
+				else if (substr($orderKey, strlen($orderKey)-1, 1) == 'Z')
+					return $this->_getNextAlphabet(substr($orderKey, 0, 1)) . 'A';
 				else
 					return substr($orderKey, 0, strlen($orderKey)-1) . $this->_getNextAlphabet(substr($orderKey, strlen($orderKey)-1, 1));
 			}
@@ -86,6 +88,9 @@
 				$topNo = $this->getArticleTopId($parentNo);
 				$orderKey = $this->getArticleOrderKey($parentNo, $topNo);
 				
+				if ($orderKey === NULL)
+					return -1; // 답글 최대 갯수 23*23개를 초월함
+
 				$record->set(array(
 					'top_no' => $topNo,
 					'order_key' => $orderKey

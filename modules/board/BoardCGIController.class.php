@@ -56,6 +56,11 @@
 				$_POST['category']
 			);
 
+			if ($record === -1) {
+				goBack('더 이상 답글을 달 수 없습니다');
+				return;
+			}
+
 			$articleNo = $record->no;
 			
 			if ($attachFiles) {
