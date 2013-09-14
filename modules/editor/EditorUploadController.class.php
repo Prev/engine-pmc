@@ -1,7 +1,5 @@
 <?php
 	
-	require ROOT_DIR . '/modules/file/FileUploadController.class.php';
-
 	class EditorUploadController extends FileUploadController {
 
 		public function procFileUpload() {

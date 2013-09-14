@@ -24,14 +24,26 @@
 			if (substr($templateName, strlen($templateName)-5, 5) != '.html')
 				$templateName .= '.html';
 			
-			if (Context::getInstance()->mobileMode && substr($templateName, 0, 1) != '/' && is_file(ModuleHandler::getModuleDir($this->module->moduleID) . '/template/m.' . $templateName))
+			if (Context::getInstance()->isMobileMode && substr($templateName, 0, 1) != '/' && is_file(ModuleHandler::getModuleDir($this->module->moduleID) . '/template/m.' . $templateName))
 				$templateName = 'm.' . $templateName;
 
+			if ($this->module->parentModuleID) {
+				$backtrace = debug_backtrace();
+				$filePath = $backtrace[0]['file'];
+
+				$moduledir = substr($filePath, 0, strrpos($filePath, DIRECTORY_SEPARATOR));
+				$moduledir = substr($moduledir, strlen(ROOT_DIR));
+				
+				$moduledir = str_replace(DIRECTORY_SEPARATOR, '/', $moduledir);
+				$moduledir = ROOT_DIR . $moduledir;
+				
+			}else
+				$moduledir = ModuleHandler::getModuleDir($this->module->moduleID);
 
 			CacheHandler::execTemplate(
 				(substr($templateName, 0, 1) == '/') ?
 					ROOT_DIR . $templateName :
-					ModuleHandler::getModuleDir($this->module->moduleID) . '/template/' . $templateName
+					$moduledir . '/template/' . $templateName
 			, $this->module);
 			
 		}

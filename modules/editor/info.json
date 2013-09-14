@@ -24,15 +24,13 @@
 
 		{
 			"name":"procFileUpload",
-			"controller":"EditorUploadController",
-			"model":"EditorUploadModel",
-			"layout":"blank"
+			"inherit":"file.procFileUpload",
+			"controller":"EditorUploadController"
 		},
 		{
 			"name":"procImageUpload",
-			"controller":"EditorUploadController",
-			"model":"EditorUploadModel",
-			"layout":"blank"
+			"inherit":"file.procImageUpload",
+			"controller":"EditorUploadController"
 		}
 	]
 }

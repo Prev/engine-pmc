@@ -20,8 +20,13 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.4.4
+모듈 액션간 상속 지원
+모듈 프로세스 개선
+
 #### v 0.4.3
 모듈별 MVC 기능 재분리
+게시판 OrderKey 관련 버그 픽스
 
 #### v 0.4.2
 + 다국어 기능 일부 변경

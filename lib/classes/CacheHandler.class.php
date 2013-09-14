@@ -43,7 +43,7 @@
 		static public function execTemplate($filePath, $module=NULL) {
 			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR) $filePath = substr($filePath, strlen(ROOT_DIR));
 			if (substr($filePath, 0, 1) != '/') $filePath = '/' . $filePath;
-				
+			
 			if (!is_dir(ROOT_DIR . self::$siteCacheDir . '/layout/'))
 				mkdir(ROOT_DIR . self::$siteCacheDir . '/layout/');
 
@@ -52,8 +52,8 @@
 				
 			if (!is_file(ROOT_DIR . $filePath)) {
 				Context::printWarning(array(
-					'en'=>'Error exec cache - cannot find original file("'.$filePath.'"")',
-					'ko'=>'캐시 생성 실패 - 원본 파일("'.$filePath.'"")을 찾을 수 없음'
+					'en'=>'Error exec cache - cannot find original file("'.$filePath.'")',
+					'ko'=>'캐시 생성 실패 - 원본 파일("'.$filePath.'")을 찾을 수 없음'
 				));
 				return;
 			}
@@ -73,7 +73,7 @@
 				 */
 				$relativePath = substr($filePath, 0, strrpos($filePath, '/')+1);
 				$content = TemplateHandler::compileTemplate(
-					readFileContent(ROOT_DIR . $filePath),
+					file_get_contents(ROOT_DIR . $filePath),
 					$module,
 					$relativePath
 				);
@@ -137,7 +137,7 @@
 				if (!isset(self::$lessc))
 					self::$lessc = new lessc();
 
-				$content = readFilecontent($originPath);
+				$content = file_get_contents($originPath);
 				$content = preg_replace('`url\(/(.*)\)`', 'url(' . RELATIVE_URL . '/$1)', $content);
 				$content = preg_replace('`url\((.*)\)`', 'url(' . RELATIVE_URL . $relativePath . '$1)', $content);
 				
