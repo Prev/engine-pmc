@@ -54,8 +54,8 @@
 
 			if (!$moduleID) {
 				Context::printErrorPage(array(
-					'en' => 'Cannot load module "'.$moduleID.'" - module not defined',
-					'ko' => '모듈 "'.$moduleID.'"을 불러올 수 없습니다 - 모듈이 정의되지 않음'
+					'en' => 'Cannot load module - module not defined',
+					'ko' => '모듈을 불러올 수 없습니다 - 모듈이 정의되지 않음'
 				));
 				return;
 				
@@ -70,7 +70,7 @@
 			if (!is_file($moduleDir . '/info.json')) {
 				Context::printErrorPage(array(
 					'en' => 'Cannot initialize module "'.$moduleID.'" - info.json file not exists',
-					'ko' => '모듈 "'.$moduleID.'"을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않습니다'
+					'ko' => '모듈 "'.$moduleID.'"을 초기화 할 수 없습니다 - info.json 파일이 존재하지 않음'
 				));
 				return;
 			}
