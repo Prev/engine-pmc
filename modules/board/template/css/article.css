@@ -95,7 +95,7 @@
 .article-comment-wrap ul#comment-list li .comment-header .comment-delete-btn{ margin-left: 4px; padding-left: 4px; border-left: 1px solid #CCC }
 .article-comment-wrap ul#comment-list li .comment-writer{ font-weight: bold; font-size: 13px; }
 .article-comment-wrap ul#comment-list li .comment-write-time{ color: #999; font-size: 10px; margin: 4px 0 0 5px }
-.article-comment-wrap ul#comment-list li .comment-content{ color: #666; padding-left: 1px }
+.article-comment-wrap ul#comment-list li .comment-content{ color: #666; padding-left: 1px; word-wrap: break-word; }
 .article-comment-wrap ul#comment-list li .comment-content .parent-writer{ font-weight: bold; color: rgb(120, 92, 37); padding-right: 3px }
 .article-comment-wrap ul#comment-list li a:link,
 .article-comment-wrap ul#comment-list li a:active,

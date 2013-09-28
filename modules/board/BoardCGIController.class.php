@@ -147,14 +147,13 @@
 				return false;
 			}
 
-			if (strlen($title) > 254) {
-				goBack('제목이 너무 깁니다', true);
+			if ($isSecret && $isNotice) {
+				goBack('비밀글을 공지사항으로 등록 할 수 없습니다', true);
 				return false;
 			}
-
-			if ($isSecret && $isNotice) {
-				goBack('제목이 너무 깁니다', true);
-				return false;
+			
+			if (mb_strlen($title) > 254) {
+				$title = mb_substr($title, 255);
 			}
 
 			return true;
