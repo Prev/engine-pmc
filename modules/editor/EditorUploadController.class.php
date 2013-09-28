@@ -6,6 +6,7 @@
 
 		public function init() {
 			$this->FILE_MAX_SIZE = $this->module->FILE_MAX_SIZE;
+			parent::init();
 		}
 		
 		public function procFileUpload() {

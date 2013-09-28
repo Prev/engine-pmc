@@ -3,8 +3,7 @@
 	class FileUploadController extends Controller {
 
 		protected $FILE_MAX_SIZE = 10485760; // 10 MB
-
-
+		
 		public function init() {
 			if (!is_dir(ROOT_DIR . '/files/attach/')) {
 				mkdir(ROOT_DIR . '/files/attach/');
