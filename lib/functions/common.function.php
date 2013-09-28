@@ -509,7 +509,7 @@
 	 * @param $alertMessage : 정의시 해당 메시지로 경고창을 한번 뛰운 뒤 뒤로 이동
 	 * @param $clearContents : true일때 이전 내용을 ob_clean 한 후 뒤로 이동
 	 */
-	function goBack($alertMessage=NULL, $clearContents=false) {
+	function goBack($alertMessage=NULL, $clearContents=true) {
 		if ($clearContents) {
 			ob_clean();
 
@@ -519,6 +519,9 @@
 				($alertMessage ? 'alert("'.$alertMessage.'");' : '') .
 				'location.replace("'.getBackUrl().'");</script>' .
 				'</head><body></body></html>';
+			
+			exit;
+			
 		}else {
 			echo '<script type="text/javascript">' .
 				($alertMessage ? 'alert("'.$alertMessage.'");' : '') .

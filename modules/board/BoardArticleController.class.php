@@ -13,17 +13,17 @@
 			if ($articleData->readable_group) {
 				$me = User::getCurrent();
 				if (!$me || !$me->checkGroup($articleData->readable_group)) {
-					goBack('글을 읽을 권한이 없습니다');
-					exit;
+					goBack('글을 읽을 권한이 없습니다', true);
+					return;
 				}
 			}
-
+			
 			if (!$articleData->is_notice && $articleData->is_secret && !$isBoardAdmin && $articleData->writer_id != User::getCurrent()->id) {
 				$parentArticle = $this->model->getParentArticle($articleData->top_no, $articleData->order_key);
 				
 				if (!$parentArticle || $parentArticle->writer_id != User::getCurrent()->id) {
-					goBack('글을 읽을 권한이 없습니다');
-					exit;
+					goBack('글을 읽을 권한이 없습니다', true);
+					return;
 				}
 			}
 
