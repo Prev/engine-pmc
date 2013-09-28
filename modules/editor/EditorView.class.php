@@ -6,9 +6,14 @@
 		var $formInnerData;
 		var $formData;
 
+		var $FILE_MAX_SIZE; // init in EditorModule.class.php
+
+
 		public function init() {
 			$this->callbackUrl = $this->module->callbackUrl;
 			$this->formInnerData = $this->module->formInnerData;
+			
+			$this->FILE_MAX_SIZE = $this->module->FILE_MAX_SIZE;
 		}
 
 		public function dispEditor() {

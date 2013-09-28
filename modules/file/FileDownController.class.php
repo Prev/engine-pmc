@@ -6,7 +6,7 @@
 			$data = $this->model->getFileUrl($_GET['file'], $_GET['article_no']);
 			
 			$fileExtension = substr(strrchr($data->file_name, '.'), 1);
-			$fileDir = ROOT_DIR . '/files/attach/' . ($data->is_binary ? 'binaries' : 'images') . '/' . $data->file_hash . (!$data->is_binary ? '.'.$fileExtension : '');
+			$fileDir = ROOT_DIR . '/files/attach/binaries/' . $data->file_hash;
 			
 			if (!is_file($fileDir)) {
 				echo '파일이 존재하지 않습니다.';

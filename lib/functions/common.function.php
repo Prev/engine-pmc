@@ -41,6 +41,8 @@
 	function getMenuTag($level, $noDeco=true) {
 		$html = '';
 		foreach(Context::getMenu($level) as $key => $menu) {
+			if (!$menu->visible) continue;
+			
 			$html .= 
 				'<li class="'.$menu->className . ($menu->selected ? ' ' . $menu->className . '-selected selected' : '') . '">' .
 					'<a href="' . RELATIVE_URL . '/' . (USE_SHORT_URL ? '' : '?menu=') . $menu->title . '" class="'.($noDeco == true ? 'no-deco' : '').'">' .
@@ -74,27 +76,37 @@
 		else
 			return substr($path, 0, strrpos($path, '/')) . (isset($end) ? $end : '');
 	}
-
-
+	
+	
 	/**
 	 * 문자의 길이만큼 빈곳에 0을 집어넣음
 	 * 시간표시시 주로 사용
 	 * @param $length는 0을 채워넣을 길이를 정의함
 	 * ex) 11:57:02
 	 */
-	function set0($str, $length=2) {
+	function fillZero($str, $length=2) {
 		for ($i=0; $i<$length-strlen($str); $i++)
 			$str = '0' . $str;
 		return $str;
 	}
+	function set0($str, $length=2) { return fillZero($str, $length); }
+	
+	
+	/**
+	 * 루트 uri, 세션으로 쿠키를 심음
+	 */
+	function setCookie2($name, $value, $expire=0, $secure=false, $httponly=false) {
+		setcookie($name, $value, $expire, SERVER_URI, SESSION_DOMAIN, $secure, $httponly);
+	}
+	
 	
 	/**
 	 * form 데이터 수신시 checkbox 내용 체크
 	 * 값이 true 이거나 on 일시 true 반환
 	 */
 	function evalCheckbox($formData) {
-		return isset($formData) && 
-			($formData == true || strtolower($formData) == 'on');
+		return (int)(isset($formData) && 
+			($formData == true || strtolower($formData) == 'on'));
 	}
 
 	/**
@@ -320,6 +332,12 @@
 			$_SERVER['HTTP_HOST'];
 	}
 	
+	function getServerUri() {
+		if (defined('SESSION_DOMAIN')) return SERVER_URI;
+
+		return getServerInfo()->uri;
+	}
+
 	/**
 	 * url 관련 정보를 반환
 	 *

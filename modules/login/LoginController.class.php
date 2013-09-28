@@ -39,14 +39,12 @@
 		public function procLogout() {
 			if (!isset($_SERVER['HTTP_REFERER'])) return;
 			
-			if (isset($_COOKIE['pmc_sess_key'])) {
-				$sessionKey = $_COOKIE['pmc_sess_key'];
-				$this->model->removeSession($sessionKey);
-
-				setcookie('pmc_sess_key', '', time()-60, getServerInfo()->uri, SESSION_DOMAIN);
+			if (isset($_COOKIE[SSO_COOKIE_NAME])) {
+				$this->model->removeSession($_COOKIE[SSO_COOKIE_NAME]);
+				setCookie2(SSO_COOKIE_NAME, '', time()-60);
+				setCookie2(SSO_COOKIE_NAME.'_synchash', '', time()-60);
 			}
-			unset($_SESSION['pmc_sso_data']);
-			setcookie('pmc_logout_key', '0', time()-60);
+			unset($_SESSION[SSO_SESSION_NAME]);
 
 			redirect(RELATIVE_URL);
 		}
@@ -65,6 +63,8 @@
 			if (!$userData || ($userData->password != hash('sha256', $pw . $userData->password_salt))) {
 				$this->model->insertIntoLoginlog($id, false, $autoLogin);
 				$this->goBackToLoginPage('result=fail', urldecode($next));
+				return;
+				
 			}else {
 				do {
 					$sessionKey = $this->generateSessionKey();
@@ -83,7 +83,7 @@
 				$this->model->updateLastLoginedIp($userData->id);
 				$this->model->insertIntoLoginlog($id, true, $autoLogin);
 
-				setcookie('pmc_sess_key', $sessionKey, ($autoLogin ? $expireTime : 0), getServerInfo()->uri, SESSION_DOMAIN);
+				setCookie2(SSO_COOKIE_NAME, $sessionKey, ($autoLogin ? $expireTime : 0));
 				
 				redirect($next);
 			}

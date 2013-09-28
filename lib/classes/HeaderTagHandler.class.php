@@ -176,14 +176,15 @@
 						$html .= $this->metaTags[$i] . LINE_END;
 				}
 				
-				// print css, js files
-				$html .= $this->getCSSAndJSTags('head');
-				
 				// print other header tags
 				if ($this->headerTags) {
 					for ($i=0; $i<count($this->headerTags); $i++)
 						$html .= $this->headerTags[$i] . LINE_END;
 				}
+
+				// print css, js files
+				$html .= $this->getCSSAndJSTags('head');
+
 			}else {
 				return $this->getCSSAndJSTags($position);
 			}

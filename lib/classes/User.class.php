@@ -31,38 +31,18 @@
 		private $extra_vars;
 		private $groups;
 
-		public function __construct($data) {
-			if (is_object($data) || is_array($data)) {
-				if (isset($data->id) && isset($data->inputId)){
-					foreach ($data as $key => $value) {
-						$this->{$key} = $value;
-					}
-					if (isset($this->groups)) {
-						for ($i=0; $i<count($this->groups); $i++) {
-							$this->groups[$i]->nameLocale = fetchLocale($this->groups[$i]->nameLocales);
-							$this->groups[$i]->name_locale = $this->groups[$i]->nameLocale;
-						}
-					}
-					$this->id = (int) $this->id;
-				}
-				else
-					Context::printWarning('User class is not initialize with User record data');
-			}else {
-				Context::printWarning('Unknown type of param $data - in User::__construct');
-			}
-		}
 
 		static public function getCurrent() {
 			return self::$userSingleTon;
 		}
 
 		static public function initCurrent() {
-			if (isset($_SESSION['pmc_sso_data'])) {
-				$ssoData = (object)$_SESSION['pmc_sso_data'];
+			if (isset($_SESSION[SSO_SESSION_NAME])) {
+				$ssoData = (object)$_SESSION[SSO_SESSION_NAME];
 				
 				// expired
 				if (strtotime($ssoData->expireTime) < time()) {
-					unset($_SESSION['pmc_sso_data']);
+					unset($_SESSION[SSO_SESSION_NAME]);
 					self::$userSingleTon = NULL;
 					return;
 				}
@@ -87,6 +67,33 @@
 			
 			self::$masterAdmin = $arr2;
 			return $arr2;
+		}
+
+		static public function clearSession() {
+			unset($_SESSION[SSO_SESSION_NAME]);
+		}
+
+
+
+		public function __construct($data) {
+			if (is_object($data) || is_array($data)) {
+				if (isset($data->id) && isset($data->inputId)){
+					foreach ($data as $key => $value) {
+						$this->{$key} = $value;
+					}
+					if (isset($this->groups)) {
+						for ($i=0; $i<count($this->groups); $i++) {
+							$this->groups[$i]->nameLocale = fetchLocale($this->groups[$i]->nameLocales);
+							$this->groups[$i]->name_locale = $this->groups[$i]->nameLocale;
+						}
+					}
+					$this->id = (int) $this->id;
+				}
+				else
+					Context::printWarning('User class is not initialize with User record data');
+			}else {
+				Context::printWarning('Unknown type of param $data - in User::__construct');
+			}
 		}
 
 		public function __get($name) {

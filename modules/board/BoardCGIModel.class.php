@@ -155,7 +155,7 @@
 			if (isset($category) && !empty($category) && $category != 'none') {
 				$articleData->set('category', $category);
 			}
-
+			
 			$articleData->save();
 		}
 

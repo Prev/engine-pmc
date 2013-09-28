@@ -2,6 +2,9 @@
 	
 	class FileUploadController extends Controller {
 
+		protected $FILE_MAX_SIZE = 10485760; // 10 MB
+
+
 		public function init() {
 			if (!is_dir(ROOT_DIR . '/files/attach/')) {
 				mkdir(ROOT_DIR . '/files/attach/');
@@ -23,7 +26,7 @@
 				return;
 			}
 			
-			return $this->_procUpload(true);
+			return $this->_procUpload('binaries', false);
 		}
 
 		public function procImageUpload() {
@@ -38,29 +41,37 @@
 
 			if (!in_array($_FILES['bifile']['type'], $imageKind) || !in_array($fileExtension, $imageExtensions)) {
 				ErrorLogger::log('Attempt upload '.$_FILES['upload']['type'].' file as image');
-				$this->close('Cannot upload this file as image');
+				$this->close(array(
+					'en' => 'Cannot upload this file as image',
+					'ko' => '이 파일을 이미지로 업로드 할 수 없습니다'
+				));
 				return;
 			}
-			return $this->_procUpload(false);
+			return $this->_procUpload('images', true);
 		}
 
-		private function _procUpload($isBinary) {
+		protected function _procUpload($fileType, $remainExtension) {
 			if (empty($_FILES['bifile'])) return;
 
 			$fileName = $_FILES['bifile']['name'];
 			$fileHash = sha1_file($_FILES['bifile']['tmp_name']);
-			$fileSize = (int)$_FILES["bifile"]["size"];
+			$fileSize = (int)$_FILES['bifile']["size"];
 			$fileExtension = strtolower(substr(strrchr($_FILES['bifile']['name'], '.'), 1));
 			
-			$uploadFileUrl = '/files/attach/' . ($isBinary ? 'binaries' : 'images') . '/' . $fileHash . ($isBinary ? '' : '.' . $fileExtension);
+			$uploadFileUrl = '/files/attach/' . $fileType . '/' . $fileHash . ($remainExtension ? '.' . $fileExtension : '');
 			$uploadFileDir = ROOT_DIR . $uploadFileUrl;
-			
-			if ($fileSize > 1024 * 1024 * 20) {
-				$this->close('File size is upper than 20MB');
+
+			if ($fileSize > $this->FILE_MAX_SIZE) {
+				$clearedMaxFileSize = getClearFileSize($this->FILE_MAX_SIZE);
+
+				$this->close(array(
+					'en' => 'Cannot upload file whose size is upper than ' . $clearedMaxFileSize,
+					'ko' => $clearedMaxFileSize . '를 초과하는 파일은 업로드 할 수 없습니다'
+				));
 				return;
 			}
 
-			$fileData = $this->model->getFileData($fileHash);
+			$fileData = $this->model->getFileData($fileType, $fileHash);
 			
 			if ($fileData !== false) {
 				// hash exists
@@ -75,7 +86,7 @@
 			}
 
 			if (move_uploaded_file($_FILES['bifile']['tmp_name'], $uploadFileDir)) {
-				$this->model->insertFileData(($isBinary ? 1 : 0), $fileHash, $fileSize);
+				$fileRecord = $this->model->insertFileData($fileType, $fileHash, $fileSize);
 
 				return (object) array(
 					'fileId' => $fileRecord->id,
@@ -85,18 +96,22 @@
 					'fileMimeType' => $_FILES['bifile']['type'],
 					'uploadedUrl' => $uploadFileUrl,
 				);
-
+				
 			}else {
-				$this->close('Fail uploading file');
+				$this->close(array(
+					'en' => 'Fail uploading file',
+					'ko' => '파일을 업로드 하는데 실패했습니다'
+				));
 				ErrorLogger::log('Fatal Error: fail to move_uploaded_file in FileController');
 				exit;
 			}
 		}
 
-		private function close($message=NULL) {
-			if ($message)
-				echo '<script type="text/javascript">alert("'.$message.'");window.close();</script>';
-			else
-				echo '<script type="text/javascript">window.close();</script>';
+		protected function close($message=NULL) {
+			if (is_array($message) || is_object($message)) $message = fetchLocale($message);
+
+			echo $message !== NULL ?
+				('<script type="text/javascript">alert("'.$message.'");window.close();</script>'):
+				('<script type="text/javascript">window.close();</script>');
 		}
 	}

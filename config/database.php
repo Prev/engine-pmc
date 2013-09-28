@@ -17,7 +17,7 @@
 			'host' => 'localhost',
 			'username' => 'pmc_test',
 			'password' => 'test123',
-			'database_name' => 'pmc_test',
+			'database_name' => 'engine_pmc',
 			'prefix' => 'pmc_'
 		);
 	

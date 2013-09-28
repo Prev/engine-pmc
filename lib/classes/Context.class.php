@@ -147,15 +147,16 @@
 			if (isset($_GET['mobile'])) {
 				if ($_GET['mobile']) {
 					$this->isMobileMode = true;
-					setcookie('mobile', 1, 0, getServerInfo()->uri, SESSION_DOMAIN);
+					setCookie2('mobile', 1, 0);
 				}else {
 					$this->isMobileMode = false;
-					setcookie('mobile', 0, 0, getServerInfo()->uri, SESSION_DOMAIN);
+					setCookie2('mobile', 0, 0);
 				}
 			}
 
 			// locale 이라는 변수가 넘어왔을 때, 쿠키를 심어 지속되로고 설정
-			if (isset($_GET['locale'])) setcookie('locale', $_GET['locale'], 0, getServerInfo()->uri, SESSION_DOMAIN);
+			if (isset($_GET['locale']))
+				setCookie2('locale', $_GET['locale'], 0);
 			
 			// page 라는 변수가 넘어왔고 module 변수가 넘어오지 않을 때 모듈을 page로 설정
 			if (isset($_GET['page']) && !isset($_GET['module'])) $_GET['module'] = 'page';
@@ -340,6 +341,9 @@
 				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false)
 					$arr[$i]->selected = true;
 				
+				if (isset($arr[$i]->visible_group) && User::getCurrent() && !User::getCurrent()->checkGroup(json_decode($arr[$i]->visible_group)))
+					$arr[$i]->visible = false;
+
 				if (!empty($arr[$i]->extra_vars)) {
 					$arr[$i]->extra_vars = json_decode($arr[$i]->extra_vars);
 					$arr[$i]->extraVars = $arr[$i]->extra_vars;
@@ -618,32 +622,52 @@
 		/**
 		 * Check SSO (Single-Sign-On) and initialize
 		 * SSO (통합 인증 서비스) 를 체크하고 초기화함
+		 *
+		 * 로그인시 세션값을 지닌 와일드 카드 쿠키를 심고 session db에 세션을 심음 (이때 로그인 서버 )
+		 * 유저 정보를 가져올땐 이 쿠키값을 sso 서버에 넘겨주면 sso 서버가 유저 정보를 반환
+		 * 받은 유저정보는 PHP 세션안에 저장되며 PHP 세션이 만료되면 다시 sso 서버에 요청하며 데이터 저장
+		 * 고로 쿠키는 sso를 사용하는 모든 서버에 저장되며 세션을 서버별로 저장된다
+		 * 이런 구조상 어카운트 서버에서 유저 정보를 수정하고 세션을 업데이트한다해도 다른 서버에서는 업데이트 되지 않는데,
+		 * 이를 방지하기 위해 synctime 세션과 쿠키를 두어 synctime이 맞지 않으면 세션을 지우고 다시 로드하는 방식을 사용한다
+		 *
 		 */
 		public function checkSSO() {
-			if (isset($_COOKIE['pmc_sess_key']) && !isset($_SESSION['pmc_sso_data'])) {
+			if ($_COOKIE[SSO_COOKIE_NAME.'_synchash'] && $_COOKIE[SSO_COOKIE_NAME.'_synchash'] != $_SESSION[SSO_SESSION_NAME.'_synchash']) {
+				// 와일드 카드 쿠키와 세션의 싱크를 맞춰줌
+				unset($_SESSION[SSO_SESSION_NAME]);
+			}
+
+			if (isset($_COOKIE[SSO_COOKIE_NAME]) && !isset($_SESSION[SSO_SESSION_NAME])) {
 				$urlData = getUrlData(SSO_URL . '?sess_key=' . $_COOKIE['pmc_sess_key'], SSO_AGENT_KEY);
 
 				if (!$urlData) {
+					unset($_SESSION[SSO_SESSION_NAME]);
+					setCookie2(SSO_COOKIE_NAME, '', time()-60);
+
 					Context::printErrorPage(array(
 						'en' => 'cannot load sso data',
 						'ko' => 'SSO 데이터를 불러올 수 없습니다'
 					));
-					unset($_SESSION['pmc_sso_data']);
 					return false;
 				}
-
+				
 				$ssoData = json_decode($urlData);
 
 				if (!$ssoData || $ssoData->result === 'fail') {
+					unset($_SESSION[SSO_SESSION_NAME]);
+					setCookie2(SSO_COOKIE_NAME, '', time()-60);
+
 					Context::printErrorPage(array(
 						'en' => 'fail loading sso data',
 						'ko' => 'SSO 데이터를 불러오는데 실패하였습니다.'
 					));
-					unset($_SESSION['pmc_sso_data']);
 					return false;
 				}
 				$userData = $ssoData->userData;
-				$_SESSION['pmc_sso_data'] = $ssoData;
+				
+				$_SESSION[SSO_SESSION_NAME] = $ssoData;
+				$_SESSION[SSO_SESSION_NAME.'_synchash'] = md5($urlData);
+				setCookie2(SSO_COOKIE_NAME.'_synchash', md5($urlData), strtotime($ssoData->expireTime));
 
 				User::initCurrent();
 				return true;

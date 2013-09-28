@@ -19,25 +19,10 @@
 			}
 
 			$isNotice = evalCheckbox($_POST['is_notice']);
-			$isBoardAdmin = $this->checkIsBoardAdmin($boardInfo->admin_group);
+			$isSecret = evalCheckbox($_POST['is_secret']);
 
-			if (isset($_POST['category']) && $_POST['category'] != 'none') {
-				$categorys = json_decode($boardInfo->categorys);
-				if (array_search($_POST['category'], $categorys) === false) {
-					goBack('사용할 수 없는 카테고리입니다', true);
-					return;
-				}
-			}
-
-			if (!$isBoardAdmin && $isNotice) {
-				goBack('공지사항을 작성 할 권한이 없습니다', true);
+			if (!$this->confirmArticleDatas($_POST['title'], $isNotice, $_POST['category'], $isNotice, $isSecret, $boardInfo))
 				return;
-			}
-
-			if (!stripslashes($_POST['title'])) {
-				goBack('제목을 입력하세요.', true);
-				return;
-			}
 
 			if (!empty($_POST['attach_files'])) {
 				$attachFiles = $_POST['attach_files'];
@@ -49,7 +34,7 @@
 				$boardInfo->id,
 				stripslashes($_POST['title']),
 				removeXSS(stripslashes($_POST['content'])),
-				evalCheckbox($_POST['is_secret']) ? 1 : 0 ,
+				$isSecret ? 1 : 0 ,
 				$isNotice ? 1 : 0,
 				evalCheckbox($_POST['allow_comment']) ? 1 : 0,
 				$_POST['parent_no'],
@@ -85,7 +70,10 @@
 
 			$articleBoardData = $this->model->getArticleAndGroupData($_POST['article_no']);
 			$isNotice = evalCheckbox($_POST['is_notice']);
-			$isBoardAdmin = $this->checkIsBoardAdmin($articleBoardData->admin_group);
+			$isSecret = evalCheckbox($_POST['is_secret']);
+
+			if (!$this->confirmArticleDatas($_POST['title'], $isNotice, $_POST['category'], $isNotice, $isSecret, $articleBoardData))
+				return;
 
 			$articleData = $this->model->getArticleData($_POST['article_no']);
 
@@ -94,18 +82,6 @@
 				return;
 			}
 
-			if (!$isBoardAdmin && $isNotice) {
-				goBack('공지사항을 작성 할 권한이 없습니다', true);
-				return;
-			}
-
-			if (isset($_POST['category']) && $_POST['category'] != 'none') {
-				$categorys = json_decode($articleBoardData->categorys);
-				if (array_search($_POST['category'], $categorys) === false) {
-					goBack('사용할 수 없는 카테고리입니다', true);
-					return;
-				}
-			}
 
 			if (!empty($_POST['attach_files'])) {
 				$attachFiles = $_POST['attach_files'];
@@ -122,8 +98,8 @@
 				$_POST['board_id'],
 				stripslashes($_POST['title']),
 				removeXSS(stripslashes($_POST['content'])),
-				evalCheckbox($_POST['is_secret']) ? 1 : 0 ,
-				evalCheckbox($_POST['is_notice']) ? 1 : 0 ,
+				$isSecret ? 1 : 0 ,
+				$isNotice ? 1 : 0 ,
 				evalCheckbox($_POST['allow_comment']) ? 1 : 0,
 				$_POST['category']
 			);
@@ -147,6 +123,42 @@
 			redirect(RELATIVE_URL .  (USE_SHORT_URL ? '/' : '/?module=board&action=dispArticle&article_no=') . $_POST['article_no']);
 		}
 
+
+		private function confirmArticleDatas($title, $isNotice, $category, $isNotice, $isSecret, $boardInfo) {
+			$isBoardAdmin = $this->checkIsBoardAdmin($boardInfo->admin_group);
+
+			if (isset($category) && $category != 'none') {
+				if ($boardInfo->categorys)
+					$boardCategorys = json_decode($boardInfo->categorys);
+
+				if (array_search($category, $boardCategorys) === false) {
+					goBack('사용할 수 없는 카테고리입니다', true);
+					return false;
+				}
+			}
+
+			if (!$isBoardAdmin && $isNotice) {
+				goBack('공지사항을 작성 할 권한이 없습니다', true);
+				return false;
+			}
+
+			if (!$title) {
+				goBack('제목을 입력하세요.', true);
+				return false;
+			}
+
+			if (strlen($title) > 254) {
+				goBack('제목이 너무 깁니다', true);
+				return false;
+			}
+
+			if ($isSecret && $isNotice) {
+				goBack('제목이 너무 깁니다', true);
+				return false;
+			}
+
+			return true;
+		}
 
 
 		public function procDeleteArticle() {

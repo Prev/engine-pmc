@@ -12,6 +12,23 @@
 		var _attacher = getAttacher('image', _opener);
 		registerAction(_attacher);
 	}
+
+	function checkFile() {
+		var form = document.forms.form1;
+
+		if (!form.bifile.value) {
+			alert("{# 'en' => 'Select a file', 'ko' => '피일을 선택 해 주세요'}");
+			return false;
+		}
+		
+		if (form.bifile.files[0].size > {$FILE_MAX_SIZE} ) {
+			{@ $clearedMaxFileSize = getClearFileSize($FILE_MAX_SIZE); } 
+			alert("{# 'en' => 'Cannot upload file whose size is upper than '.$clearedMaxFileSize, 'ko' => $clearedMaxFileSize.'를 초과하는 파일은 업로드 할 수 없습니다'}");
+			return false;
+		}
+		
+		form1.submit();
+	}
 // ]]>
 </script>
 <div class="wrapper">
@@ -27,7 +44,7 @@
 		<div class="footer">
 			<p><a href="#" onclick="closeWindow();" title="닫기" class="close">닫기</a></p>
 			<ul>
-				<li class="submit"><a href="#" onclick="if (!form1.bifile.value) return false; form1.submit();" title="등록" class="btnlink">등록</a> </li>
+				<li class="submit"><a href="#" onclick="checkFile();" title="등록" class="btnlink">등록</a> </li>
 				<li class="cancel"><a href="#" onclick="closeWindow();" title="취소" class="btnlink">취소</a></li>
 			</ul>
 		</div>

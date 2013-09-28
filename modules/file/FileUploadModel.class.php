@@ -2,20 +2,22 @@
 
 	class FileUploadModel extends Model {
 
-		public function getFileData($fileHash) {
+		public function getFileData($fileType, $fileHash) {
 			return DBHandler::for_table('files')
+				->where('file_type', $fileType)
 				->where('file_hash', $fileHash)
 				->find_one();
 		}
 
-		public function insertFileData($isBinary, $fileHash, $fileSize) {
+		public function insertFileData($fileType, $fileHash, $fileSize) {
 			$record = DBHandler::for_table('files')->create();
 			$record->set(array(
-				'is_binary' => $isBinary,
+				'file_type' => $fileType,
 				'file_hash' => $fileHash,
 				'file_size' => $fileSize
 			));
 			$record->save();
+			return $record;
 		}
 
 	}

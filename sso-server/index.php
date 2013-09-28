@@ -59,6 +59,9 @@
 			$obj->userData->userId = $value;
 			$obj->userData->user_id = $value;
 		}
+		if ($key == 'extra_vars' && !empty($value))
+			$value = json_decode($value);
+
 		$key2 = preg_replace_callback('/(.)_([a-z])/', create_function('$m', 'return $m[1].strtoupper($m[2]);'), $key);
 		$obj->userData->{$key} = $value;
 		$obj->userData->{$key2} = $value;
