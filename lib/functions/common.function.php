@@ -333,7 +333,7 @@
 	}
 	
 	function getServerUri() {
-		if (defined('SESSION_DOMAIN')) return SERVER_URI;
+		if (defined('SERVER_URI')) return SERVER_URI;
 
 		return getServerInfo()->uri;
 	}

@@ -20,19 +20,10 @@
 		}
 
 		public function procFileUpload() {
-			if (!$_FILES['bifile']['size']) {
-				$this->close();
-				return;
-			}
-			
 			return $this->_procUpload('binaries', false);
 		}
 
 		public function procImageUpload() {
-			if (!$_FILES['bifile']['size']) {
-				$this->close();
-				return;
-			}
 			$imageKind = array('image/pjpeg', 'image/jpeg', 'image/JPG', 'image/X-PNG', 'image/PNG', 'image/png', 'image/x-png', 'image/gif', 'image/GIF');
 			$imageExtensions = array('png', 'jpg', 'jpeg', 'gif', 'bmp');
 
@@ -50,7 +41,23 @@
 		}
 
 		protected function _procUpload($fileType, $remainExtension) {
-			if (empty($_FILES['bifile'])) return;
+			if (empty($_FILES['bifile'])) return false;
+
+			if ($_FILES['bifile']['error']) {
+				$this->close(array(
+					'en' => 'Error on uploading',
+					'ko' => '업로드 도중 오류가 발생했습니다'
+				));
+				return false;
+			}
+
+			if (!$_FILES['bifile']['size']) {
+				$this->close(array(
+					'en' => 'File is empty',
+					'ko' => '빈 파일이 전송되었습니다'
+				));
+				return false;
+			}
 
 			$fileName = $_FILES['bifile']['name'];
 			$fileHash = sha1_file($_FILES['bifile']['tmp_name']);
@@ -67,7 +74,7 @@
 					'en' => 'Cannot upload file whose size is upper than ' . $clearedMaxFileSize,
 					'ko' => $clearedMaxFileSize . '를 초과하는 파일은 업로드 할 수 없습니다'
 				));
-				return;
+				return false;
 			}
 
 			$fileData = $this->model->getFileData($fileType, $fileHash);
@@ -102,7 +109,7 @@
 					'ko' => '파일을 업로드 하는데 실패했습니다'
 				));
 				ErrorLogger::log('Fatal Error: fail to move_uploaded_file in FileController');
-				exit;
+				return false;
 			}
 		}
 
