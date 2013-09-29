@@ -20,8 +20,11 @@ function procLogin() {
 		if (!form.id.value) { alert("아이디를 입력 해 주세요."); return false; }
 		if (!form.pw.value) { alert("비밀번호를 입력 해 주세요."); return false; }
 		
-		if (!form.secure_login.checked) return true;
-		else {
+		if (!form.secure_login.checked) {
+			form.submit();
+			return true;
+			
+		}else {
 			var enc_id = rsa.encrypt(form.id.value);
 			var enc_pw = rsa.encrypt(form.pw.value);
 			
@@ -31,7 +34,8 @@ function procLogin() {
 			
 			form.id.disabled = true;
 			form.pw.disabled = true;
-			
+
+			form.submit();
 			return true;
 		}
 	}catch (e) {

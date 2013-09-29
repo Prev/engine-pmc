@@ -510,6 +510,9 @@
 	 * @param $clearContents : true일때 이전 내용을 ob_clean 한 후 뒤로 이동
 	 */
 	function goBack($alertMessage=NULL, $clearContents=true) {
+		if (!is_string($alertMessage))
+			$alertMessage = fetchLocale($alertMessage);
+
 		if ($clearContents) {
 			ob_clean();
 
@@ -574,6 +577,8 @@
 		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
 		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
 		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+
+		$data = preg_replace('#<([^>]*?)(form|input|select|textarea|button|iframe|object)([\s\S]*?)>#', '&lt;$1$2$3&gt;', $data);
 
 		// Remove namespaced elements (we do not need them)
 		$data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);

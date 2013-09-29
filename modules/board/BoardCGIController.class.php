@@ -14,7 +14,10 @@
 
 			$me = User::getCurrent();
 			if (!$me || (isset($boardInfo->writable_group) && !$me->checkGroup(json_decode($boardInfo->writable_group)))) {
-				goBack('글을 쓸 권한이 없습니다', true);
+				goBack(array(
+					'en' => 'You don\'t have permission to write the post',
+					'ko' => '글을 쓸 권한이 없습니다'
+				), true);
 				return;
 			}
 
@@ -23,6 +26,14 @@
 
 			if (!$this->confirmArticleDatas($_POST['title'], $isNotice, $_POST['category'], $isNotice, $isSecret, $boardInfo))
 				return;
+
+			if (isset($_POST['parent_no']) && !$this->model->checkParentArticleExists($_POST['parent_no'])) {
+				goBack(array(
+					'en' => 'You can\'t write reply to non-existing post',
+					'ko' => '존재 하지 않는 글에 답글을 달 수 없습니다'
+				), true);
+				return;
+			}
 
 			if (!empty($_POST['attach_files'])) {
 				$attachFiles = $_POST['attach_files'];
@@ -42,7 +53,10 @@
 			);
 
 			if ($record === -1) {
-				goBack('더 이상 답글을 달 수 없습니다');
+				goBack(array(
+					'en' => 'Cannot write reply anymore',
+					'ko' => '더 이상 답글을 달 수 없습니다'
+				));
 				return;
 			}
 
@@ -64,7 +78,10 @@
 
 		public function procUpdateArticle() {
 			if (!$_POST['article_no']) {
-				goBack('오류가 발생했습니다', true);
+				goBack(array(
+					'en' => 'Error!',
+					'ko' => '오류가 발생했습니다'
+				), true);
 				return;
 			}
 
@@ -78,7 +95,9 @@
 			$articleData = $this->model->getArticleData($_POST['article_no']);
 
 			if (!$articleData || User::getCurrent()->id != $articleData->writer_id) {
-				goBack('글을 수정 할 권한이 없습니다', true);
+				goBack(array(
+					'글을 수정 할 권한이 없습니다'
+				), true);
 				return;
 			}
 
@@ -132,23 +151,35 @@
 					$boardCategorys = json_decode($boardInfo->categorys);
 
 				if (array_search($category, $boardCategorys) === false) {
-					goBack('사용할 수 없는 카테고리입니다', true);
+					goBack(array(
+						'en' => 'Cannot use the category',
+						'ko' => '사용할 수 없는 카테고리입니다'
+					), true);
 					return false;
 				}
 			}
 
 			if (!$isBoardAdmin && $isNotice) {
-				goBack('공지사항을 작성 할 권한이 없습니다', true);
+				goBack(array(
+					'en' => 'You don\'t have permission to write the notice',
+					'ko' => '공지사항을 작성 할 권한이 없습니다'
+				), true);
 				return false;
 			}
 
 			if (!$title) {
-				goBack('제목을 입력하세요.', true);
+				goBack(array(
+					'en' => 'Input title',
+					'ko' => '제목을 입력하세요'
+				), true);
 				return false;
 			}
 
 			if ($isSecret && $isNotice) {
-				goBack('비밀글을 공지사항으로 등록 할 수 없습니다', true);
+				goBack(array(
+					'en' => 'Cannot post notice with secret mode',
+					'ko' => '비밀글을 공지사항으로 등록 할 수 없습니다'
+				), true);
 				return false;
 			}
 			
@@ -161,11 +192,12 @@
 
 
 		public function procDeleteArticle() {
-			if (!$_SERVER['HTTP_REFERER']) return;
-
-			$articleData = $this->model->getArticleAndGroupData((int)$_GET['article_no']);
+			$articleData = $this->model->getArticleAndGroupData((int)$_POST['article_no']);
 			if ($articleData === false) {
-				goBack('게시글이 존재하지 않습니다');
+				goBack(array(
+					'en' => 'Post not exists',
+					'ko' => '게시글이 존재하지 않습니다'
+				));
 				return;
 			}
 
@@ -176,11 +208,14 @@
 			$isBoardAdmin = $this->checkIsBoardAdmin($articleData->admin_group);
 
 			if (!$me || ($me->id != $articleData->writer_id) && !$isBoardAdmin) {
-				goBack('권한이 없습니다');
+				goBack(array(
+					'en' => 'Permission denined',
+					'ko' => '권한이 없습니다'
+				));
 				return;
 			}
 			
-			$this->deleteArticleAndCheckParent($_GET['article_no'], $articleData->top_no, $articleData->order_key);
+			$this->deleteArticleAndCheckParent($_POST['article_no'], $articleData->top_no, $articleData->order_key);
 			// 임시 삭제된 부모글을 체크하고 게시글을 삭제
 			
 			$this->alert('게시글을 성공적으로 삭제했습니다');
@@ -228,26 +263,32 @@
 		}
 
 		public function procToggleNotice() {
-			if (!$_SERVER['HTTP_REFERER']) return;
-			if (!$_GET['article_no']) {
-				goBack('오류가 발생했습니다', true);
+			if (!$_POST['article_no']) {
+				goBack(array(
+					'en' => 'Error!',
+					'ko' => '오류가 발생했습니다'
+				), true);
 				return;
 			}
 
 			$articleBoardData = $this->model->getArticleAndGroupData($_POST['article_no']);
 			$isBoardAdmin = $this->checkIsBoardAdmin($articleBoardData->admin_group);
 			
-			$articleData = $this->model->getArticleData($_GET['article_no']);
+			$articleData = $this->model->getArticleData($_POST['article_no']);
 
 			if (!$isBoardAdmin) {
-				goBack('권한이 없습니다', true);
+				goBack(array(
+					'en' => 'Permission denined',
+					'ko' => '권한이 없습니다'
+				), true);
 				return;
 			}
 
 			$this->model->updateNoticeInfo($articleData, !$articleData->is_notice);
 			
 			goBack( $articleData->is_notice ?
-				'게시글을 공지사항으로 등록했습니다' : '게시글을 공지사항에서 등록해제했습니다'
+				array('en' => 'The post is registered to notice', 'ko' => '게시글을 공지사항으로 등록했습니다') :
+				array('en' => 'The post is unregistered by notice', 'ko' => '게시글을 공지사항에서 등록해제했습니다')
 			);
 		}
 

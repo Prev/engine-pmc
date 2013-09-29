@@ -21,6 +21,10 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.4.6
++ CSRF 문제 해결
++ goBack 다국어 지원
+
 #### v 0.4.5
 + SSO 멀티 도메인 개선
 + 로그인 쿠키/세션 개선

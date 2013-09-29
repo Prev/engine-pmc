@@ -9,13 +9,19 @@
 			if ($row->commentable_group) {
 				$me = User::getCurrent();
 				if (!$me || !$me->checkGroup($row->commentable_group)) {
-					goBack('덧글을 쓸 권한이 없습니다');
+					goBack(array(
+						'en' => 'You do not have permission to write a comment',
+						'ko' => '덧글을 쓸 권한이 없습니다'
+					));
 					return;
 				}
 			}
 
 			if (!$row->allow_comment) {
-				goBack('덧글을 허용하지 않은 게시글입니다');
+				goBack(array(
+					'en' => 'This post doesn\'t allow to write a comment',
+					'ko' => '덧글을 허용하지 않은 게시글입니다'
+				));
 				return;
 			}
 
@@ -29,15 +35,21 @@
 		
 		public function procUpdateComment() {
 			if (!$_POST['comment_id']) {
-				goBack('오류가 발생했습니다', true);
+				goBack(array(
+					'en' => 'Error!',
+					'ko' => '오류가 발생했습니다'
+				));
 				return;
 			}
 
-			$commentData = $this->model->getCommentData((int)$_GET['comment_id']);
+			$commentData = $this->model->getCommentData((int)$_POST['comment_id']);
 
 			$me = User::getCurrent();
 			if (!$me || $me->id != $commentData->writer_id) {
-				goBack('덧글을 수정 할 수 없습니다');
+				goBack(array(
+					'en' => 'Cannot modify the comment',
+					'ko' => '덧글을 수정 할 수 없습니다'
+				));
 				return;
 			}
 
@@ -50,15 +62,18 @@
 		}
 
 		public function procDeleteComment() {
-			if (!$_SERVER['HTTP_REFERER']) return;
+			if (!$_POST['comment_id']) return;
 			
-			$commentData = $this->model->getCommentData((int)$_GET['comment_id']);
+			$commentData = $this->model->getCommentData((int)$_POST['comment_id']);
 			
 			$me = User::getCurrent();
 			$isBoardAdmin = $this->checkIsBoardAdmin($articleData->admin_group);
 
 			if (!$me || ($me->id != $commentData->writer_id) && !$isBoardAdmin) {
-				goBack('덧글을 삭제 할 수 없습니다');
+				goBack(array(
+					'en' => 'Cannot delete the comment',
+					'ko' => '덧글을 삭제 할 수 없습니다'
+				));
 				return;
 			}
 			

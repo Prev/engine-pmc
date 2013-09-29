@@ -37,7 +37,10 @@
 						$boardUseAble = true;
 				}
 				if (!$boardUseAble) {
-					goBack('권한이 없습니다');
+					goBack(array(
+						'en' => 'Permission Denined',
+						'ko' => '권한이 없습니다'
+					));
 					return;
 				}
 				$this->boardName = $_GET['board_name'];
@@ -52,7 +55,10 @@
 
 		public function dispUpdateEditorInnerData() {
 			if (!isset($_GET['article_no'])) {
-				goBack('알수없는 게시글을 수정하려했습니다');
+				goBack(array(
+					'en' => 'Cannot modify non-existing post',
+					'ko' => '존재하지 않는 게시글을 수정할 수 없습니다'
+				));
 				return;
 			}
 			
@@ -61,7 +67,10 @@
 			$this->fileDatas = $this->model->getArticleFiles($_GET['article_no']);
 
 			if (User::getCurrent()->id != $this->articleData->writer_id) {
-				goBack('권한이 없습니다');
+				goBack(array(
+					'en' => 'Permission Denined',
+					'ko' => '권한이 없습니다'
+				));
 				return;
 			}
 

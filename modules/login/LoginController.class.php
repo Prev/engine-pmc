@@ -37,7 +37,14 @@
 			}
 		}
 		public function procLogout() {
-			if (!isset($_SERVER['HTTP_REFERER'])) return;
+			setCookie2('pmc_logout', 1);
+			redirect(getUrl('login', 'procLogout2'));
+		}
+		
+		public function procLogout2() {
+			if (!$_COOKIE['pmc_logout']) return;
+			
+			setCookie2('pmc_logout', 0, time()-60);
 			
 			if (isset($_COOKIE[SSO_COOKIE_NAME])) {
 				$this->model->removeSession($_COOKIE[SSO_COOKIE_NAME]);
@@ -48,13 +55,16 @@
 
 			redirect(RELATIVE_URL);
 		}
-		
+
+
 		private function generateSessionKey() {
 			mt_srand(microtime(true) * 100000 + memory_get_usage(true));
 			return sha1(uniqid(mt_rand(), true));
 		}
 		
 		private function login($id, $pw, $autoLogin) {
+			if (!$id || !$pw) return;
+
 			$next = !empty($_REQUEST['next']) ? urldecode($_REQUEST['next']) : getUrl();
 
 			$userData = $this->model->getUserData($id);

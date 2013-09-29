@@ -13,33 +13,42 @@
 				->find_one();
 		}
 
-		public function getArticleTopId($parent_no) {
+		public function checkParentArticleExists($parentNo) {
+			$data = DBHandler::for_table('article')
+				->select('no')
+				->where('no', $parentNo)
+				->find_one();
+
+			return $data !== false;
+		}
+
+		public function getArticleTopId($parentNo) {
 			$data = DBHandler::for_table('article')
 				->select_many('no', 'top_no')
-				->where('no', $parent_no)
+				->where('no', $parentNo)
 				->find_one();
 
 			if (!$data->top_no) return $data->no;
 			else return $this->getArticleTopId($data->top_no);	
 		}
 
-		public function getArticleOrderKey($parent_no, $top_no) {
+		public function getArticleOrderKey($parentNo, $topNo) {
 			$parentArticleData = DBHandler::for_table('article')
 				->select_many('no', 'order_key')
-				->where('no', $parent_no)
+				->where('no', $parentNo)
 				->find_one();
 			
 			if ($parentArticleData->order_key == NULL) {
 				$data = DBHandler::for_table('article')
 					->select_many('no', 'order_key')
-					->where('top_no', $parent_no)
+					->where('top_no', $parentNo)
 					->where_raw('LENGTH(order_key) = 2')
 					->order_by_desc('order_key')
 					->find_one();
 			}else {
 				$data = DBHandler::for_table('article')
 					->select_many('no', 'order_key')
-					->where('top_no', $top_no)
+					->where('top_no', $topNo)
 					->where_like('order_key', $parentArticleData->order_key.'%')
 					->order_by_desc('order_key')
 					->find_one();

@@ -57,13 +57,16 @@
 		<div class="fr cleafix">
 			<condition do="$isBoardAdmin">
 				<div class="fl right-bar">
-					<a href="{getUrl('board', 'procToggleNotice', 'article_no='.$articleNo)}" onclick="return confirm('{@ echo !$articleData->is_notice ? '이 글을 정말 공지사항으로 등록하시겠습니까?' : '이 글을 공지사항에서 해제하시겠습니까?' }')">
-						<condition do="!$articleData->is_notice">
-							공지&nbsp;등록
-						<else>
-							공지&nbsp;해제
-						</condition>
-					</a>
+					<form name="toggle_form" action="{getUrl('board', 'procToggleNotice')}" method="POST">
+						<input type="hidden" name="article_no" value="{$articleNo}">
+						<a href="#" onclick="if (confirm('{@ echo !$articleData->is_notice ? '이 글을 정말 공지사항으로 등록하시겠습니까?' : '이 글을 공지사항에서 해제하시겠습니까?' }')) toggle_form.submit();">
+							<condition do="!$articleData->is_notice">
+								공지&nbsp;등록
+							<else>
+								공지&nbsp;해제
+							</condition>
+						</a>
+					</form>
 				</div>
 			</condition>
 
@@ -79,7 +82,10 @@
 
 			<condition do="User::getCurrent()->id == $writer_id || $isBoardAdmin">
 				<div class="fl left-bar">
-					<a href="{getUrl('board', 'procDeleteArticle', 'article_no='.$articleNo)}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+					<form name="delete_form" action="{getUrl('board', 'procDeleteArticle')}" method="POST">
+						<input type="hidden" name="article_no" value="{$articleNo}">
+						<a href="#" onclick="if (confirm('정말 삭제하시겠습니까?')) delete_form.submit();">삭제</a>
+					</form>
 				</div>
 			</condition>
 		</div>
@@ -104,7 +110,10 @@
 								
 								<condition do="User::getCurrent()->id == $comment->writer_id || $isBoardAdmin">
 									<div class="comment-delete-btn fr">
-										<a href="{getUrl('board', 'procDeleteComment', 'comment_id='.$comment->id)}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+										<form name="comment_delete_form{$i}" action="{getUrl('board', 'procDeleteComment')}" method="POST">
+											<input type="hidden" name="comment_id" value="{$comment->id}">
+											<a href="#" onclick="if (confirm('정말 삭제하시겠습니까?')) comment_delete_form{$i}.submit();">삭제</a>
+										</form>
 									</div>
 								</condition>
 
