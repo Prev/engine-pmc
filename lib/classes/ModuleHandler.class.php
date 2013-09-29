@@ -241,7 +241,7 @@
 
 					// 웹 접근 가능여부 체크
 					// allow_web_access가 false 일 경우 모듈 안에서 모듈을 불러오는 것만 가능하게 함
-					if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && Context::getInstance()->moduleID == $moduleID && Context::getInstance()->moduleAction == $action){
+					if (isset($actions[$i]->allow_web_access) && $actions[$i]->allow_web_access == false && Context::getInstance()->moduleID == $moduleID && Context::getInstance()->moduleAction == $moduleAction){
 						Context::printErrorPage(array(
 							'en' => 'Cannot execute module action "'.($moduleID.'.'.$moduleAction).'" - web access is not allowed',
 							'ko' => '모듈 액션 "'.($moduleID.'.'.$moduleAction).'"을 실행할 수 없습니다 - 웹 접근이 허용되지않음'
