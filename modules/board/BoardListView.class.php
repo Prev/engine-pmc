@@ -6,6 +6,7 @@
 		public $nowPage;
 		public $pageNumbers;
 		public $articleDatas;
+		public $commonArticleDatas;
 		public $boardInfo;
 		public $categorys;
 		
@@ -16,10 +17,12 @@
 			else {
 				$this->nowPage = $this->nowPage;
 				$this->pageNumbers = $this->model->getPageNumbers();
-				$this->articleData = $this->controller->manufactureArticleDatas(
+				$this->commonArticleDatas = $this->model->getArticleDatas($this->boardInfo);
+
+				$this->articleDatas = $this->controller->manufactureArticleDatas(
 					array_merge(
 						$this->model->getNoticeArticles(),
-						$this->model->getArticleDatas($this->boardInfo)
+						$this->commonArticleDatas
 					)
 				);
 				self::execTemplate('board_list');

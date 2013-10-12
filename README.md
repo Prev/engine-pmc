@@ -21,6 +21,12 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.4.7
++ 게시판 모바일 모드 지원
++ 게시판 다국어 지원
++ 게시판 css less로 변경
++ less css 버그 픽스
+
 #### v 0.4.6
 + CSRF 문제 해결
 + goBack 다국어 지원

@@ -7,7 +7,7 @@
 		public function init() {
 
 			$boardName = isset($_GET['board_name']) ? escape($_GET['board_name']) : NULL;
-			$aop = isset($_GET['aop']) ? escape($_GET['aop']) : self::DEFAULT_AOP;
+			$aop = isset($_GET['aop']) ? (int)escape($_GET['aop']) : self::DEFAULT_AOP;
 			$nowPage = isset($_GET['page']) ? escape($_GET['page']) : 1;
 
 			if ($boardName === NULL && $_GET['menu']) {
@@ -76,9 +76,9 @@
 					$regexp = '/(' . str_replace(' ', '|', $_REQUEST['search']) . ')/i';
 
 					if ($_REQUEST['search_type'] == 'writer')
-						$articles[$i]->writer = preg_replace($regexp, '<strong class="search">$1</strong>', $articles[$i]->writer);
+						$articles[$i]->writer = preg_replace($regexp, '<strong class="searched">$1</strong>', $articles[$i]->writer);
 					else
-						$articles[$i]->title = preg_replace($regexp, '<strong class="search">$1</strong>', $articles[$i]->title);
+						$articles[$i]->title = preg_replace($regexp, '<strong class="searched">$1</strong>', $articles[$i]->title);
 				}
 			}
 			return $articles;

@@ -1,0 +1,72 @@
+<import path="css/m.board_list.less">
+
+<div class="board">
+	<h3>{fetchLocale($boardInfo->name_locales)}</h3>
+	<div class="board-article">
+		{@ foreach ($articleDatas as $key => $data): }
+			<condition do="!$data->is_delete && !$data->top_notice && !($data->is_secret && !$data->secret_visible && !$data->is_notice)">
+			<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">
+			</condition>	
+				<ul class="{@ echo isset($data->top_notice) ? 'notice' : 'article' }">
+					<li class="title">
+						<condition do="isset($data->top_notice)">
+							<span class="notice-icon">{# 'en'=>'Notice', 'ko'=>'공지'}</span>
+						</condition>
+
+						<condition do="!isset($data->top_notice)">
+							{printArticlePrefix($data->order_key, $data->category)}
+						</condition>
+						
+						{@ if ($data->is_delete) : }
+							<i>{# 'en'=>'Original article deleted', 'ko'=>'원글이 사라진 답글입니다'}</i>
+						{@ elseif ($data->is_secret && !$data->secret_visible && !$data->is_notice) : }
+							<i>{# 'en'=>'Secret Article', 'ko'=>'비밀글입니다'}</i>
+						{@ else : }
+							<condition do="$data->is_secret && !$data->is_notice">
+								<span class="secret-icon" title="{# 'en'=>'Secret Article', 'ko'=>'비밀글'}"></span>
+							</condition>
+							{$data->title}
+							<span class="comment-counts">[<strong>{$data->comment_counts}</strong>]</span>
+							<condition do="$data->file_counts">
+								<span class="file-icon" title="파일"></span>
+							</condition>
+						{@ endif; }
+					</li>
+					<condition do="!$data->is_delete && !$data->top_notice && !($data->is_secret && !$data->secret_visible && !$data->is_notice)">
+						<div class="content-bottom">
+							<li class="writer">{$data->writer}</li>
+							<li class="date">{$data->upload_time2}</li>
+							<li class="hits">{# 'en'=>'hits', 'ko'=>'조회'} {$data->hits}</li>
+						</div>
+					</condition>
+				</ul>
+			<condition do="!$data->is_delete && !$data->top_notice && !($data->is_secret && !$data->secret_visible && !$data->is_notice)">
+			</a>
+			</condition>
+		{@ endforeach; }
+		<condition do="!$articleDatas || count($articleDatas) == 0">
+			<div class="no-article">
+				{#
+					'en'=>'There is no article',
+					'ko'=>'등록된 게시글이 없습니다'
+				}
+			</div>
+		</condition>
+
+		<div class="page-numbers">
+			{@ $nowArticles = ($nowPage-1) * $model->aop + 1; }
+			
+			<condition do="$nowPage > 1">
+				<a href="{getUrlA('page='.($nowPage-1), REAL_URL)}" class="prev-btn">
+					&#9664; 이전
+				</a>
+			</condition>
+			<b>{$nowArticles}-{@ echo count($commonArticleDatas) + ($nowArticles-1);}</b>&nbsp;/&nbsp;{$pageNumbers->totalArticleNum}
+			<condition do="$nowPage < $pageNumbers->totalPageNum">
+				<a href="{getUrlA('page='.($nowPage+1), REAL_URL)}" class="next-btn">
+					다음 &#9654;
+				</a>
+			</condition>
+		</div>
+	</div>
+</div>

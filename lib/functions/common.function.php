@@ -45,7 +45,7 @@
 			
 			$html .= 
 				'<li class="'.$menu->className . ($menu->selected ? ' ' . $menu->className . '-selected selected' : '') . '">' .
-					'<a href="' . RELATIVE_URL . '/' . (USE_SHORT_URL ? '' : '?menu=') . $menu->title . '" class="'.($noDeco == true ? 'no-deco' : '').'">' .
+					'<a href="' . ($menu->link ? $menu->link : RELATIVE_URL . '/' . (USE_SHORT_URL ? '' : '?menu=') . $menu->title) . '" class="'.($noDeco == true ? 'no-deco' : '').'"'.($menu->linkTarget ? ' target="'.$menu->linkTarget.'"' : '').'>' .
 						$menu->title_locale .
 					'</a>' .
 				'</li>';
@@ -361,10 +361,10 @@
 		if (is_string($queryParam)) (object) $queryParam = urlQueryToArray($queryParam);
 		if ($queryParam) {
 			foreach ($queryParam as $key => $content) {
-				if (isset($key)) $queryObj->{$key} = $content;
+				if (isset($key) && $content !== NULL) $queryObj->{$key} = $content;
 			}
 		}
-
+		
 		$parsedUrl['query'] = arrayToUrlQuery($queryObj);
 
 		if (isset($module)) {

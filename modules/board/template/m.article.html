@@ -1,34 +1,31 @@
-<import path="css/article.less">
+<import path="css/m.article.less">
 <import path="js/article.js">
 
 <div class="article">
+	<h3>{$board}</h3>
+
 	<div class="article-header clearfix">
-		<div class="ah-top clearfix">
-			<div class="title fl">
-				<condition do="$is_secret">
-					<span class="secret-icon" title="{# 'en'=>'Secret Article', 'ko'=>'비밀글'}"></span>
-				</condition>
-				<condition do="$category">
-					<span class="category">[{$category}]&nbsp;</span>
-				</condition>
-				{$title}
-			</div>
-			<div class="current-board">
+		<div class="title">
+			<condition do="$is_secret">
+				<span class="secret-icon" title="{# 'en'=>'Secret Article', 'ko'=>'비밀글'}"></span>
+			</condition>
+			{$title}
+			<condition do="$category">
+				<span class="category">{$category}</span>
+			</condition>
+		</div>
+
+		<div class="ah-middle clearfix">
+			<div class="current-board fl">
 				{$board}
 			</div>
-			<div class="upload-time fr">
-				{$upload_time}
+			<div class="upload-time fl">
+				{getRelativeTime($upload_time)}
 			</div>
 		</div>
-		<div class="ah-bottom">
-			<div class="writer fl">
-				{$writer}
-			</div>
-			<div class="url fr">
-				<a href="{$url}">
-					{$url}
-				</a>
-			</div>
+		
+		<div class="writer">
+			{$writer}
 		</div>
 	</div>
 	<div class="article-content">
@@ -151,16 +148,10 @@
 						<div id="modify-comment{$i}-wrap" class="modify-comment-wrap clearfix">
 							<form action="{getUrl('board', 'procUpdateComment', 'comment_id='.$comment->id)}" method="post">
 								<input type="hidden" name="comment_id" value="{$comment->id}">
-
-								<div class="fl">
-									<textarea name="comment"{@ if ($comment->is_reply) echo ' class="reply"'; }>{$comment->content}</textarea>
-								</div>
-								<div class="fr">
-									<div class="secret-comment-wrap">
-										<input id="modify-comment{$i}-secret-checkbox" type="checkbox" name="is_secret">
-										<label for="is_secret">{# 'en'=>'Secret', 'ko'=>'비밀 덧글입니다'}</label>
-									</div>
-										<div>
+								
+								<textarea name="comment"{@ if ($comment->is_reply) echo ' class="reply"'; }>{$comment->content}</textarea>
+								<div class="clearfix">
+									<div class="fr">
 										<button class="comment-btn" onclick="this.form.submit(); return false;">
 											<condition do="$comment->is_reply">
 												{# 'en'=>'Modify reply', 'ko'=>'답글수정'}
@@ -168,6 +159,10 @@
 												{# 'en'=>'Modify comment', 'ko'=>'덧글수정'}
 											</condition>
 										</button>
+									</div>
+									<div class="secret-comment-wrap fr">
+										<input id="modify-comment{$i}-secret-checkbox" type="checkbox" name="is_secret">
+										<label for="is_secret">{# 'en'=>'Secret', 'ko'=>'비밀 덧글입니다'}</label>
 									</div>
 								</div>
 							</form>
@@ -182,16 +177,15 @@
 				<input id="reply-parent-id" type="hidden" name="parent_id">
 				<input id="reply-top-id" type="hidden" name="top_id">
 				
-				<div class="fl">
-					<textarea id="reply-textarea" name="comment" class="reply" placeholder="{# 'en'=>'Input reply', 'ko'=>'답글을 입력하세요'}"></textarea>
-				</div>
-				<div class="fr">
-					<div class="secret-comment-wrap">
+				<textarea id="reply-textarea" name="comment" class="reply" placeholder="{# 'en'=>'Input reply', 'ko'=>'답글을 입력하세요'}"></textarea>
+				
+				<div class="clearfix">
+					<div class="fr">
+						<button class="comment-btn" onclick="if (this.form.comment.value == '') { alert('{# 'en'=>'Input reply', 'ko'=>'답글을 입력 해 주세요'}'); return false; } this.form.is_secret.disabled = false; this.form.submit(); return false;">{# 'en'=>'add reply', 'ko'=>'답글달기'}</button>
+					</div>
+					<div class="secret-comment-wrap fr">
 						<input id="reply-secret-comment" type="checkbox" name="is_secret">
 						<label for="is_secret">{# 'en'=>'Secret', 'ko'=>'비밀 덧글'}</label>
-					</div>
-					<div>
-						<button class="comment-btn" onclick="if (this.form.comment.value == '') { alert('{# 'en'=>'Input reply', 'ko'=>'답글을 입력 해 주세요'}'); return false; } this.form.is_secret.disabled = false; this.form.submit(); return false;">{# 'en'=>'add reply', 'ko'=>'답글달기'}</button>
 					</div>
 				</div>
 			</form>
@@ -200,31 +194,31 @@
 		<div id="write-comment-wrap" class="clearfix">
 			<form action="{getUrl('board', 'procWriteComment')}" method="post">
 				<input type="hidden" name="article_no" value="{$articleNo}">
-				<div class="fl">
-					<condition do="!$articleData->allow_comment">
-						<true>
-							<textarea name="comment" placeholder="{# 'en'=>'Reply is not allowed in this article', 'ko'=>'덧글을 허용하지 않은 게시글입니다'}" class="disabled" disabled></textarea>
-						</true>
-						<false>
-							<condition do="User::getCurrent()">
-								<condition do="$commentable">
-									<textarea name="comment" placeholder="{# 'en'=>'Input comment', 'ko'=>'덧글을 입력하세요'}"></textarea>
-								<else>
-									<textarea name="comment" placeholder="{# 'en'=>'You have not permission to add a comment', 'ko'=>'덧글을 쓸 권한이 없습니다'}" class="disabled" disabled></textarea>
-								</condition>
+				
+				<condition do="!$articleData->allow_comment">
+					<true>
+						<textarea name="comment" placeholder="{# 'en'=>'Reply is not allowed in this article', 'ko'=>'덧글을 허용하지 않은 게시글입니다'}" class="disabled" disabled></textarea>
+					</true>
+					<false>
+						<condition do="User::getCurrent()">
+							<condition do="$commentable">
+								<textarea name="comment" placeholder="{# 'en'=>'Input comment', 'ko'=>'덧글을 입력하세요'}"></textarea>
 							<else>
-								<textarea name="comment" placeholder="{# 'en'=>'You need to login to add a comment', 'ko'=>'로그인한 유저만 댓글을 남길 수 있습니다'}" class="disabled" disabled></textarea>
+								<textarea name="comment" placeholder="{# 'en'=>'You have not permission to add a comment', 'ko'=>'덧글을 쓸 권한이 없습니다'}" class="disabled" disabled></textarea>
 							</condition>
-						</false>
-					</condition>
-				</div>
-				<div class="fr">
-					<div class="secret-comment-wrap">
+						<else>
+							<textarea name="comment" placeholder="{# 'en'=>'You need to login to add a comment', 'ko'=>'로그인한 유저만 댓글을 남길 수 있습니다'}" class="disabled" disabled></textarea>
+						</condition>
+					</false>
+				</condition>
+				
+				<div class="clearfix">
+					<div class="fr">
+						<button class="comment-btn" onclick="if (this.form.comment.value == '') { alert('{# 'en'=>'Input comment', 'ko'=>'덧글을 입력 해 주세요'}'); return false; } this.form.submit(); return false;">{# 'en'=>'add comment', 'ko'=>'덧글달기'}</button>
+					</div>
+					<div class="secret-comment-wrap fr">
 						<input type="checkbox" name="is_secret">
 						<label for="is_secret">{# 'en'=>'secret reply', 'ko'=>'비밀 덧글'}</label>
-					</div>
-					<div>
-						<button class="comment-btn" onclick="if (this.form.comment.value == '') { alert('{# 'en'=>'Input comment', 'ko'=>'덧글을 입력 해 주세요'}'); return false; } this.form.submit(); return false;">{# 'en'=>'add comment', 'ko'=>'덧글달기'}</button>
 					</div>
 				</div>
 			</form>

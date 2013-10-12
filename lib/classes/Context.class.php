@@ -143,7 +143,10 @@
 			}
 			
 			// mobile 이라는 변수가 넘어왔을 때, 쿠키를 심어 지속되도록 설정
-			if ($_COOKIE['mobile']) $this->isMobileMode = true;
+			if (isset($_COOKIE['mobile'])) {
+				$this->isMobileMode = (int)$_COOKIE['mobile'];
+			}
+			
 			if (isset($_GET['mobile'])) {
 				if ($_GET['mobile']) {
 					$this->isMobileMode = true;
@@ -195,6 +198,8 @@
 					'var RELATIVE_URL = "'.RELATIVE_URL . '";' .
 					'var USE_SHORT_URL = "'.USE_SHORT_URL . '";' .
 					'var REAL_URL = "'.REAL_URL . '";' .
+					'var DEFAULT_LOCALE = "'.DEFAULT_LOCALE.'";' .
+					'var locale = "'.getLocale().'";' .
 				'</script>'
 			);
 
@@ -344,13 +349,18 @@
 				if (isset($arr[$i]->visible_group) && User::getCurrent() && !User::getCurrent()->checkGroup(json_decode($arr[$i]->visible_group)))
 					$arr[$i]->visible = false;
 
+				if ($arr[$i]->is_index && USE_SHORT_URL)
+					$arr[$i]->title = '';
+
 				if (!empty($arr[$i]->extra_vars)) {
 					$arr[$i]->extra_vars = json_decode($arr[$i]->extra_vars);
 					$arr[$i]->extraVars = $arr[$i]->extra_vars;
+					
+					if (!empty($arr[$i]->extraVars->link))
+						$arr[$i]->link = $arr[$i]->extraVars->link;
+					if (!empty($arr[$i]->extraVars->linkTarget))
+						$arr[$i]->linkTarget = $arr[$i]->extraVars->linkTarget;
 				}
-
-				if ($arr[$i]->is_index && USE_SHORT_URL)
-					$arr[$i]->title = '';
 				
 				$arr[$i]->title_locale = fetchLocale($arr[$i]->title_locales);
 			}
@@ -706,8 +716,12 @@
 				CacheHandler::execTemplate('/layouts/' . $this->layout . '/layout.html');
 
 				$content = ob_get_clean();
-				OB_GZIP ? ob_start('ob_gzhandler') : ob_start();
-			
+				
+				$acceptEncodings = explode(',', $_SERVER['HTTP_ACCEPT_ENCODING']);
+				$gzipAvailable = array_search('gzip', $acceptEncodings) !== false;
+
+				(OB_GZIP && $gzipAvailable) ? ob_start('ob_gzhandler') : ob_start();
+
 				$output = $this->getDoctype() . LINE_END .
 						  '<html>' . LINE_END .
 						  '<head>' . LINE_END .

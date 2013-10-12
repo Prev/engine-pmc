@@ -45,7 +45,7 @@
 			
 			// {@ PHPCode } or {@ PHPCode @}
 			//$html = preg_replace_callback('/{@((?:[^(?:{@)]|\W)+?)@}/', array($this, 'parseCode'), $html);
-			$html = preg_replace_callback('/{@([^@]+?)@}/', array($this, 'parseCode'), $html);
+			$html = preg_replace_callback('/{@([\s\S]+?)@}/', array($this, 'parseCode'), $html);
 			$html = preg_replace_callback('/{@([\s\S]+?)}/', array($this, 'parseCode'), $html);
 			
 			/*

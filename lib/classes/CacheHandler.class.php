@@ -115,11 +115,10 @@
 			fwrite($fp,  '<?php if (!defined(\'PMC\')) exit; ?>' . "\r\n" . $content);
 		}
 		
+		static $lessRelativePath;
 		
 		/* lessc proccess */
 		static public function getLessCachePath($filePath) {
-			require_once( ROOT_DIR . '/lib/others/lib.lessc.php' );
-			
 			if (substr($filePath, 0, strlen(ROOT_DIR)) == ROOT_DIR) $filePath = substr($filePath, strlen(ROOT_DIR));
 			if (substr($filePath, 0, 1) != '/') $filePath = '/' . $filePath;
 
@@ -128,18 +127,20 @@
 
 			$cachePath = ROOT_DIR . self::$siteCacheDir . '/lessc/' . md5($filePath) . '.css';
 			$originPath = ROOT_DIR . $filePath;
-			$relativePath = substr($filePath, 0, strrpos($filePath, '/')+1);
+			
+			self::$lessRelativePath = substr($filePath, 0, strrpos($filePath, '/')+1);
 
 			if (!is_file($cachePath) ||
 				filemtime($cachePath) < filemtime($originPath) ||
 				DEBUG_MODE) {
 
+				require_once( ROOT_DIR . '/lib/others/lib.lessc.php' );
+
 				if (!isset(self::$lessc))
 					self::$lessc = new lessc();
 
 				$content = file_get_contents($originPath);
-				$content = preg_replace('`url\(/(.*)\)`', 'url(' . RELATIVE_URL . '/$1)', $content);
-				$content = preg_replace('`url\((.*)\)`', 'url(' . RELATIVE_URL . $relativePath . '$1)', $content);
+				$content = preg_replace_callback('`url\((.*?)\)`', array('CacheHandler', 'parseLessUrl'), $content);
 				
 				$content = self::$lessc->compile($content);
 
@@ -147,6 +148,25 @@
 				fwrite($fp, $content);
 			}
 			return substr($cachePath, strpos($cachePath, ROOT_DIR)+strlen(ROOT_DIR));
+		}
+
+		static private function parseLessUrl($matches) {
+			$url = $matches[1];
+
+			if (strpos($url, '://') !== false || substr($url, 0, 1) == '#' || substr($url, 0, 2) == '//'  || substr($url, 0, 5) == 'data:')
+				$url = $url;
+
+			else {
+				if (substr($url, 0, 1) == '\'' && substr($url, strlen($url)-1, 1) == '\'') $url = substr($url, 1, strlen($url)-2);
+				if (substr($url, 0, 1) == '"' && substr($url, strlen($url)-1, 1) == '"') $url = substr($url, 1, strlen($url)-2);
+
+				if (substr($url, 0, 1) != '/')
+					$url = self::$lessRelativePath . $url;
+
+				$url =  '\'' . RELATIVE_URL . $url . '\'';
+			}
+
+			return 'url('.$url.')';
 		}
 		
 	}

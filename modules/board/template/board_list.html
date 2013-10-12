@@ -1,11 +1,11 @@
-<import path="css/board_list.css">
+<import path="css/board_list.less">
 <import path="js/board_list.js">
 
 <div class="board">
 	<div id="category-selector">
 		<ul>
 			<li>
-				<a href="{getUrlA('category=', getCurrentUrl())}">
+				<a href="{getUrlA(array('category' => NULL), getCurrentUrl())}">
 					{#
 						'en' => 'Show All',
 						'ko' => '전체보기'
@@ -46,7 +46,7 @@
 			<li class="date">{# 'en'=>'Uploaded time', 'ko'=>'작성일'}</li>
 			<li class="hits">{# 'en'=>'Hits', 'ko'=>'조회수'}</li>
 		</ul>
-		{@ foreach ($articleData as $key => $data): }
+		{@ foreach ($articleDatas as $key => $data): }
 			<ul class="{@ echo isset($data->top_notice) ? 'notice' : 'article' }">
 				<li class="title">
 					<condition do="isset($data->top_notice)">
@@ -58,19 +58,17 @@
 					</condition>
 					
 					{@ if ($data->is_delete) : }
-						<i>원글이 사라진 답글입니다</i>
+						<i>{# 'en'=>'Original article deleted', 'ko'=>'원글이 사라진 답글입니다'}</i>
 					{@ elseif ($data->is_secret && !$data->secret_visible && !$data->is_notice) : }
-						<i>비밀글입니다</i>
+						<i>{# 'en'=>'Secret Article', 'ko'=>'비밀글입니다'}</i>
 					{@ else : }
 						<condition do="$data->is_secret && !$data->is_notice">
-							<span class="secret-icon" title="비밀글"><!--비밀글--></span>
+							<span class="secret-icon" title="{# 'en'=>'Secret Article', 'ko'=>'비밀글'}"></span>
 						</condition>
-
 						<a href="/{@ if (!USE_SHORT_URL) echo '?module=board&action=dispArticle&article_no='; }{$data->no}">
 							{$data->title}
 						</a>
 						<span class="comment-counts">[<strong>{$data->comment_counts}</strong>]</span>
-							
 						<condition do="$data->file_counts">
 							<span class="file-icon" title="파일"></span>
 						</condition>
@@ -83,11 +81,11 @@
 				</condition>
 			</ul>
 		{@ endforeach; }
-		<condition do="!$articleData || count($articleData) == 0">
+		<condition do="!$articleDatas || count($articleDatas) == 0">
 			<div class="no-article">
 				{#
 					'en'=>'There is no article',
-					'ko'=>'게시글이 없습니다'
+					'ko'=>'등록된 게시글이 없습니다'
 				}
 			</div>
 		</condition>
@@ -101,21 +99,23 @@
 			</div>
 		</condition>
 		
+		<ul class="page-btns">
 		{@ foreach ($pageNumbers->pages as $key => $n): }
 			<condition do="$n == $nowPage">
 				<true>
-					<div class="page-btn current-page">
+					<li class="current-page">
 						{$n}
-					</div>
+					</li>
 				</true>
 				<false>
-					<div class="page-btn">
+					<li>
 						<a href="{getUrlA('page='.$n, REAL_URL)}">{$n}</a>
-					</div>
+					</li>
 				</false>
 			</condition>
 		{@ endforeach; }
-		
+		</ul>
+
 		<condition do="$pageNumbers->nextBtn !== NULL">
 			<div class="next-btn">
 				<a href="{getUrlA('page='.$pageNumbers->nextBtn, REAL_URL)}">

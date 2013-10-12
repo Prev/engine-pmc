@@ -20,7 +20,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.4.6');
+	define('PMC_VERSION', '0.4.7');
 	
 	
 	/**
@@ -71,7 +71,7 @@
 	/**
 	 * define zipping blank
 	 */
-	define('ZIP_BLANK', false);
+	define('ZIP_BLANK', true);
 	
 	
 		/**

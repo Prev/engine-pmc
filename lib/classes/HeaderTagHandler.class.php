@@ -225,6 +225,8 @@
 				if ($headerFiles[$i]->targetie !== NULL)
 					$html .= '<!--[if '.$headerFiles[$i]->targetie.']>' . LINE_END;
 				
+				$url = str_replace('%2F', '%252F', $url);
+
 				switch ($extension = substr(strrchr($path, '.'), 1)) {
 					case 'css' :
 						$html .= '<link rel="stylesheet" type="text/css" href="'.$url.'">' . LINE_END;

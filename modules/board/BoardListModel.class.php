@@ -240,7 +240,9 @@
 			$obj->prevBtn = ($tenDigit > 0) ? ($tenDigit * 10) : NULL;
 			$obj->pages = array();
 			$obj->nextBtn = ($tenDigit < (int)(($totalPageNum-1) / 10)) ? (($tenDigit + 1) * 10 + 1) : NULL;
-			
+			$obj->totalPageNum = $totalPageNum;
+			$obj->totalArticleNum = count($result);
+
 			for ($i=($tenDigit)*10+1; $i<(($tenDigit)+1)*10+1; $i++) {
 				if ($i > $totalPageNum) break;
 				array_push($obj->pages, $i);

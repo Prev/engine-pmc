@@ -104,3 +104,40 @@ function getRealUrl(module) {
 	else
 		return RELATIVE_URL + '/modules/' + module;
 }
+
+
+/**
+ * 현재 설정 언어 정보를 출력
+ * @param $compareLocal에 값을 지정시 현재 언어정보와 같은지 비교한 값을 반환 (bool type)
+ */
+function getLocale(compareLocale) {
+	if (compareLocale)
+		return locale == compareLocale.toLowerCase();
+	else
+		return locale;
+}
+
+/**
+ * 언어를 파싱함
+ * @param $data 에는 object, array, string(json), string(raw) 등이 올 수 있음
+ * @param $data 에 raw string 값이 올 시 그대로 출력함
+ * 
+ * object: (object) array('en' => 'Freeboard', 'ko' => '자유게시판')
+ * array: array('en' => 'Freeboard', 'ko' => '자유게시판')
+ * string(json): {"en":"Freeboard", "ko":"자유게시판"}
+ * string(raw): "자유게시판"
+ */
+function fetchLocale(data) {
+	if (typeof data == 'object' || typeof data == 'array') {
+		if (data[locale])
+			return data[locale];
+		else if (data[DEFAULT_LOCALE])
+			return data[DEFAULT_LOCALE];
+		else {
+			for (var i in data)
+				return data[i];
+		}
+	}
+	else 
+		return data;	
+}
