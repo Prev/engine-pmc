@@ -1,7 +1,8 @@
 <import path="css/m.board_list.less">
 
 <div class="board">
-	<h3>{fetchLocale($boardInfo->name_locales)}</h3>
+	<h3><a href="{getUrl('board', 'dispList', 'board_name='.$boardName)}">{fetchLocale($boardInfo->name_locales)}</a></h3>
+
 	<div class="board-article">
 		{@ foreach ($articleDatas as $key => $data): }
 			<condition do="!$data->is_delete && !$data->top_notice && !($data->is_secret && !$data->secret_visible && !$data->is_notice)">

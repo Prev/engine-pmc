@@ -11,7 +11,7 @@
 		public $categorys;
 		
 		function dispList() {
-			if (!$this->nowPage)
+			if (!$this->boardInfo)
 				self::execTemplate('board_not_found');
 
 			else {

@@ -15,13 +15,18 @@
 	color: @common-color;
 	
 	h3 {
-		font-size: 14px;
+		font-size: 0.875em;
 		margin: 0;
 		padding: 0 13px 8px 30px;
 		
 		background-image: url(../img/article_icon.png);
 		background-position: 10px 0;
 		background-repeat: no-repeat;
+
+		a {
+			color: @common-color;
+			text-decoration: none;
+		}
 	}
 
 	.board-article {
@@ -41,7 +46,7 @@
 
 			li {
 				list-style: none;
-				font-size: 11px;
+				font-size: 0.75em;
 				float: left;
 			}
 
@@ -81,19 +86,21 @@
 
 			.title {
 				text-align: left;
-				font-size: 17px;
+				font-size: 1.125em;
 				float: none;
 				margin-bottom: 3px;
+				vertical-align: middle;
 
 				i {
-					font-size: 14px;
+					font-size: 0.85em;
 					color: @secret-article-color;
 				}
 
 				span.comment-counts {
-					font-size: 10px;
+					font-size: 0.625em;
 					color: @highlight-color;
 					margin-left: 2px;
+					vertical-align: middle;
 				}
 
 				.file-icon {
@@ -105,6 +112,7 @@
 					margin-left: 2px;
 					*zoom: 1;
 					*display:inline;
+					vertical-align: middle;
 				}
 			}
 
@@ -149,12 +157,12 @@
 			.title {
 				font-weight: bold;
 				margin-bottom: 0;
-				font-size: 13px;
+				font-size: 0.9em;
 			}
 
 			.notice-icon {
 				display: inline-block;
-				font-size: 11px;
+				font-size: 0.82em;
 				font-weight: normal;
 				padding: 2px 4px;
 				margin: -2px 4px 0 0;
@@ -176,7 +184,7 @@
 
 	.page-numbers{
 		text-align: center;
-		font-size: 11px;
+		font-size: 0.8em;
 		margin: 10px 0 20px 0;
 
 		b {
@@ -188,12 +196,12 @@
 			display: inline-block;
 
 			color: #666;
-			background-color: linear-gradient(top,#f5f5f5,#f1f1f1);;
-			background: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
-			background: linear-gradient(top,#f5f5f5,#f1f1f1);
+			background-color: linear-gradient(top,#ffffff,#f3f3f3);;
+			background: -webkit-linear-gradient(top,#ffffff,#f3f3f3);
+			background: linear-gradient(top,#ffffff,#f3f3f3);
 
 			border: 1px solid #ccc;
-			border-radius: 1px;
+			border-radius: 3px;
 			padding: 6px 8px;
 		}
 

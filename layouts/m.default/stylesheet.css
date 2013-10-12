@@ -4,8 +4,8 @@ body{
 	margin:0;
 	padding:0;
 	
-	font-size:12px;
-	font-family:나눔고딕,NanumGothic,돋움,Dotum,Arial,Helvetica,sans-serif;
+	font-size: 1em;
+	font-family:나눔고딕,NanumGothic,돋움,Dotum,AppleGothic,Arial,Helvetica,sans-serif;
 	
 	background-color:#fcfcfc;
 }
@@ -51,24 +51,30 @@ body{
 
 #footer{
 	background-color:#f8f8f8;
+	border-top: 1px solid #ddd;
+	padding: 20px 0 80px 0;
+	margin-top: 20px;
+	font-size: 0.8em;
+	text-align: center;
+	color: #666;
 }
 #footer #footer-content{
-	width:250px;
-	margin:0 auto;
-	padding:20px 0 180px 0;
-	color:#09C;
+	padding-bottom: 13px;
 }
-#footer div { padding: 0 5px }
-#footer #footer-locale span{
-	display:inline-block;
-	padding:0 3px;
-	*zoom:1;
+
+#footer #footer-content span{
+	color: #666;
+	background-color: white;
+	background: -webkit-gradient(linear,0 0,0 100%,from(#fff),to(#f3f3f3));
+
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 4px 8px;
+	margin: 0 3px;
 }
-#footer #footer-locale span.selected-locale{
+
+#footer #footer-content a{ color: #666; text-decoration: none; }
+
+#footer #footer-content span.selected-locale{
 	font-weight:bold;
 }
-#footer a:link,
-#footer a:active,
-#footer a:visited{ color:#09C; text-decoration:none }
-#footer a:hover{ color:#09C; text-decoration:underline }
-

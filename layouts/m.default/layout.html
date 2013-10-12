@@ -27,27 +27,27 @@
 	</div>
 </div>
 <div id="footer">
-	<div id="footer-content" class="clearfix">
-		<div class="fl">&copy; engine pmc</div>
-
-		<div class="fl">
+	<div id="footer-content">
+		<span>
 			<a href="{getUrlA('mobile=0', REAL_URI)}">{# 'en' => 'PC ver', 'ko' => 'PC버전' }</a>
-		</div>
-
-		<div id="footer-locale" class="fl">
-			<condition do="getLocale('en')">
-				<span class="selected-locale">English</span> 
-			</condition>
-			<condition do="!getLocale('en')">
-				<span><a href="{getUrlA('locale=en', REAL_URI)}">English</a></span> 
-			</condition>
-			
-			<condition do="getLocale('ko')">
-				<span class="selected-locale">Korean</span> 
-			</condition>
-			<condition do="!getLocale('ko')">
-				<span><a href="{getUrlA('locale=ko', REAL_URI)}">Korean</a></span> 
-			</condition>
-		</div>
+		</span>
+		
+		<condition do="getLocale('en')">
+			<span class="selected-locale">English</span> 
+		</condition>
+		<condition do="!getLocale('en')">
+			<a href="{getUrlA('locale=en', REAL_URI)}"><span>English</span> </a>
+		</condition>
+		
+		<condition do="getLocale('ko')">
+			<span class="selected-locale">Korean</span> 
+		</condition>
+		<condition do="!getLocale('ko')">
+			<a href="{getUrlA('locale=ko', REAL_URI)}"><span>Korean</span> </a>
+		</condition>
+		
+	</div>
+	<div>
+		&copy; engine pmc
 	</div>
 </div>
