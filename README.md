@@ -21,6 +21,11 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+#### v 0.4.8
++ 메뉴 처리 방식 변경
++ 게시판, 페이지 메뉴 연결 방식 변경
++ 그룹 테이블 구조 일부 변경 (group_id => group_name)
+
 #### v 0.4.7
 + 게시판 모바일 모드 지원
 + 게시판 다국어 지원

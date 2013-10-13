@@ -88,8 +88,24 @@
 				'fileDatas' => $fileDatas,
 				'isBoardAdmin' => $isBoardAdmin
 			));
+
 			
-			Context::getInstance()->selectedMenu = $boardName;
+			// 메뉴가 연결되지 않았을 때 메뉴에 연결
+			if (!isset(Context::getInstance()->selectedMenu)) {
+				$row = DBHandler::for_table('menu')
+					->where('id', $articleData->menu_id)
+					->find_one();
+				
+				Context::getInstance()->selectedMenu = $row->getData();
+				
+				while ($row->parent_id != NULL) {
+					$row = DBHandler::for_table('menu')
+						->where('id', $row->parent_id)
+						->find_one();
+					
+					array_unshift(Context::getInstance()->parentMenus, $row->getData());
+				}
+			}
 		}
 
 	}

@@ -8,7 +8,7 @@
 			
 			$row = DBHandler::for_table('menu')
 				->select_many('title', 'extra_vars')
-				->where('title', Context::getInstance()->selectedMenu)
+				->where('id', Context::getInstance()->selectedMenu->id)
 				->find_one();
 
 
@@ -26,5 +26,23 @@
 		public function getPagePath($page) {
 			return ModuleHandler::getModuleDir($this->module->moduleID) .
 				'/pages/' . $page . '/' . $page . '.html';
+		}
+
+		public function changeMenu($menuTitle) {
+			$parentMenuTitles = array();
+
+			$row = DBHandler::for_table('menu')
+				->where('title', $menuTitle)
+				->find_one();
+			
+			Context::getInstance()->selectedMenu = $row->getData();
+			
+			while ($row->parent_id != NULL) {
+				$row = DBHandler::for_table('menu')
+					->where('id', $row->parent_id)
+					->find_one();
+				
+				array_unshift(Context::getInstance()->parentMenus, $row->getData());
+			}
 		}
 	}

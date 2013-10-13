@@ -17,6 +17,12 @@
 				->find_one();
 		}
 
+		public function getBoardInfoByMenuId($menuId) {
+			return DBHandler::for_table('board')
+				->where('menu_id', $menuId)
+				->find_one();
+		}
+
 		public function getArticleDatas($boardInfo) {
 			$limitNum = (int)(($this->nowPage - 1) * $this->aop);
 

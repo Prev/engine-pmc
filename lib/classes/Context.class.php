@@ -49,6 +49,13 @@
 
 
 		/**
+		 * parent menu's ids
+		 * 부모 메뉴들의 id값
+		 */
+		public $parentMenus;
+
+
+		/**
 		 * only print module content without doctype, header tags
 		 * doctype이나 header 태그를 출력하지 않고 모듈의 내용만 출력할 것인지를 정의 
 		 */
@@ -98,13 +105,6 @@
 		 * 이 값이 false일시 Context::printContent() 메소드를 실행 할 수 없음
 		 */
 		private $contentPrintable = true;
-		
-
-		/**
-		 * menu datas
-		 * 메뉴 데이터
-		 */
-		static private $menuDatas;
 
 
 		/**
@@ -125,7 +125,6 @@
 		 */
 		public function init($db_info) {
 			self::$attr = new StdClass();
-			self::$menuDatas = new StdClass();
 			
 			$this->headerTagHandler = new HeaderTagHandler();
 			$this->setLayout(LAYOUT_NAME);
@@ -226,63 +225,69 @@
 		 */
 		
 		private function initMenu($getVars) {
-			$moduleID = isset($getVars['module']) ? basename($getVars['module']) : NULL;
-			$moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
+			$this->parentMenus = array();
 
-			// get default(index) menu when module and menu not defined
-			// 모듈이나이나 메뉴가 정이되지 않았으면 db상에서 is_index가 1 인 메뉴를 찾아 선택
-			if (!isset($getVars['menu']) && !$moduleID) {
-				$data = DBHandler::for_table('menu')
-					->where('is_index', 1)
+			if (isset($getVars['module'])) {
+				// 모듈이 정의됬을때
+				$this->moduleID = basename($getVars['module']);
+				$this->moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
+
+			}else if ((isset($getVars['menu']) || isset($getVars['menu1'])) && !isset($getVars['menu2'])) {
+				// 1단계 메뉴만 정의됬을때
+				if (!isset($getVars['menu']) && isset($getVars['menu1']))
+					$getVars['menu'] = $getVars['menu1'];
+
+				$selectedData = DBHandler::for_table('menu')
+					->where('title', $getVars['menu'])
+					->where('level', 1)
 					->find_one();
 
-				if (isset($data)) $getVars['menu'] = $data->title;
+			}else if ((isset($getVars['menu1']) || isset($getVars['menu'])) && isset($getVars['menu2'])) {
+				// 2단계 메뉴 이상
+				if (!isset($getVars['menu1']) && isset($getVars['menu']))
+					$getVars['menu1'] = $getVars['menu'];
+
+				$i = 1;
+				while (!empty($getVars['menu'.$i])) {
+					$record = DBHandler::for_table('menu')
+						->where('title', $getVars['menu'.$i]);
+						
+					if (isset($parentId))
+						$record = $record->where('parent_id', $parentId);
+
+					if (!empty($getVars['menu'.($i+1)])) {
+						$data = $record->find_one();
+						$parentId = $data->id;
+						array_push($this->parentMenus, $data->getData());
+					}else {
+						$selectedData = $record->find_one();
+					}
+					$i++;
+				}
+
+			}else {
+				// 모듈, 메뉴 모두 정의되지 않을 때 -> 기본 메뉴 로드
+				$selectedData = DBHandler::for_table('menu')
+					->where('is_index', 1)
+					->find_one();
 			}
 
-			if (!isset($getVars['menu'])) $getVars['menu'] = NULL;
-			
-			$data = DBHandler::for_table('menu')
-				->where('title', $getVars['menu'])
-				->find_one();
+			if ($selectedData) {
+				$this->moduleID = $selectedData->module;
+				$this->moduleAction = $selectedData->action;
+				$this->selectedMenu = $selectedData->getData();
 
-			// module and menu are not defined, print error
-			if (!isset($data) && !isset($moduleID)) {
+				if (!empty($selectedData->extra_vars)) {
+					$extraVars = json_decode($selectedData->extra_vars);
+
+				}
+			}else if ($selectedData === false && !$this->moduleID) {
 				self::printErrorPage(array(
 					'en' => 'Cannot find requested menu',
 					'ko' => '해당 메뉴를 찾을 수 없습니다'
 				));
-			}else {
-				$this->selectedMenu = $getVars['menu'];				
-				if (isset($data) && isset($data->module)) {
-					if ($moduleID) {
-						// 해당 메뉴에서 모듈이 정의되었는데 getVar에서 다른 특정 모듈을 실행하려고 할때
-						Context::printErrorPage(array(
-							'en' => 'Cannot excute module "'.$moduleID.'" by force in menu "'.$getVars['menu'].'"',
-							'ko' => '해당 메뉴 "'.$getVars['menu'].'" 에서 임으로 모듈 "'.$moduleID.'" 을 실행 할 수 없습니다'
-						));
-					}else
-						$moduleID = $data->module;
-				}
-
-				if ($data && $data->extra_vars) {
-					$extraVars = json_decode($data->extra_vars);
-
-					// extraVars 에서 linkToSubMenu 가 true 일때
-					if ($extraVars && $extraVars->linkToSubMenu == true) {
-						// 2단계 메뉴를 불러옴
-						$subMenu = self::getMenu(2);
-						// 2단계 메뉴가 1개 이상 존재할때
-						if ($subMenu && count($subMenu) > 0)
-							// 2단계 메뉴로 리다리렉트
-							redirect(getUrl() . (USE_SHORT_URL ? '/'.$data->title.'/' : '/?menu=') . $subMenu[0]->title);
-					}
-				}
-				if ($data && $data->module && $data->action && !$moduleAction)
-					$moduleAction = $data->action;
+				return;
 			}
-			
-			$this->moduleID = $moduleID;
-			$this->moduleAction = $moduleAction;
 		}
 		
 		
@@ -291,81 +296,95 @@
 		 * 메뉴 데이터를 반환
 		 */
 		static public function getMenu($level) {
-			$menuHash = $level . ':' . self::getInstance()->selectedMenu;
-			if (isset(self::$menuDatas->{$menuHash})) return self::$menuDatas->{$menuHash};
-
-			// current selected menu
-			$selectedMenuData = DBHandler::for_table('menu')
-				->where('title', self::getInstance()->selectedMenu)
-				->find_one();
-				
 			if ($level == 1) {
+				// 최상위 메뉴 로드
 				$arr = DBHandler::for_table('menu')
 					->where('level', 1)
-					->where('visible', 1)
 					->find_many();
 			}else {
-				if (empty($selectedMenuData)) {
-					self::printErrorPage(array('en' => 'fail parsing menu', 'ko' => '메뉴 파싱에 실패했습니다.'));
-					return;
-				}
-				// current selected menu's level is equal with requested menu's level
-				if ($level == $selectedMenuData->level)
-					$parent_id = $selectedMenuData->parent_id;
+				$parentMenus = Context::getInstance()->parentMenus;
+				// 부모 메뉴 로드
+				if (count($parentMenus) < $level-2) {
+					// 부모 메뉴가 없으면 빈 배열 등록
+					$arr = array();
 				
-				// request low level menu data than selected menu's level
-				else if ($level > $selectedMenuData->level)
-					$parent_id = $selectedMenuData->id;
-
-				// request high level menu data than selected menu's level
-				else {
-					$parentMenuData = DBHandler::for_table('menu')
-						->where('level', $level)
-						->where('id', $selectedMenuData->parent_id)
-						->find_one();
-
-					$parent_id = $parentMenuData->parent_id;
-				}
-				$arr = DBHandler::for_table('menu')
-						->where('level', $level)
-						->where('visible', 1)
-						->where('parent_id', $parent_id)
+				}else if (count($parentMenus) == $level-2) {
+					// 자식 메뉴가 있을 경우 메뉴 로드	
+					$arr = DBHandler::for_table('menu')
+						->where('parent_id', Context::getInstance()->selectedMenu->id)
 						->find_many();
+
+				}else {
+					$arr = DBHandler::for_table('menu')
+						->where('parent_id', $parentMenus[$level-2]->id)
+						->find_many();
+				}
 			}
 
-			static $topMenus;
-			if ($selectedMenuData !== false) {
-				if ($selectedMenuData->level == 1) $topMenus = array($selectedMenuData->id);
-				else if (!$topMenus) $topMenus = explode(',', self::getParentMenus($selectedMenuData->id));
+			$menuDatas = array_merge(
+				Context::getInstance()->parentMenus,
+				array(Context::getInstance()->selectedMenu)
+			);
+			$menuTitleDatas = array();
+			
+			for ($i=0; $i<count($menuDatas); $i++) {
+				if ($i > $level - 2) continue;
+				array_push($menuTitleDatas, $menuDatas[$i]->title);
 			}
+			
 
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i] = $arr[$i]->getData();
 				$arr[$i]->className = 'menu-' . $arr[$i]->title;
 				
-				if (isset($topMenus) && array_search($arr[$i]->id, $topMenus) !== false)
+				if (Context::getInstance()->selectedMenu->id == $arr[$i]->id)
 					$arr[$i]->selected = true;
 				
+				for ($j=0; $j < count(Context::getInstance()->parentMenus); $j++) { 
+					if ($arr[$i]->id == Context::getInstance()->parentMenus[$j]->id)
+						$arr[$i]->selected = true;
+				}
+
 				if (isset($arr[$i]->visible_group) && User::getCurrent() && !User::getCurrent()->checkGroup(json_decode($arr[$i]->visible_group)))
 					$arr[$i]->visible = false;
 
 				if ($arr[$i]->is_index && USE_SHORT_URL)
 					$arr[$i]->title = '';
 
+				
 				if (!empty($arr[$i]->extra_vars)) {
 					$arr[$i]->extra_vars = json_decode($arr[$i]->extra_vars);
 					$arr[$i]->extraVars = $arr[$i]->extra_vars;
 					
-					if (!empty($arr[$i]->extraVars->link))
+					if (!empty($arr[$i]->extraVars->link)) {
 						$arr[$i]->link = $arr[$i]->extraVars->link;
+						$arr[$i]->href = $arr[$i]->link;
+					}
 					if (!empty($arr[$i]->extraVars->linkTarget))
 						$arr[$i]->linkTarget = $arr[$i]->extraVars->linkTarget;
 				}
-				
+
+				$tempArr = array_merge(
+					$menuTitleDatas,
+					array($arr[$i]->title)
+				);
+
+				if (!isset($arr[$i]->href)) {
+					if (USE_SHORT_URL)
+						$arr[$i]->href = RELATIVE_URL . '/' . join('/', $tempArr);
+					else {
+						$arr[$i]->href = RELATIVE_URL . '/?';
+						if (count($tempArr) == 1)
+							$arr[$i]->href .= 'menu=' . $tempArr[0];
+						else {
+							for ($j=0; $j<count($tempArr); $j++)
+								$arr[$i]->href .= 'menu' . ($j+1) . '=' . $tempArr[$j] . '&';
+							$arr[$i]->href = substr($arr[$i]->href, 0, strlen($arr[$i]->href)-1);
+						}
+					}
+				}
 				$arr[$i]->title_locale = fetchLocale($arr[$i]->title_locales);
 			}
-			
-			self::$menuDatas->{$menuHash} = $arr;
 			return $arr;
 		}
 

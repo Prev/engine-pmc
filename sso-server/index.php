@@ -71,7 +71,7 @@
 		SELECT (#)user_group_user.*, (#)user_group.*
 		FROM (#)user_group_user, (#)user_group
 		WHERE (#)user_group_user.user_id='${user_id}'
-		AND (#)user_group.id = (#)user_group_user.group_id
+		AND (#)user_group.name = (#)user_group_user.group_name
 	");
 
 	$obj->userData->groups = array();	

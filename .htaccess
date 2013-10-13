@@ -14,8 +14,8 @@ RewriteRule ^([0-9]+).*$ ./index.php?module=board&action=dispArticle&article_no=
 
 # menu short url
 RewriteRule ^([a-zA-Z0-9-_]+)/?$ ./index.php?menu=$1&%{QUERY_STRING} [L,QSA]
-
-
+RewriteRule ^([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/?$ ./index.php?menu1=$1&menu2=$2%{QUERY_STRING} [L,QSA]
+RewriteRule ^([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/?$ ./index.php?menu1=$1&menu2=$2&menu3=$3%{QUERY_STRING} [L,QSA]
 
 # sub-directory php access denied
 RewriteRule ^(.+)/(.+)\.php$ - [L,F]

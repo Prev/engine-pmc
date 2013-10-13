@@ -41,11 +41,9 @@
 	function getMenuTag($level, $noDeco=true) {
 		$html = '';
 		foreach(Context::getMenu($level) as $key => $menu) {
-			if (!$menu->visible) continue;
-			
 			$html .= 
 				'<li class="'.$menu->className . ($menu->selected ? ' ' . $menu->className . '-selected selected' : '') . '">' .
-					'<a href="' . ($menu->link ? $menu->link : RELATIVE_URL . '/' . (USE_SHORT_URL ? '' : '?menu=') . $menu->title) . '" class="'.($noDeco == true ? 'no-deco' : '').'"'.($menu->linkTarget ? ' target="'.$menu->linkTarget.'"' : '').'>' .
+					'<a href="' . $menu->href . '" class="'.($noDeco == true ? 'no-deco' : '').'"'.($menu->linkTarget ? ' target="'.$menu->linkTarget.'"' : '').'>' .
 						$menu->title_locale .
 					'</a>' .
 				'</li>';

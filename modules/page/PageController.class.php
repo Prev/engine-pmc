@@ -17,6 +17,10 @@
 						'ko' => '페이지 "'.$page.'" 를 불러올 수 없습니다.'
 					));
 				}
+
+				if (Context::getInstance()->selectedMenu->title != $page)
+					$this->model->changeMenu($page);
+
 				$this->view->page = $page;
 			}
 		}
