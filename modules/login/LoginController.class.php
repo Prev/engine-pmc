@@ -8,7 +8,7 @@
 		}
 		
 		public function procSecureLogin() {
-			require ROOT_DIR . '/lib/others/lib.rsa.php';
+			require_once( ROOT_DIR . '/lib/others/lib.rsa.php' );
 			
 			$enc_id = $_POST['enc_id'];
 			$enc_pw = $_POST['enc_pw'];

@@ -121,6 +121,7 @@
 				"name" : files[i].data.filename
 			});
 		}
+		
 		input = document.createElement('input');
 		input.type = 'hidden';
 		input.name = 'attach_files';
@@ -149,6 +150,9 @@
 	}
 	function appendFile(attachurl, fileName, fileSize, filemime, fileId) {
 		checkDeletedFiles();
+
+		if (!checkFileSumSize(fileSize)) return;
+
 		attachers.push({
 			'attacher': 'file',
 			'data': {
@@ -162,6 +166,22 @@
 		Editor.modify({
 			"attachments": attachers
 		});
+	}
+
+	function checkFileSumSize(fileSize) {
+		var files = Editor.getSidebar().getAttachments("file");
+		var fileSumSize = fileSize;
+
+		for (i = 0; i < files.length; i++) {
+			if (files[i].deletedMark) continue;
+			fileSumSize += files[i].data.filesize;
+		}
+
+		if (fileSumSize > config.sidebar.capacity.maximum) {
+			alert("용량을 초과하였습니다");
+			return false;
+		}
+		return true;
 	}
 
 	function checkDeletedFiles() {

@@ -47,7 +47,7 @@
 					if (!class_exists($this->actionData->inheritData->{$mvc})) {
 						$fileDir = ModuleHandler::getModuleDir($this->parentModuleID) . '/' . $this->actionData->inheritData->{$mvc} . '.class.php';
 						if (is_file($fileDir))
-							require $fileDir;
+							require_once( $fileDir );
 					}
 				}
 

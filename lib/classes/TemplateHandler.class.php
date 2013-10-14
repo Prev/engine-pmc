@@ -292,9 +292,9 @@
 			$c = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__attr->$1}', $c, -1);
 
 			$code = $matches[2];
-			$code = preg_replace('/<case value="(.*?)">([\s\S]*?)<\/case>/', 'case \'$1\' : ?>$2<?php break; ?>', $code, 1);
-			$code = preg_replace('/<case value="(.*?)">([\s\S]*?)<\/case>/', '<?php case \'$1\' : ?>$2<?php break; ?>', $code);
-			$code = preg_replace('/<default>([\s\S]*?)<\/default>/', '<?php default : ?>$1<?php break; ?>', $code);
+			$code = preg_replace('/\s*<case value="(.*?)">\s*([\s\S]*?)\s*<\/case>\s*/', 'case \'$1\' : ?>$2<?php break; ?>', $code, 1);
+			$code = preg_replace('/\s*<case value="(.*?)">\s*([\s\S]*?)\s*<\/case>\s*/', '<?php case \'$1\' : ?>$2<?php break; ?>', $code);
+			$code = preg_replace('/\s*<default>\s*([\s\S]*?)\s*<\/default>\s*/', '<?php default : ?>$1<?php break; ?>', $code);
 
 
 			return '<?php switch ('.$c.') :' . $code . '<?php endswitch; ?>';
