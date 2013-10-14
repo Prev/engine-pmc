@@ -280,6 +280,14 @@
 				if (!empty($selectedData->extra_vars)) {
 					$extraVars = json_decode($selectedData->extra_vars);
 
+					if ($extraVars && $extraVars->linkToSubMenu == true && $selectedData->level == 1) {
+						// 2단계 메뉴를 불러옴
+						$subMenu = self::getMenu(2);
+						// 2단계 메뉴가 1개 이상 존재할때
+						if ($subMenu && count($subMenu) > 0)
+							// 2단계 메뉴로 리다리렉트
+							redirect(getUrl() . (USE_SHORT_URL ? '/'.$selectedData->title.'/' : '/?menu1='.$selectedData->title.'&menu2=') . $subMenu[0]->title);
+					}
 				}
 			}else if ($selectedData === false && !$this->moduleID) {
 				self::printErrorPage(array(
