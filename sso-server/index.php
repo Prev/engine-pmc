@@ -27,11 +27,20 @@
 	$sessionData = execQueryOne('
 		SELECT * FROM (#)session
 		WHERE session_key="'.$sessKey.'"
-		AND expire_time > now()
 	');
 	
 	if (!$sessionData) {
 		printError('session key does not exist');
+		return;
+	}
+	
+	if (strtotime($sessionData->expire_time) < time()) {
+		$obj = new StdClass();
+		$obj->result = 'expired';
+		$obj->error = new StdClass();
+		$obj->error->message = 'session key is expired';
+
+		echo json_encode($obj);
 		return;
 	}
 	
@@ -90,4 +99,8 @@
 		array_push($obj->userData->groups, $tmp);
 	}
 	
+	execQuery('
+		DELETE FROM (#)session WHERE expire_time < now()
+	');
+
 	echo json_encode($obj);

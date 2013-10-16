@@ -21,6 +21,11 @@ engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/en
 
 #Change Log
 
+### v 0.5.0
++ [placeholderjs](https://github.com/Prev/placeholderjs) 적용
++ [liejs](https://github.com/Prev/liejs) 업데이트
++ sso 관련 버그 픽스
+
 ### v 0.4.9
 + 소스 안정화
 + 각종 버그 픽스
