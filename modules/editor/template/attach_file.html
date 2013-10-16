@@ -22,7 +22,7 @@
 			return false;
 		}
 		
-		if (form.bifile.files[0].size > {$FILE_MAX_SIZE} ) {
+		if (form.bifile.files && form.bifile.files[0].size > {$FILE_MAX_SIZE} ) {
 			{@ $clearedMaxFileSize = getClearFileSize($FILE_MAX_SIZE); } 
 			alert("{# 'en' => 'Cannot upload file whose size is upper than '.$clearedMaxFileSize, 'ko' => $clearedMaxFileSize.'를 초과하는 파일은 업로드 할 수 없습니다'}");
 			return false;

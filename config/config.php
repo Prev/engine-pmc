@@ -20,7 +20,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.4.8');
+	define('PMC_VERSION', '0.4.9');
 	
 	
 	/**
@@ -117,6 +117,10 @@
 		 */
 		define('SESSION_DOMAIN', getSessionDomain());
 		
+		/**
+		 * Define session uri
+		 */
+		define('SESSION_URI', getSessionUri());
 
 		/**
 		 * Define server uri

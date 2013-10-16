@@ -13,7 +13,7 @@
 			$boardInfo = $this->model->getBoardInfo($_POST['board_id']);
 
 			$me = User::getCurrent();
-			if (!$me || (isset($boardInfo->writable_group) && !$me->checkGroup(json_decode($boardInfo->writable_group)))) {
+			if (!$me || (isset($boardInfo->writable_group) && !$me->checkGroup($boardInfo->writable_group))) {
 				goBack(array(
 					'en' => 'You don\'t have permission to write the post',
 					'ko' => '글을 쓸 권한이 없습니다'
@@ -27,12 +27,18 @@
 			if (!$this->confirmArticleDatas($_POST['title'], $isNotice, $_POST['category'], $isNotice, $isSecret, $boardInfo))
 				return;
 
-			if (isset($_POST['parent_no']) && !$this->model->checkParentArticleExists($_POST['parent_no'])) {
-				goBack(array(
-					'en' => 'You can\'t write reply to non-existing post',
-					'ko' => '존재 하지 않는 글에 답글을 달 수 없습니다'
-				), true);
-				return;
+			$boardId = $boardInfo->id;
+
+			if (isset($_POST['parent_no'])) {
+				$boardId = $this->model->getParentArticleBoardId($_POST['parent_no']);
+				
+				if (!$boardId) {
+					goBack(array(
+						'en' => 'You can\'t write reply to non-existing post',
+						'ko' => '존재 하지 않는 글에 답글을 달 수 없습니다'
+					), true);
+					return;
+				}
 			}
 
 			if (!empty($_POST['attach_files'])) {
@@ -42,7 +48,7 @@
 			}
 
 			$record = $this->model->insertNewArtile(
-				$boardInfo->id,
+				$boardId,
 				stripslashes($_POST['title']),
 				removeXSS(stripslashes($_POST['content'])),
 				$isSecret ? 1 : 0 ,

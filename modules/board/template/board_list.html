@@ -83,10 +83,20 @@
 		{@ endforeach; }
 		<condition do="!$articleDatas || count($articleDatas) == 0">
 			<div class="no-article">
-				{#
-					'en'=>'There is no article',
-					'ko'=>'등록된 게시글이 없습니다'
-				}
+				<condition do="!empty($_GET['search'])">
+					<true>
+						{#
+							'en'=>'There is no searched result',
+							'ko'=>'검색 결과가 없습니다'
+						}
+					</true>
+					<false>
+						{#
+							'en'=>'There is no article',
+							'ko'=>'등록된 게시글이 없습니다'
+						}
+					</false>
+				</condition>
 			</div>
 		</condition>
 	</div>
@@ -134,7 +144,7 @@
 	<div class="search-box">
 		<form method="GET">
 			{@ foreach($_GET as $key => $value): }
-				<input type="hidden" name="{$key}" value="{$value}">
+				<input type="hidden" name="{$key}" value="{htmlspecialchars($value)}">
 			{@ endforeach;}
 			<select name="search_type">
 				<option value="all"{@ if ($_GET['search_type'] == 'all') echo ' selected'; }>
@@ -156,7 +166,7 @@
 					}
 				</option>
 			</select>
-			<input name="search" class="search-text" type="text"{@ if (!empty($_GET['search'])) echo ' value="'.$_GET['search'].'"'; }>
+			<input name="search" class="search-text" type="text"{@ if (!empty($_GET['search'])) echo ' value="'.htmlspecialchars($_GET['search']).'"'; }>
 			<input class="search-submit" type="submit" value="{#'en'=>'Search','ko'=>'검색'}">
 		</form>
 	</div>

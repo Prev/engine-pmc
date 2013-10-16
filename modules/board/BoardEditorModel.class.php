@@ -5,19 +5,19 @@
 		public function getBoardLists() {
 			$arr = DBHandler::for_table('board')
 				->find_many();
+			$lists = array();
 
 			for ($i=0; $i<count($arr); $i++) {
 				$arr[$i] = $arr[$i]->getData();
-				
+
 				$me = User::getCurrent();
-				if (!$me || (isset($arr[$i]->writable_group) && !$me->checkGroup(json_decode($arr[$i]->writable_group)))) {
-					unset($arr[$i]);
+				if (!$me || (isset($arr[$i]->writable_group) && !$me->checkGroup($arr[$i]->writable_group)))
 					continue;
-				}
 				
 				$arr[$i]->name_locale = fetchLocale($arr[$i]->name_locales);
+				array_push($lists, $arr[$i]);
 			}
-			return $arr;
+			return $lists;
 		}
 
 		public function getArticleTitle($articleNo) {
@@ -30,6 +30,16 @@
 		public function getArticleData($articleNo) {
 			return DBHandler::for_table('article')
 				->where('article.no', $articleNo)
+				->find_one();
+		}
+
+		public function getArticleTitleAndBoardInfo($articleNo) {
+			return DBHandler::for_table('article')
+				->select_many('article.title', 'board.*')
+				->where('article.no', $articleNo)
+				->join('board', array(
+					'board.id', '=', 'article.board_id'
+				))
 				->find_one();
 		}
 

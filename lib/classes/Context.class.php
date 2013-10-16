@@ -257,8 +257,10 @@
 
 					if (!empty($getVars['menu'.($i+1)])) {
 						$data = $record->find_one();
-						$parentId = $data->id;
-						array_push($this->parentMenus, $data->getData());
+						if ($data) {
+							$parentId = $data->id;
+							array_push($this->parentMenus, $data->getData());
+						}
 					}else {
 						$selectedData = $record->find_one();
 					}
@@ -353,7 +355,7 @@
 						$arr[$i]->selected = true;
 				}
 
-				if (isset($arr[$i]->visible_group) && User::getCurrent() && !User::getCurrent()->checkGroup(json_decode($arr[$i]->visible_group)))
+				if (isset($arr[$i]->visible_group) && User::getCurrent() && !User::getCurrent()->checkGroup($arr[$i]->visible_group))
 					$arr[$i]->visible = false;
 
 				if ($arr[$i]->is_index && USE_SHORT_URL)
@@ -669,13 +671,16 @@
 		 *
 		 */
 		public function checkSSO() {
+			if (!isset($_COOKIE[SSO_COOKIE_NAME]) && isset($_SESSION[SSO_SESSION_NAME]))
+				unset($_SESSION[SSO_SESSION_NAME]);
+			
 			if ($_COOKIE[SSO_COOKIE_NAME.'_synchash'] && $_COOKIE[SSO_COOKIE_NAME.'_synchash'] != $_SESSION[SSO_SESSION_NAME.'_synchash']) {
 				// 와일드 카드 쿠키와 세션의 싱크를 맞춰줌
 				unset($_SESSION[SSO_SESSION_NAME]);
 			}
 
 			if (isset($_COOKIE[SSO_COOKIE_NAME]) && !isset($_SESSION[SSO_SESSION_NAME])) {
-				$urlData = getUrlData(SSO_URL . '?sess_key=' . $_COOKIE['pmc_sess_key'], SSO_AGENT_KEY);
+				$urlData = getUrlData(SSO_URL . '?sess_key=' . $_COOKIE[SSO_COOKIE_NAME], SSO_AGENT_KEY);
 
 				if (!$urlData) {
 					unset($_SESSION[SSO_SESSION_NAME]);

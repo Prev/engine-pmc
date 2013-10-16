@@ -46,8 +46,9 @@
 				$this->boardName = $_GET['board_name'];
 			}
 			if (isset($_GET['parent_no'])) {
-				$data = $this->model->getArticleTitle((int)$_GET['parent_no']);
+				$data = $this->model->getArticleTitleAndBoardInfo((int)$_GET['parent_no']);
 				$this->title = 'Re: ' . $data->title;
+				$this->boardName = $data->name;
 			}
 
 			$this->execTemplate('editor_inner_data');

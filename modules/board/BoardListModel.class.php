@@ -65,7 +65,7 @@
 
 					switch ($_REQUEST['search_type']) {
 						case 'all':
-							$query .= 'AND ((a2.title LIKE "%' . $searchKey . '%") OR (a2.content LIKE "%' . $searchKey . '%"))';
+							$query .= 'AND ((a2.title LIKE "%' . $searchKey . '%") OR (a2.content LIKE "%' . htmlspecialchars($searchKey) . '%"))';
 							break;
 						
 						case 'title':
@@ -106,7 +106,7 @@
 
 					switch ($_REQUEST['search_type']) {
 						case 'all':
-							$row->where_raw('(('.$pfx.'article.title LIKE "%' . $searchKey . '%") OR ('.$pfx.'article.content LIKE "%' . $searchKey . '%"))');
+							$row->where_raw('(('.$pfx.'article.title LIKE "%' . $searchKey . '%") OR ('.$pfx.'article.content LIKE "%' . htmlspecialchars($searchKey) . '%"))');
 							break;
 						
 						case 'title':
@@ -124,7 +124,6 @@
 						->order_by_asc('article.order_key');
 				}
 			}
-
 			return $row->find_many();
 		}
 		

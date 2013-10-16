@@ -13,13 +13,16 @@
 				->find_one();
 		}
 
-		public function checkParentArticleExists($parentNo) {
+		public function getParentArticleBoardId($parentNo) {
 			$data = DBHandler::for_table('article')
-				->select('no')
+				->select('board_id', 'content')
 				->where('no', $parentNo)
 				->find_one();
 
-			return $data !== false;
+			if (!$data || !$data->content)
+				return NULL;
+			else
+				return $data->board_id;
 		}
 
 		public function getArticleTopId($parentNo) {
@@ -96,7 +99,7 @@
 			if (isset($parentNo) && !empty($parentNo)) {
 				$topNo = $this->getArticleTopId($parentNo);
 				$orderKey = $this->getArticleOrderKey($parentNo, $topNo);
-				
+
 				if ($orderKey === NULL)
 					return -1; // 답글 최대 갯수 23*23개를 초월함
 

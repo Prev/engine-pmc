@@ -50,14 +50,16 @@
 					->where('id', $boardInfo->menu_id)
 					->find_one();
 				
-				Context::getInstance()->selectedMenu = $row->getData();
-				
-				while ($row->parent_id != NULL) {
-					$row = DBHandler::for_table('menu')
-						->where('id', $row->parent_id)
-						->find_one();
+				if ($row) {
+					Context::getInstance()->selectedMenu = $row->getData();
 					
-					array_unshift(Context::getInstance()->parentMenus, $row->getData());
+					while ($row->parent_id != NULL) {
+						$row = DBHandler::for_table('menu')
+							->where('id', $row->parent_id)
+							->find_one();
+						
+						array_unshift(Context::getInstance()->parentMenus, $row->getData());
+					}
 				}
 			}
 		}

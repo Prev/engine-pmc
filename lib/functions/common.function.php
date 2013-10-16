@@ -94,7 +94,7 @@
 	 * 루트 uri, 세션으로 쿠키를 심음
 	 */
 	function setCookie2($name, $value, $expire=0, $secure=false, $httponly=false) {
-		setcookie($name, $value, $expire, SERVER_URI, SESSION_DOMAIN, $secure, $httponly);
+		setcookie($name, $value, $expire, SESSION_URI, SESSION_DOMAIN, $secure, $httponly);
 	}
 	
 	
@@ -325,9 +325,23 @@
 	function getSessionDomain() {
 		if (defined('SESSION_DOMAIN')) return SESSION_DOMAIN;
 		
-		return ($serverInfo = getServerInfo()) ?
+		$serverInfo = getServerInfo();
+		return (!empty($serverInfo) && isset($serverInfo->session_domain)) ?
 			($serverInfo->session_domain) :
 			$_SERVER['HTTP_HOST'];
+	}
+
+	/**
+	 * config/server-info.json 에서 정의된 session_uri을 반환
+	 * config/server-info.json 에서 정의되지 않을 시 기본 uri를 반환
+	 */
+	function getSessionUri() {
+		if (defined('SESSION_URI')) return SESSION_URI;
+
+		$serverInfo = getServerInfo();
+		return (!empty($serverInfo) && isset($serverInfo->session_uri)) ?
+			($serverInfo->session_uri) :
+			getServerUri();
 	}
 	
 	function getServerUri() {
@@ -362,6 +376,11 @@
 				if (isset($key) && $content !== NULL) $queryObj->{$key} = $content;
 			}
 		}
+
+		if (isset($module) && !empty($queryObj->module))
+			$queryObj->module = NULL;
+		if (isset($action) && !empty($queryObj->action))
+			$queryObj->action = NULL;
 		
 		$parsedUrl['query'] = arrayToUrlQuery($queryObj);
 
@@ -370,7 +389,7 @@
 				$parsedUrl['query'] = 'action=' . $action . '&' . $parsedUrl['query'];
 			$parsedUrl['query'] = 'module=' . $module . '&' . $parsedUrl['query'];
 		}
-
+		
 		if ($parsedUrl['query'] == '') $parsedUrl['query'] = NULL;
 		
 		if ($parsedUrl['query'] != NULL) {
@@ -435,7 +454,7 @@
 		else {
 			$tempArr = array();
 			foreach($array as $key => $content) {
-				if (!$key)
+				if (!$key || $content === NULL)
 					continue;
 				else if ($key && !isset($content))
 					array_push($tempArr, $key);
