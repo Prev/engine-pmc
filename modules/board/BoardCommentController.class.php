@@ -25,6 +25,17 @@
 				return;
 			}
 
+			if ($_POST['top_id']) {
+				$parentData = $this->model->getCommentData($_POST['parent_id']);
+				if ($parentData->article_no != $_POST['article_no']) {
+					goBack(array(
+						'en' => 'Invalid article_no value',
+						'ko' => 'article_no가 잘못되었습니다'
+					));
+					return;
+				}
+			}
+
 			$comment = htmlspecialchars($_POST['comment']);
 			$comment = stripslashes($comment);
 

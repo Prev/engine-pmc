@@ -290,7 +290,7 @@
 				return;
 			}
 
-			$this->model->updateNoticeInfo($articleData, !$articleData->is_notice);
+			$this->model->updateNoticeInfo($articleData, intval(!$articleData->is_notice));
 			
 			goBack( $articleData->is_notice ?
 				array('en' => 'The post is registered to notice', 'ko' => '게시글을 공지사항으로 등록했습니다') :

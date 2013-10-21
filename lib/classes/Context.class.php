@@ -674,7 +674,7 @@
 			if (!isset($_COOKIE[SSO_COOKIE_NAME]) && isset($_SESSION[SSO_SESSION_NAME]))
 				unset($_SESSION[SSO_SESSION_NAME]);
 			
-			if ($_COOKIE[SSO_COOKIE_NAME.'_synchash'] || $_COOKIE[SSO_COOKIE_NAME.'_synchash'] != $_SESSION[SSO_SESSION_NAME.'_synchash']) {
+			if (!$_COOKIE[SSO_COOKIE_NAME.'_synchash'] || $_COOKIE[SSO_COOKIE_NAME.'_synchash'] != $_SESSION[SSO_SESSION_NAME.'_synchash']) {
 				// 와일드 카드 쿠키와 세션의 싱크를 맞춰줌
 				unset($_SESSION[SSO_SESSION_NAME]);
 			}

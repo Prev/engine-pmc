@@ -65,41 +65,62 @@
 		}
 
 		public function manufactureArticleDatas($articles) {
-			for ($i=0; $i<count($articles); $i++) {
-				if ($articles[$i]->content === NULL)
-					$articles[$i]->is_delete = true;
+			$arr = array();
 
-				if ($articles[$i]->is_secret) {
-					if ($articles[$i]->writer_id == User::getCurrent()->id || $this->view->isBoardAdmin)
-						$articles[$i]->secret_visible = true;
+			for ($i=0; $i<count($articles); $i++) {
+				$article = $articles[$i]->getData();
+
+				if ($article->content === NULL)
+					$article->is_delete = true;
+
+				if ($article->is_secret) {
+					if ($article->writer_id == User::getCurrent()->id || $this->view->isBoardAdmin)
+						$article->secret_visible = true;
 					else {
-						$parentArticle = $this->model->getParentArticle($articles[$i]->top_no, $articles[$i]->order_key);
+						$parentArticle = $this->model->getParentArticle($article->top_no, $article->order_key);
 						if ($parentArticle && $parentArticle->writer_id == User::getCurrent()->id)
-							$articles[$i]->secret_visible = true;
+							$article->secret_visible = true;
 					}
 				}
 
-				$articles[$i]->writer = htmlspecialchars(USE_REAL_NAME ? $articles[$i]->user_name : $articles[$i]->nick_name);
-				$articles[$i]->is_reply = isset($articles[$i]->parent_no);
-				$articles[$i]->upload_time2 = getRelativeTime(strtotime($articles[$i]->upload_time));
-				$articles[$i]->title = htmlspecialchars($articles[$i]->title);
+				$article->writer = htmlspecialchars(USE_REAL_NAME ? $article->user_name : $article->nick_name);
+				$article->is_reply = isset($article->parent_no);
+				$article->upload_time2 = getRelativeTime(strtotime($article->upload_time));
+				$article->title = htmlspecialchars($article->title);
 
-				if (mb_strlen($articles[$i]->title) > 150)
-					$articles[$i]->title = mb_substr($articles[$i]->title, 0, 150) . '...';
+				if (mb_strlen($article->title) > 150)
+					$article->title = mb_substr($article->title, 0, 150) . '...';
 
-				if ($articles[$i]->category)
-					$articles[$i]->category = htmlspecialchars($articles[$i]->category);
+				if ($article->category)
+					$article->category = htmlspecialchars($article->category);
 				
 				if (isset($_REQUEST['search']) && $_REQUEST['search']) {
 					$regexp = '/(' . str_replace(' ', '|', $_REQUEST['search']) . ')/i';
 
+					$str = $_REQUEST['search_type'] == 'writer' ? $article->writer : $article->title;
+					$str = str_replace('[', '\\[', $str);
+					$str = str_replace(']', '\\]', $str);
+
+					$searchKeys = explode(' ', $_REQUEST['search']);
+
+					for ($i=0; $i<count($searchKeys); $i++)
+						$str = str_replace($searchKeys[$i], '['.$searchKeys[$i].']', $str);
+
+					$str = str_replace('[', '<strong class="searched">', $str);
+					$str = str_replace(']', '</strong>', $str);
+					$str = str_replace('\\[', '[', $str);
+					$str = str_replace('\\]', ']', $str);
+
 					if ($_REQUEST['search_type'] == 'writer')
-						$articles[$i]->writer = preg_replace($regexp, '<strong class="searched">$1</strong>', $articles[$i]->writer);
+						$article->writer = $str;
 					else
-						$articles[$i]->title = preg_replace($regexp, '<strong class="searched">$1</strong>', $articles[$i]->title);
+						$article->title = $str;
 				}
+
+				array_push($arr, $article);
 			}
-			return $articles;
+			
+			return $arr;
 		}
 
 	}

@@ -142,10 +142,7 @@
 	</div>
 
 	<div class="search-box">
-		<form method="GET">
-			{@ foreach($_GET as $key => $value): }
-				<input type="hidden" name="{$key}" value="{htmlspecialchars($value)}">
-			{@ endforeach;}
+		<form action="{@ echo REAL_URL; }" method="GET">
 			<select name="search_type">
 				<option value="all"{@ if ($_GET['search_type'] == 'all') echo ' selected'; }>
 					{#

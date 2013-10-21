@@ -85,8 +85,9 @@
 	function validForm(editor) {
 		var validator = new Trex.Validator();
 		var content = editor.getContent();
-		
-		if (!document.forms.tx_editor_form.title.value) {
+		var title = document.forms.tx_editor_form.title.value;
+
+		if (!title) {
 			alert('제목을 입력하세요');
 			return false;
 		}
@@ -95,6 +96,9 @@
 			alert('내용을 입력하세요');
 			return false;
 		}
+
+		if (title.length > 50)
+			document.forms.tx_editor_form.title.value = title.substr(0, 47) + "...";
 
 		return true;
 	}

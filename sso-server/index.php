@@ -100,6 +100,10 @@
 	}
 	
 	execQuery('
+		UPDATE (#)session SET expire_time = now() WHERE session_key = "'.$sessKey.'"
+	');
+
+	execQuery('
 		DELETE FROM (#)session WHERE expire_time < now()
 	');
 

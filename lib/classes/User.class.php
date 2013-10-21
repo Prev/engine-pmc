@@ -101,6 +101,9 @@
 		}
 
 		public function checkGroup($targetGroups) {
+			if ($targetGroups === NULL)
+				return true;
+			
 			if (is_array($targetGroups)) {
 				for ($i=0; $i<count($targetGroups); $i++) {
 					if ($targetGroups[$i] == '*')
