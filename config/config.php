@@ -20,7 +20,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.5.1');
+	define('PMC_VERSION', '0.5.2');
 	
 	
 	/**

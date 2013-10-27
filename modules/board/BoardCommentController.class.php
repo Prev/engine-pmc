@@ -11,7 +11,7 @@
 				if (!$me || !$me->checkGroup($row->commentable_group)) {
 					goBack(array(
 						'en' => 'You do not have permission to write a comment',
-						'ko' => '덧글을 쓸 권한이 없습니다'
+						'ko' => '댓글을 쓸 권한이 없습니다'
 					));
 					return;
 				}
@@ -20,7 +20,7 @@
 			if (!$row->allow_comment) {
 				goBack(array(
 					'en' => 'This post doesn\'t allow to write a comment',
-					'ko' => '덧글을 허용하지 않은 게시글입니다'
+					'ko' => '댓글을 허용하지 않은 게시글입니다'
 				));
 				return;
 			}
@@ -53,21 +53,32 @@
 				return;
 			}
 
-			$commentData = $this->model->getCommentData((int)$_POST['comment_id']);
+			$commentData = $this->model->getCommentData($_POST['comment_id']);
+			$isSecret = evalCheckbox($_POST['is_secret']);
 
 			$me = User::getCurrent();
 			if (!$me || $me->id != $commentData->writer_id) {
 				goBack(array(
 					'en' => 'Cannot modify the comment',
-					'ko' => '덧글을 수정 할 수 없습니다'
+					'ko' => '댓글을 수정 할 수 없습니다'
 				));
 				return;
+			}
+			
+			if ($commentData->top_id) {
+				$topCommentData = $this->model->getCommentData($commentData->top_id);
+				if ($topCommentData && $topCommentData->is_secret && !$isSecret) {
+					goBack(array(
+						'en' => 'Cannot modify the comment to unsecret',
+						'ko' => '댓글을 비밀글에서 해제할 수 없습니다'
+					));
+				}
 			}
 
 			$comment = htmlspecialchars($_POST['comment']);
 			$comment = stripslashes($comment);
 
-			$this->model->updateComment($commentData, $comment, evalCheckbox($_POST['is_secret']));
+			$this->model->updateComment($commentData, $comment, $isSecret);
 
 			goBack();
 		}
@@ -83,7 +94,7 @@
 			if (!$me || ($me->id != $commentData->writer_id) && !$isBoardAdmin) {
 				goBack(array(
 					'en' => 'Cannot delete the comment',
-					'ko' => '덧글을 삭제 할 수 없습니다'
+					'ko' => '댓글을 삭제 할 수 없습니다'
 				));
 				return;
 			}

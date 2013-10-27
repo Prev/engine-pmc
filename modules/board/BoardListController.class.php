@@ -103,8 +103,8 @@
 
 					$searchKeys = explode(' ', $_REQUEST['search']);
 
-					for ($i=0; $i<count($searchKeys); $i++)
-						$str = str_replace($searchKeys[$i], '['.$searchKeys[$i].']', $str);
+					for ($j=0; $j<count($searchKeys); $j++)
+						$str = str_replace($searchKeys[$j], '['.$searchKeys[$j].']', $str);
 
 					$str = str_replace('[', '<strong class="searched">', $str);
 					$str = str_replace(']', '</strong>', $str);

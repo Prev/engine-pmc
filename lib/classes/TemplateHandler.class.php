@@ -166,7 +166,6 @@
 				return;
 			}
 			
-			
 			if (substr($importVals->path, 0, 1) == '/' || strpos($importVals->path, '://') !== false)
 				$absolutePath = $importVals->path;
 			else if (substr($importVals->path, 0, 2) == './')
@@ -179,8 +178,9 @@
 				'\'' . $absolutePath . '\', ' .
 				(isset($importVals->index) ? $importVals->index : -1) . ', ' .
 				'\'' . (isset($importVals->position) ? $importVals->position : 'head') . '\', ' .
+				'' . (isset($importVals->targetie) ? '\''.$importVals->targetie.'\'' : 'NULL') . ',' .
 				'' . (isset($importVals->requiredAgent) ? '\''.$importVals->requiredAgent.'\'' : 'NULL') . ',' .
-				'' . (isset($importVals->targetie) ? '\''.$importVals->targetie.'\'' : 'NULL') . '' .
+				'' . (isset($importVals->mobile) ? '\''.$importVals->mobile.'\'' : 'NULL') . '' .
 			'); ?>';
 			
 		}
@@ -320,6 +320,7 @@
 				return $this->deleteWhiteSpace($content);
 			}
 
+
 			if (strpos($content, '< ') !== false) {
 				$content = str_replace('< ', '<', $content);
 				return $this->deleteWhiteSpace($content);
@@ -332,6 +333,35 @@
 				$content = str_replace("<\r\n", '<', $content);
 				return $this->deleteWhiteSpace($content);
 			}
+
+
+			if (strpos($content, ' <?php') !== false) {
+				$content = str_replace(' <?php', '<?php', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+			if (strpos($content, "\t<?php") !== false) {
+				$content = str_replace("\t<?php", '<?php', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+			if (strpos($content, "\r\n<?php") !== false) {
+				$content = str_replace("\r\n<?php", '<?php', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+
+
+			if (strpos($content, '?> ') !== false) {
+				$content = str_replace('?> ', '?>', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+			if (strpos($content, "?>\t") !== false) {
+				$content = str_replace("?>\t", '?>', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+			if (strpos($content, "?>\r\n") !== false) {
+				$content = str_replace("?>\r\n", '?>', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+
 			return $content;
 		}
 

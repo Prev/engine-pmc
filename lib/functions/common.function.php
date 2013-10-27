@@ -213,6 +213,8 @@
 	 */
 	function json_encode2($data) {
 		switch(gettype($data)) {
+			case 'NULL':
+				return 'null';
 			case 'boolean':
 				return $data ? 'true' : 'false';
 			case 'integer':
@@ -361,7 +363,7 @@
 	 *		* 우선 순위는 module==action > queryParam > url
 	 * @param $module이 NULL일시 @param $action은 무시됨
 	 */
-	function getUrl($module=NULL, $action=NULL, $queryParam=NULL, $url=NULL) {
+	function getUrl($module=NULL, $action=NULL, $queryParam=NULL, $url=NULL, $removeAmp=false) {
 		if (!$url) $url = RELATIVE_URL;
 		
 		$parsedUrl = parse_url($url);
@@ -386,8 +388,8 @@
 
 		if (isset($module)) {
 			if (isset($action))
-				$parsedUrl['query'] = 'action=' . $action . '&' . $parsedUrl['query'];
-			$parsedUrl['query'] = 'module=' . $module . '&' . $parsedUrl['query'];
+				$parsedUrl['query'] = 'action=' . $action . '&amp;' . $parsedUrl['query'];
+			$parsedUrl['query'] = 'module=' . $module . '&amp;' . $parsedUrl['query'];
 		}
 		
 		if ($parsedUrl['query'] == '') $parsedUrl['query'] = NULL;
@@ -395,9 +397,12 @@
 		if ($parsedUrl['query'] != NULL) {
 			if (strrpos($parsedUrl['path'], '/') !== strlen($parsedUrl['path'])-1)
 				$parsedUrl['path'] .= '/';
-			if (strrpos($parsedUrl['query'], '&') === strlen($parsedUrl['query'])-1)
-				$parsedUrl['query'] = substr($parsedUrl['query'], 0, strlen($parsedUrl['query']) - 1);
+			if (strrpos($parsedUrl['query'], '&amp;') === strlen($parsedUrl['query'])-5)
+				$parsedUrl['query'] = substr($parsedUrl['query'], 0, strlen($parsedUrl['query']) - 5);
 		}
+
+		if ($removeAmp)
+			$parsedUrl['query'] = str_replace('&amp;', '&', $parsedUrl['query']);
 
 		return unparse_url($parsedUrl);
 	
@@ -406,8 +411,8 @@
 	/**
 	 * getUrl함수에서 @param $module, @param $action이 빠진 하수
 	 */
-	function getUrlA($queryParam, $url=NULL) {
-		return getUrl(NULL, NULL, $queryParam, $url);
+	function getUrlA($queryParam, $url=NULL, $removeAmp=false) {
+		return getUrl(NULL, NULL, $queryParam, $url, $removeAmp);
 	}
 	
 	/**
@@ -461,7 +466,7 @@
 				else
 					array_push($tempArr, $key . '=' . $content);
 			}
-			return join('&', $tempArr);
+			return join('&amp;', $tempArr);
 		}
 	}
 
@@ -471,6 +476,7 @@
 	 */
 	function urlQueryToArray($query) {
 		$arr = array();
+		$query = join('&', explode('&amp;', $query));
 		$tempArr = explode('&', $query);
 
 		for ($i=0; $i<count($tempArr); $i++) {
@@ -501,6 +507,7 @@
 	 * url 리다이렉트
 	 */
 	function redirect($url, $ob_clean=true) {
+		$url = str_replace('&amp;', '&', $url);
 		if ($ob_clean) {
 			ob_clean();
 			echo Context::getInstance()->getDoctype() .

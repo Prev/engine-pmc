@@ -482,7 +482,7 @@
 		 * @param $targetie : 추가될 IE 정의, @param 이 NULL이 아니면, 헤더 태그는 <!--[if @param]>HEADER_TAG<![endif]--> 로 교체됨
 		 *
 		 */
-		public function addHeaderFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
+		public function addHeaderFile($path, $index=-1, $position='head', $targetie=NULL, $requiredAgent=NULL, $mobile=NULL) {
 			if (substr($path, 0, 2) != '//' && strpos($path, '://') === false) {
 				if (substr($path, 0, 1) != '/')
 					$path = '/' . $path;
@@ -500,18 +500,23 @@
 				}
 			}
 			
+			if (isset($requiredAgent) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), strtolower($requiredAgent)) === false)
+				return;	
+			if (isset($mobile) && !$this->isMobileMode)
+				return;
+
 			switch ($extension = substr(strrchr($path, '.'), 1)) {
 				case 'css' :
-					$this->headerTagHandler->addCSSFile($path, $index, $position, $requiredAgent, $targetie);
+					$this->headerTagHandler->addCSSFile($path, $index, $position, $targetie);
 					break;
 					
 				case 'js' :
-					$this->headerTagHandler->addJsFile($path, $index, $position, $requiredAgent, $targetie);
+					$this->headerTagHandler->addJsFile($path, $index, $position, $targetie);
 					break;
 					
 				case 'lessc' :	
 				case 'less' :
-					$this->headerTagHandler->addLesscFile($path, $index, $position, $requiredAgent, $targetie);
+					$this->headerTagHandler->addLesscFile($path, $index, $position, $targetie);
 					break;
 					
 				case 'ico' :
@@ -673,7 +678,7 @@
 		public function checkSSO() {
 			if (!isset($_COOKIE[SSO_COOKIE_NAME]) && isset($_SESSION[SSO_SESSION_NAME]))
 				unset($_SESSION[SSO_SESSION_NAME]);
-			
+
 			if (!$_COOKIE[SSO_COOKIE_NAME.'_synchash'] || $_COOKIE[SSO_COOKIE_NAME.'_synchash'] != $_SESSION[SSO_SESSION_NAME.'_synchash']) {
 				// 와일드 카드 쿠키와 세션의 싱크를 맞춰줌
 				unset($_SESSION[SSO_SESSION_NAME]);
@@ -681,7 +686,7 @@
 
 			if (isset($_COOKIE[SSO_COOKIE_NAME]) && !isset($_SESSION[SSO_SESSION_NAME])) {
 				$urlData = getUrlData(SSO_URL . '?sess_key=' . $_COOKIE[SSO_COOKIE_NAME], SSO_AGENT_KEY);
-
+				
 				if (!$urlData) {
 					unset($_SESSION[SSO_SESSION_NAME]);
 					setCookie2(SSO_COOKIE_NAME, '', time()-60);
@@ -701,7 +706,7 @@
 					return true;
 				}
 
-				if (!$ssoData || $ssoData->result === 'fail') {
+				if (!$ssoData || $ssoData->result == 'fail') {
 					unset($_SESSION[SSO_SESSION_NAME]);
 					setCookie2(SSO_COOKIE_NAME, '', time()-60);
 

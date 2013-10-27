@@ -24,15 +24,31 @@
 		}
 
 		public function getArticleComments($articleNo) {
-			return DBHandler::for_table('article_comment')
-				->select_many('article_comment.*', 'user.user_name', 'user.nick_name')
-				->where('article_comment.article_no', $articleNo)
-				->join('user', array(
-					'user.id', '=', 'article_comment.writer_id'
-				))
-				->order_by_expr('IF ('.DBHandler::$prefix.'article_comment.top_id, '.DBHandler::$prefix.'article_comment.top_id, '.DBHandler::$prefix.'article_comment.id)')
-				->order_by_asc('id')
-				->find_many();
+			$articleNo = escape($articleNo);
+			$pfx = DBHandler::$prefix;
+
+			$query = "SELECT c1.*, c2.is_secret AS top_is_secret, {$pfx}user.user_name, {$pfx}user.nick_name
+						FROM {$pfx}article_comment c1, {$pfx}article_comment c2, {$pfx}user
+						WHERE
+							c1.article_no = {$articleNo}
+							AND ((c1.top_id IS NULL AND c2.id = c1.id) OR c2.id = c1.top_id)
+							AND {$pfx}user.id = c1.writer_id
+						ORDER BY IF (c1.top_id, c1.top_id, c1.id) ASC, c1.id ASC";
+
+			$arr = DBHandler::for_table('article_comment')
+					->raw_query($query)
+					->find_many();
+			
+			if ($arr) {
+				for ($i=0; $i<count($arr); $i++) {
+					$arr[$i]->is_secret = $arr[$i]->is_secret ? true : false;
+					$arr[$i]->top_is_secret = $arr[$i]->top_is_secret ? true : false;
+
+					if (!$arr[$i]->top_id)
+						$arr[$i]->top_is_secret = NULL;
+				}
+			}
+			return $arr;
 		}
 
 		public function getArticleFiles($articleNo) {

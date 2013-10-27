@@ -30,13 +30,21 @@ function toggleUpdateComment(index) {
 	modifyWrapper = document.getElementById("modify-comment"+index+"-wrap");
 	
 	var isSecret = parseInt(document.getElementById("comment"+index+"-is-secret").value);
+	var topIsSecret = parseInt(document.getElementById("comment"+index+"-top-is-secret").value);
+
+	var cb = document.getElementById("modify-comment"+index+"-secret-checkbox");
+
+	if (topIsSecret) {
+		cb.checked = true;
+		cb.disabled = true;
+		cb.className = "disabled";
+	}else
+		cb.checked = isSecret;
 
 	cContent.style.display = "none";
 	modifyWrapper.style.display = "block";
 	cUpdateBtn.innerHTML = fetchLocale({"en":"cancle modify", "ko":"수정 취소"});
-
-	document.getElementById("modify-comment"+index+"-secret-checkbox").checked = isSecret;
-
+	
 	last_commentIndex = index;
 }
 

@@ -90,11 +90,10 @@
 		/**
 		 * Add CSS File
 		 */
-		public function addCSSFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
+		public function addCSSFile($path, $index=-1, $position='head', $targetie=NULL) {
 			$this->insertIntoArray($this->cssFiles, (object) array(
 				'path'=>$path,
 				'position'=>$position,
-				'requiredAgent'=>$requiredAgent,
 				'targetie'=>$targetie
 			), $index);
 		}
@@ -102,11 +101,10 @@
 		/**
 		 * Add JS File
 		 */
-		public function addJSFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
+		public function addJSFile($path, $index=-1, $position='head', $targetie=NULL) {
 			$this->insertIntoArray($this->jsFiles, (object) array(
 				'path'=>$path,
 				'position'=>$position,
-				'requiredAgent'=>$requiredAgent,
 				'targetie'=>$targetie
 			), $index);
 		}
@@ -114,12 +112,11 @@
 		/**
 		 * Add Less CSS File
 		 */
-		public function addLesscFile($path, $index=-1, $position='head', $requiredAgent=NULL, $targetie=NULL) {
+		public function addLesscFile($path, $index=-1, $position='head', $targetie=NULL) {
 			$this->addCSSFile(
 				CacheHandler::getLessCachePath($path),
 				$index,
 				$position,
-				$requiredAgent,
 				$targetie
 			);
 		}
@@ -220,7 +217,6 @@
 				}
 
 				if ($headerFiles[$i]->position !== $position) continue;
-				if (isset($headerFiles[$i]->requiredAgent) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), strtolower($headerFiles[$i]->requiredAgent)) === false) continue; 
 				
 				if ($headerFiles[$i]->targetie !== NULL)
 					$html .= '<!--[if '.$headerFiles[$i]->targetie.']>' . LINE_END;
