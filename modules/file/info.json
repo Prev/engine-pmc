@@ -17,9 +17,9 @@
 		},
 		{
 			"name":"procDownloadFile",
-			"model":"FileDownModel",
 			"controller":"FileDownController",
-			"print_alone":true
+			"print_alone":true,
+			"allow_web_access":false
 		}
 	]
 }

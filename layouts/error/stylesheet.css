@@ -33,5 +33,10 @@
 	color:#999;
 }
 
+#bottom a{
+	color: #999;
+	text-decoration: none;
+}
+
 #bottom #left{ float:left }
 #bottom #right{ float:right }

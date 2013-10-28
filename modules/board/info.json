@@ -3,6 +3,8 @@
 	"version":"1.0.0",
 	"author":"prevdev@gmail.com",
 
+	"controller":"BoardController",
+
 	"actions":[
 		{
 			"name":"dispList",
@@ -90,6 +92,15 @@
 			"model":"BoardCommentModel",
 			"controller":"BoardCommentController",
 			"layout":"blank"
+		},
+
+
+		{
+			"name":"procDownloadFile",
+			"inherit":"file.procDownloadFile",
+			"controller":"BoardFileDownController",
+			"model":"BoardFileDownModel",
+			"allow_web_access":true
 		}
 	]
 }

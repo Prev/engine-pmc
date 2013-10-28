@@ -42,7 +42,7 @@
 				{@ foreach ($fileDatas as $key => $file) : }
 					<li>
 						<span class="file-icon"></span>
-						<a href="{getUrl('file', 'procDownloadFile', 'file='.$file->file_hash.'&article_no='.$articleNo)}">
+						<a href="{getUrl('board', 'procDownloadFile', 'file='.$file->file_hash.'&article_no='.$articleNo)}">
 							{htmlspecialchars($file->file_name)}&nbsp;({getClearFileSize($file->file_size)})
 						</a>
 					</li>
