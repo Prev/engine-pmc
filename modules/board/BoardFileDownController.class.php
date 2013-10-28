@@ -3,7 +3,7 @@
 	class BoardFileDownController extends FileDownController {
 		
 		public function procDownloadFile() {
-			$data = $this->model->getFileUrl($_GET['file'], $_GET['article_no']);
+			$data = $this->model->getFileData($_GET['file'], $_GET['article_no']);
 			if (!$data) {
 				echo 'Invalid file';
 				return;
