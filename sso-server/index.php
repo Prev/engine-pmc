@@ -24,28 +24,28 @@
 		return;
 	}
 	
+	execQuery('
+		DELETE FROM (#)session WHERE expire_time < now()
+	');
+
 	$sessionData = execQueryOne('
 		SELECT * FROM (#)session
 		WHERE session_key="'.$sessKey.'"
 	');
 	
-	if (!$sessionData) {
-		printError('session key does not exist');
-		return;
-	}
-	
-	if (strtotime($sessionData->expire_time) < time()) {
+	if (!$sessionData || strtotime($sessionData->expire_time) < time()) {
 		$obj = new StdClass();
 		$obj->result = 'expired';
 		$obj->error = new StdClass();
-		$obj->error->message = 'session key is expired';
-
+		$obj->error->message = (!$sessionData ? 'session key does not exist (expired or deleted)' : 'session key is expired');
+		
 		echo json_encode($obj);
 		return;
 	}
+
 	
 	$user_id = $sessionData->user_id;
-	$expire_time = $sessionData->expire_time;
+	$expire_time = date('Y-m-d H:i:s', time() + ($sessionData->keep_login ? 604800 : 10800));
 
 	$userData = execQueryOne('
 		SELECT * FROM (#)user
@@ -99,12 +99,10 @@
 		array_push($obj->userData->groups, $tmp);
 	}
 	
-	execQuery('
-		UPDATE (#)session SET expire_time = now() WHERE session_key = "'.$sessKey.'"
-	');
+	$expireTime = time() + ($sessionData->keep_login ? 604800 : 10800);
 
 	execQuery('
-		DELETE FROM (#)session WHERE expire_time < now()
+		UPDATE (#)session SET expire_time = '.date('Y-m-d H:i:s',$expireTime).' WHERE session_key = "'.$sessKey.'"
 	');
 
 	echo json_encode($obj);

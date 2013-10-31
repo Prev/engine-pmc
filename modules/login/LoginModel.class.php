@@ -16,13 +16,13 @@
 				->find_many();
 		}
 
-		public function createSession($sessionKey, $expireTime, $userId) {
+		public function createSession($sessionKey, $expireTime, $keepLogin, $userId) {
 			$record = DBHandler::for_table('session')
 				->create();
-
 			$record->set(array(
 				'session_key' => $sessionKey,
 				'expire_time' => date('Y-m-d H:i:s', $expireTime),
+				'keep_login' => $keepLogin,
 				'ip_address' => $_SERVER['REMOTE_ADDR'],
 				'user_id' => $userId
 			));
@@ -44,9 +44,9 @@
 			$record->save();
 		}
 
-		public function insertIntoLoginlog($inputId, $succeed, $autoLogin) {
+		public function insertIntoLoginlog($inputId, $succeed, $keepLogin) {
 			$ipAdress = $_SERVER['REMOTE_ADDR'];
-			$autoLogin = $autoLogin ? 1 : 0;
+			$keepLogin = $keepLogin ? 1 : 0;
 			$succeed = $succeed ? 1 : 0;
 			
 			$logRecord = DBHandler::for_table('login_log')->create();
@@ -54,7 +54,7 @@
 				'ip_address' => $ipAdress,
 				'input_id' => $inputId,
 				'succeed' => $succeed,
-				'auto_login' => $autoLogin
+				'keep_login' => $keepLogin
 			));
 			$logRecord->save();
 

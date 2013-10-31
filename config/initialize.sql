@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 호스트: localhost
--- 처리한 시간: 13-10-13 18:02
+-- 처리한 시간: 13-10-31 11:36
 -- 서버 버전: 5.1.41-community
 -- PHP 버전: 5.2.12
 
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `pmc_article_files` (
   PRIMARY KEY (`id`),
   KEY `article_no` (`article_no`),
   KEY `file_id` (`file_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -99,9 +99,9 @@ CREATE TABLE IF NOT EXISTS `pmc_board` (
   `menu_id` int(10) unsigned NOT NULL,
   `categorys` tinytext COMMENT '말머리/JSON Array',
   `readable_group` tinytext COMMENT '읽기 가능 그룹/JSON Array/NULL 시 모두가 읽을 수 있음',
-  `commentable_group` tinytext COMMENT '댓글 가능 그룹/JSON Array/NULL 시 모두가 댓글을 달 수 있음',
+  `commentable_group` tinytext COMMENT '덧글 가능 그룹/JSON Array/NULL 시 모두가 덧글을 달 수 있음',
   `writable_group` tinytext COMMENT '글 쓰기 가능 그룹/JSON Array/NULL 시 모두가 글을 쓸 있음',
-  `admin_group` tinytext COMMENT '게시판 관리자 그룹/JSON Array/공지 설정 가능/게시글 및 댓글 삭제 가능/NULL시 관리 그룹 없음',
+  `admin_group` tinytext COMMENT '게시판 관리자 그룹/JSON Array/공지 설정 가능/게시글 및 덧글 삭제 가능/NULL시 관리 그룹 없음',
   `hide_secret_article` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `extra_vars` text,
   PRIMARY KEY (`id`),
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `pmc_login_log` (
   `ip_address` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `input_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `succeed` tinyint(1) NOT NULL,
-  `auto_login` tinyint(1) NOT NULL,
+  `keep_login` tinyint(1) NOT NULL,
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -193,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `pmc_session` (
   `expire_time` datetime NOT NULL,
   `ip_address` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `keep_login` tinyint(1) NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `extra_vars` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   PRIMARY KEY (`session_key`),
@@ -323,8 +324,8 @@ ALTER TABLE `pmc_session`
 -- Constraints for table `pmc_user_group_user`
 --
 ALTER TABLE `pmc_user_group_user`
-  ADD CONSTRAINT `pmc_user_group_user_ibfk_3` FOREIGN KEY (`group_name`) REFERENCES `pmc_user_group` (`name`) ON DELETE CASCADE,
-  ADD CONSTRAINT `pmc_user_group_user_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `pmc_user` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `pmc_user_group_user_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `pmc_user` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pmc_user_group_user_ibfk_3` FOREIGN KEY (`group_name`) REFERENCES `pmc_user_group` (`name`) ON DELETE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

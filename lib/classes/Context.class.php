@@ -721,7 +721,8 @@
 				$_SESSION[SSO_SESSION_NAME] = $ssoData;
 				$_SESSION[SSO_SESSION_NAME.'_synchash'] = md5($urlData);
 				setCookie2(SSO_COOKIE_NAME.'_synchash', md5($urlData), strtotime($ssoData->expireTime));
-
+				setCookie2(SSO_COOKIE_NAME, $_COOKIE[SSO_COOKIE_NAME], strtotime($ssoData->expireTime));
+				
 				User::initCurrent();
 				return true;
 			}

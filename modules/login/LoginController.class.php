@@ -3,8 +3,8 @@
 	class LoginController extends Controller {
 
 		public function procLogin() {
-			if (!isset($_POST['auto_login'])) $_POST['auto_login'] = false;
-			$this->login($_POST['id'], $_POST['pw'], evalCheckbox($_POST['auto_login']));
+			if (!isset($_POST['keep_login'])) $_POST['keep_login'] = false;
+			$this->login($_POST['id'], $_POST['pw'], evalCheckbox($_POST['keep_login']));
 		}
 		
 		public function procSecureLogin() {
@@ -32,13 +32,13 @@
 					$this->goBackToLoginPage('result=fail_sec', urldecode($next));
 					return;
 				}
-				if (!isset($_POST['auto_login'])) $_POST['auto_login'] = false;
-				$this->login($real_id, $real_pw, evalCheckbox($_POST['auto_login']));
+				if (!isset($_POST['keep_login'])) $_POST['keep_login'] = false;
+				$this->login($real_id, $real_pw, evalCheckbox($_POST['keep_login']));
 			}
 		}
 		public function procLogout() {
 			setCookie2('pmc_logout', 1);
-			redirect(getUrl('login', 'procLogout2'));
+			redirect(getUrl('login', 'procLogout2', 'next='.getBackUrl()));
 		}
 		
 		public function procLogout2() {
@@ -53,7 +53,7 @@
 			}
 			unset($_SESSION[SSO_SESSION_NAME]);
 
-			redirect(RELATIVE_URL);
+			redirect($_GET['next']);
 		}
 
 
@@ -62,7 +62,7 @@
 			return sha1(uniqid(mt_rand(), true));
 		}
 		
-		private function login($id, $pw, $autoLogin) {
+		private function login($id, $pw, $keepLogin) {
 			if (!$id || !$pw) return;
 
 			$next = !empty($_REQUEST['next']) ? urldecode($_REQUEST['next']) : getUrl();
@@ -71,7 +71,7 @@
 
 			// ID does not exist OR password do not match
 			if (!$userData || ($userData->password != hash('sha256', $pw . $userData->password_salt))) {
-				$this->model->insertIntoLoginlog($id, false, $autoLogin);
+				$this->model->insertIntoLoginlog($id, false, $keepLogin);
 				$this->goBackToLoginPage('result=fail', urldecode($next));
 				return;
 				
@@ -82,18 +82,19 @@
 
 				}while(count($sessionData) !== 0);
 
-				$expireTime = time() + ($autoLogin ? 604800 : 10800); // auto login: 7day /else: 3hour
+				$expireTime = time() + ($keepLogin ? 604800 : 10800); // auto login: 7day /else: 3hour
 				
 				$this->model->createSession(
 					$sessionKey,
 					$expireTime,
+					$keepLogin,
 					$userData->id
 				);
 
 				$this->model->updateLastLoginedIp($userData->id);
-				$this->model->insertIntoLoginlog($id, true, $autoLogin);
+				$this->model->insertIntoLoginlog($id, true, $keepLogin);
 
-				setCookie2(SSO_COOKIE_NAME, $sessionKey, ($autoLogin ? $expireTime : 0));
+				setCookie2(SSO_COOKIE_NAME, $sessionKey, ($keepLogin ? $expireTime : 0));
 				
 				redirect($next);
 			}
