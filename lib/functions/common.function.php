@@ -496,9 +496,9 @@
 	 */
 	function getBackUrl() {
 		if ($_GET['next'])
-			return urldecode($_GET['next']);
+			return removeXSS(urldecode($_GET['next']));
 		else if ($_SERVER['HTTP_REFERER'])
-			return $_SERVER['HTTP_REFERER'];
+			return removeXSS($_SERVER['HTTP_REFERER']);
 		else
 			return RELATIVE_URL;
 	}

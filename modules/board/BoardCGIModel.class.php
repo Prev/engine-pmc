@@ -15,7 +15,7 @@
 
 		public function getParentArticleBoardId($parentNo) {
 			$data = DBHandler::for_table('article')
-				->select('board_id', 'content')
+				->select_many('board_id', 'content')
 				->where('no', $parentNo)
 				->find_one();
 
