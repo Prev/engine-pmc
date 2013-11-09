@@ -14,9 +14,14 @@
 
 			if (isset($row->extra_vars)) {
 				$o = json_decode($row->extra_vars);
-				if (!isset($o) || !isset($o->page))
-					return;
-				return $o->page;
+				
+				if (isset($o) && isset($o->page))
+					return $o->page;
+				else if (isset($row->title))
+					return $row->title;
+				else
+					return NULL;
+
 			}else if (isset($row->title))
 				return $row->title;
 			else

@@ -64,7 +64,7 @@
 			// insert module realitve url in relative src (./.*), href and action
 			$html = preg_replace_callback('`((?:src|href|action)=(?:\"|\'))(.*?)((?:\"|\'))`i', array($this, 'parseUrl'), $html);
 			$html = preg_replace_callback('/(<style[\s\S]*?url\((?:\'|\")?)(.*?)((?:\'|\")\))/i', array($this, 'parseUrl'), $html);
-			$html = preg_replace_callback('/(style=".*?url\((?:\'|\"))(.*?)((?:\'|\")\)")/i', array($this, 'parseUrl'), $html);
+			$html = preg_replace_callback('/(style=(?:"|\').*?url\()(.*)?(\))/i', array($this, 'parseUrl'), $html);
 
 			// targetie condition
 			$html = preg_replace('`<condition\s+targetie\s*=\s*"([^"]+)"\s*>([\s\S]*?)</condition>`i', '<!--[if $1]>$2<![endif]-->', $html);
@@ -319,6 +319,10 @@
 				$content = str_replace(">\r\n", '>', $content);
 				return $this->deleteWhiteSpace($content);
 			}
+			if (strpos($content, ">\n") !== false) {
+				$content = str_replace(">\n", '>', $content);
+				return $this->deleteWhiteSpace($content);
+			}
 
 
 			if (strpos($content, '< ') !== false) {
@@ -331,6 +335,10 @@
 			}
 			if (strpos($content, "<\r\n") !== false) {
 				$content = str_replace("<\r\n", '<', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+			if (strpos($content, "<\n") !== false) {
+				$content = str_replace("<\n", '<', $content);
 				return $this->deleteWhiteSpace($content);
 			}
 
@@ -347,6 +355,10 @@
 				$content = str_replace("\r\n<?php", '<?php', $content);
 				return $this->deleteWhiteSpace($content);
 			}
+			if (strpos($content, "\n<?php") !== false) {
+				$content = str_replace("\n<?php", '<?php', $content);
+				return $this->deleteWhiteSpace($content);
+			}
 
 
 			if (strpos($content, '?> ') !== false) {
@@ -359,6 +371,10 @@
 			}
 			if (strpos($content, "?>\r\n") !== false) {
 				$content = str_replace("?>\r\n", '?>', $content);
+				return $this->deleteWhiteSpace($content);
+			}
+			if (strpos($content, "?>\n") !== false) {
+				$content = str_replace("?>\n", '?>', $content);
 				return $this->deleteWhiteSpace($content);
 			}
 

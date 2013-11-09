@@ -70,7 +70,7 @@
 				if ($topCommentData && $topCommentData->is_secret && !$isSecret) {
 					goBack(array(
 						'en' => 'Cannot modify the comment to unsecret',
-						'ko' => '댓글을 비밀글에서 해제할 수 없습니다'
+						'ko' => '댓글을 비밀덧글에서 해제할 수 없습니다'
 					));
 				}
 			}

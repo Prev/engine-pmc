@@ -290,6 +290,14 @@
 				return;
 			}
 
+			if (!$articleData->is_notice && $articleData->is_secret) {
+				goBack(array(
+					'en' => 'Cannot post notice with secret mode',
+					'ko' => '비밀글을 공지사항으로 등록 할 수 없습니다'
+				), true);
+				return;
+			}
+
 			$this->model->updateNoticeInfo($articleData, intval(!$articleData->is_notice));
 			
 			goBack( $articleData->is_notice ?
