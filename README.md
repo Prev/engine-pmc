@@ -1,25 +1,27 @@
 #engine-pmc
 
-"engine pmc" 는 웹사이트의 개발속도, 유지보수, 공동 작업등을 쉽게 해 주는 모듈 기반의 MVC 코어입니다.
+"engine pmc" is module-based MVC core that speeds up the development of the website, and makes easy to do team work and maintenance.
 
-"engine pmc" 는 MVC 기능 외에 다양한 편의 기능을 제공합니다.
-+ 유지보수의 편의성
-+ 다중 모듈 지원
-+ 모듈 액션간 상속 지원
-+ CSS/JS 자동 캐시 컨트롤
-+ less css 지원
-+ 다국어 지원
-+ 같은 코드로 다양한 서버에서 구동 가능
-+ 다양한 config 변수 제공
-+ 디버깅의 편리
+"engine pmc" provides many functions as well as MVC.
 
-[데모사이트](http://engine-pmc.parameter.kr)
++ Ease of maintenance
++ Multi-module support
++ Support inheritance between module action
++ CSS / JS automatic cache control
++ Support LESS css
++ Support multi-language
++ The same code can be run on different servers
++ Provides various config variables
++ Ease of debugging
 
-# Install
-engine-pmc 설치 및 개발 방법은 **[이 문서](https://github.com/Prev/engine-pmc/wiki)**에 정의되어 있습니다.
+# Demo
+[http://engine-pmc.parameter.kr](http://engine-pmc.parameter.kr)
+
+# Wiki & Install
+engine-pmc 위키 및 설치/개발 방법은 **[이 문서](https://github.com/Prev/engine-pmc/wiki)**에 정의되어 있습니다.
 
 
-#Change Log
+# Change Log
 
 ### v 0.5.4
 로그인 개선
