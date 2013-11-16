@@ -10,6 +10,7 @@
 + CSS / JS automatic cache control
 + Support LESS css
 + Support multi-language
++ Easy to develope mobile pages
 + The same code can be run on different servers
 + Provides various config variables
 + Ease of debugging
@@ -18,7 +19,7 @@
 [http://engine-pmc.parameter.kr](http://engine-pmc.parameter.kr)
 
 # Wiki & Install
-engine-pmc 위키 및 설치/개발 방법은 **[이 문서](https://github.com/Prev/engine-pmc/wiki)**에 정의되어 있습니다.
+wiki and install/developement tutorial is defined in **[this document](https://github.com/Prev/engine-pmc/wiki)** (Korean)
 
 
 # Change Log
@@ -135,8 +136,6 @@ SSO 개선
 + 파일 기능 강화
 + ORM 버그 픽스
 + info.json print_alone 속성 추가
-
-
 
 ####v 0.2.6
 + User 클래스 멤버변수 작성법 변경 -> 언더바 사용 X
