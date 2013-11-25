@@ -260,6 +260,9 @@
 	 *			데이터 로딩에 실패할시 NULL 반환
 	 */
 	function getUrlData($url, $userAgent=NULL) {
+		if (substr($url, 0, 2) == '//')
+			$url = PROTOCOL . '://' . substr($url, 2);
+		
 		$temp = explode('://', $url);
 		$temp = explode('/', $temp[1]);
 
@@ -316,7 +319,7 @@
 		if (defined('RELATIVE_URL')) return RELATIVE_URL;
 		
 		return ($serverInfo = getServerInfo()) ?
-			($serverInfo->protocol . '://' . $serverInfo->host . (isset($serverInfo->port) ? ':' . $serverInfo->port : '') . $serverInfo->uri) :
+			( ($serverInfo->protocol == '//' ? '//' : $serverInfo->protocol . '://') . $serverInfo->host . (isset($serverInfo->port) ? ':' . $serverInfo->port : '') . $serverInfo->uri) :
 			PROTOCOL . '://' . $_SERVER['HTTP_HOST'];
 	}
 	
@@ -439,7 +442,7 @@
 	 * getUrlA 함수에서 쓰임
 	 */
 	function unparse_url($parsed_url) { 
-		$scheme	= isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : ''; 
+		$scheme	= isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '//'; 
 		$host	 = isset($parsed_url['host']) ? $parsed_url['host'] : ''; 
 		$port	 = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : ''; 
 		$user	 = isset($parsed_url['user']) ? $parsed_url['user'] : ''; 
@@ -448,6 +451,7 @@
 		$path	 = isset($parsed_url['path']) ? $parsed_url['path'] : ''; 
 		$query	= isset($parsed_url['query']) ? '?' . $parsed_url['query'] : ''; 
 		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : ''; 
+		
 		return $scheme . $user . $pass . $host . $port . $path . $query . $fragment; 
 	}
 	

@@ -33,7 +33,7 @@
 			$html = preg_replace_callback('/\#?\s?<import([^>]+)>/', array($this, 'parseImportTags'), $html);
 			
 			// import meta tag
-			$html = preg_replace_callback('/\#?\s?<meta([^>]+)>/', array($this, 'parseMeta'), $html);
+			$html = preg_replace_callback('/\#?\s?<meta(.*?(?:"|\')\s*)>/', array($this, 'parseMeta'), $html);
 			
 			// <title>title</title>
 			$html = preg_replace_callback('`<title>(.*?)</title>`', array($this, 'parseTitle'), $html);
@@ -63,7 +63,7 @@
 			// insert module realitve url in upper relative src (../.*), href and action
 			// insert module realitve url in relative src (./.*), href and action
 			$html = preg_replace_callback('`((?:src|href|action)=(?:\"|\'))(.*?)((?:\"|\'))`i', array($this, 'parseUrl'), $html);
-			$html = preg_replace_callback('/(<style[\s\S]*?url\((?:\'|\")?)(.*?)((?:\'|\")\))/i', array($this, 'parseUrl'), $html);
+			$html = preg_replace_callback('/(<style[\s\S]*?url\((?:\'|\")?)(.*?)((?:\'|\")?\))/i', array($this, 'parseUrl'), $html);
 			$html = preg_replace_callback('/(style=(?:"|\').*?url\((?:"|\'))(.*)?(\))/i', array($this, 'parseUrl'), $html);
 
 			// targetie condition
