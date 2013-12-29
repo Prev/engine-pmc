@@ -1,10 +1,8 @@
 RewriteEngine On
 
-
 # allow sso-server/index.php
 RewriteRule ^sso-server/index.php$ - [L]
 RewriteRule ^sso-server/?$ - [L]
-
 
 # login module short url
 RewriteRule ^login(\/?)$ ./index.php?module=login&action=dispLoginPage&%{QUERY_STRING} [L,QSA]
@@ -20,17 +18,17 @@ RewriteRule ^([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/?$ ./index.php?m
 # sub-directory php access denied
 RewriteRule ^(.+)/(.+)\.php$ - [L,F]
 
-# cache php access denied
-RewriteRule ^cache/(.+)\.php$ - [L,F]
+# config access denied
+RewriteRule ^config/(.+)$ - [L,F]
 
 # info.json access denied
-RewriteRule ^(modules)/(.+)/info.json$ - [L,F]
+RewriteRule ^modules/(.+)/info\.json$ - [L,F]
 
 # template html access denied
-RewriteRule ^(modules)/(.+)/template/(.+)\.html$ - [L,F]
+RewriteRule ^modules/(.+)/template/(.+)\.html$ - [L,F]
 
 # layout html access denied
-RewriteRule ^(layouts)/(.+)\.html$ - [L,F]
+RewriteRule ^layouts/(.+)\.html$ - [L,F]
 
 # pmc_error.log access denied
-RewriteRule ^files/pmc_error.log$ - [L,F]
+RewriteRule ^files/pmc_error\.log$ - [L,F]

@@ -163,6 +163,8 @@
 			// page 라는 변수가 넘어왔고 module 변수가 넘어오지 않을 때 모듈을 page로 설정
 			if (isset($_GET['page']) && !isset($_GET['module'])) $_GET['module'] = 'page';
 			
+			CacheHandler::init();
+
 			// config/server_info.json 파일에서 해당 서버정보를 설정핮 않아 serverInfo 변수가 정의되지 않았을때 
 			if (!isset($GLOBALS['serverInfo'])) {
 				Context::printErrorPage(array(
@@ -180,8 +182,7 @@
 				));
 				return;
 			}
-
-			CacheHandler::init();
+			
 			ModuleHandler::init();
 			DBHandler::init($db_info);
 			

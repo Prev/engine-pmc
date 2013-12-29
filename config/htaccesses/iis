@@ -28,15 +28,15 @@
 					<action type="Rewrite" url="/-" />
 				</rule>
 				<rule name="rule 7l" stopProcessing="true">
-					<match url="^cache/(.+)\.php$" />
+					<match url="^config/(.+)$" />
 					<action type="Rewrite" url="/-"  />
 				</rule>
 				<rule name="rule 8l" stopProcessing="true">
-					<match url="^(modules)/(.+)/info.json$"  />
+					<match url="^modules/(.+)/info.json$"  />
 					<action type="Rewrite" url="/-" />
 				</rule>
 				<rule name="rule 10l" stopProcessing="true">
-					<match url="^(layouts)/(.+)\.html$"  />
+					<match url="^layouts/(.+)\.html$"  />
 					<action type="Rewrite" url="/-"  />
 				</rule>
 				<rule name="rule 11l" stopProcessing="true">

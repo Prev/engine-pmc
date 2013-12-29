@@ -15,19 +15,26 @@
 		static $siteCacheDir;
 
 		static public function init() {
-			self::$siteCacheDir = '/files/cache/' . getServerInfo()->host . urlencode(getServerInfo()->uri);
+			$host = getServerInfo()->host ? getServerInfo()->host : 'none';
+			self::$siteCacheDir = '/files/cache/' . $host . urlencode(getServerInfo()->uri);
+
+			if (!is_writable(ROOT_DIR . '/files/')) {
+				$message = fetchLocale(array(
+					'en' => 'There is no write permission in directory "files".<br>Give write permission to directory "files" like 777.',
+					'ko' => '"files" 폴더에 쓰기 권한이 없습니다.<br>"files" 폴더에 777등의 쓰기 권한을 주십시오.'
+				));
+				echo '<html><head><title>engine pmc</title></head><body><center><h1>Error on page</h1>'.$message.'</center><hr><center>powered by engine pmc</center></body></html>';
+				exit;
+			}
 
 			if (!is_dir(ROOT_DIR . '/files/')) {
 				mkdir(ROOT_DIR . '/files/');
-				chmod(ROOT_DIR . '/files/', 0755);
 			}
 			if (!is_dir(ROOT_DIR . '/files/cache/')) {
 				mkdir(ROOT_DIR . '/files/cache/');
-				chmod(ROOT_DIR . '/files/cache/', 0755);
 			}
 			if (!is_dir(ROOT_DIR . self::$siteCacheDir)) {
 				mkdir(ROOT_DIR . self::$siteCacheDir);
-				chmod(ROOT_DIR . self::$siteCacheDir, 0755);
 			}
 		}
 		

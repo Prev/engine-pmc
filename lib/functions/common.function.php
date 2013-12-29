@@ -320,7 +320,7 @@
 		
 		return ($serverInfo = getServerInfo()) ?
 			( ($serverInfo->protocol == '//' ? '//' : $serverInfo->protocol . '://') . $serverInfo->host . (isset($serverInfo->port) ? ':' . $serverInfo->port : '') . $serverInfo->uri) :
-			PROTOCOL . '://' . $_SERVER['HTTP_HOST'];
+			PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
 	
 	/**
