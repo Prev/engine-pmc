@@ -20,7 +20,7 @@
 	/**
 	 * Define PMC version
 	 */
-	define('PMC_VERSION', '0.5.5');
+	define('PMC_VERSION', '0.5.8');
 	
 	
 	/**
@@ -87,7 +87,13 @@
 	 */
 	//define('DEBUG_MODE', true);
 	
+	/**
+	 * Define using database.
+	 * In common case, should not fix it.
+	 */
+	define('USE_DATABASE', true);
 	
+
 	/**
 	 * Define log file's path
 	 */

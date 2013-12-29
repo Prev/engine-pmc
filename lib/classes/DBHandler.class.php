@@ -21,6 +21,14 @@
 		// 주로 table prefix 문제를 해결하기 위해 override함
 		// @override
 		static public function for_table($table_name, $connection_name = self::DEFAULT_CONNECTION, $appendPrefix=true) {
+			if (!USE_DATABASE) {
+				Context::printWarning(array(
+					'en' => 'If you want to use database, Use should fix const "USE_DATABASE" to "true"',
+					'ko' => '데이터베이스를 사용하려면 상수 "USE_DATABASE"를 "true"로 바꿔야 합니다.'
+				));
+				return;
+			}
+
 			if ($appendPrefix) $table_name = self::$prefix . $table_name;
 			self::_setup_db($connection_name);
 			

@@ -228,6 +228,13 @@
 		private function initMenu($getVars) {
 			$this->parentMenus = array();
 
+			if (!USE_DATABASE) {
+				$indexModuleExists = is_dir(ROOT_DIR . '/modules/index');
+				$this->moduleID = isset($getVars['module']) ? basename($getVars['module']) : ($indexModuleExists ? 'index' : NULL);
+				$this->moduleAction = isset($getVars['action']) ? basename($getVars['action']) : NULL;
+				return;
+			}
+			
 			if (isset($getVars['module'])) {
 				// 모듈이 정의됬을때
 				$this->moduleID = basename($getVars['module']);
@@ -307,6 +314,10 @@
 		 * 메뉴 데이터를 반환
 		 */
 		static public function getMenu($level) {
+			if (!USE_DATABASE){
+				return array();
+			}
+
 			if ($level == 1) {
 				// 최상위 메뉴 로드
 				$arr = DBHandler::for_table('menu')
