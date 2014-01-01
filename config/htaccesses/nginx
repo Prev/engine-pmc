@@ -1,16 +1,17 @@
 #nginx configuration
 
 location /sso-server {
-	rewrite ^/sso-server/index\.php$	/sso-server/index.php;
-	rewrite ^/sso-server/?$				/sso-server/index.php;
+	include php;
+	break;
 }
 
 location / {
+	rewrite ^/login(\/?)$ /index.php?module=login&action=dispLoginPage&$query_string;
+	
 	rewrite ^/([0-9]+).*$ /index.php?module=board&action=dispArticle&article_no=$1&$query_string;
 	rewrite ^/([a-zA-Z0-9-_]+)/?$ /index.php?menu=$1&$query_string;
 	rewrite ^/([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/?$ /index.php?menu1=$1&menu2=$2$query_string;
 	rewrite ^/([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)/?$ /index.php?menu1=$1&menu2=$2&menu3=$3$query_string;
-	rewrite ^/login(\/?)$ /index.php?module=login&action=dispLoginPage&$query_string break;
 }
 
 location ~ ^/(.+)/(.+)\.php$ { return 403; }
