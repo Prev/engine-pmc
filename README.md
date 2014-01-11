@@ -16,7 +16,7 @@
 + Ease of debugging
 
 # Demo
-[http://engine-pmc.parameter.kr](http://engine-pmc.parameter.kr)
+[http://pmc.prev.kr](http://pmc.prev.kr)
 
 # Wiki & Install
 wiki and install/developement tutorial is defined in **[this document](https://github.com/Prev/engine-pmc/wiki)** (Korean)
